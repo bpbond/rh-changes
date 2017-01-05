@@ -32,5 +32,7 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 
-# Markdown and R markdown output
+# Script outputs
+outputs/
 *.html
+.Rproj.user
