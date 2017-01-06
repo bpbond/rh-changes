@@ -35,4 +35,5 @@ vignettes/*.pdf
 # Script outputs
 outputs/
 *.html
+*.pdf
 .Rproj.user
