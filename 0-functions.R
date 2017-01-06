@@ -105,11 +105,9 @@ if(!file.exists(OUTPUT_DIR)) {
 #   try(checkpoint(CHECKPOINTDATE)) # 'try' b/c errors w/o network (issue #171)
 library(ggplot2)
 theme_set(theme_bw())
-library(tidyr)
-library(dplyr)
-library(ncdf4)
-#library(lubridate)
 library(luzlogr)  # 0.2.0
 library(readr)
 library(R.utils)
 library(assertthat)
+library(tidyr)
+library(dplyr)
