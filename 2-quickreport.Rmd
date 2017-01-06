@@ -168,3 +168,5 @@ Next steps:
 * What other statistical approaches can we bring to bear/apply?
 * What other datasets would help more stringent tests?
 * Can we compute an implied Q10, or examine whether results are consistent with [Crowther et al. (2016)](http://www.nature.com/nature/journal/v540/n7631/full/nature20150.html)?
+* Re the assumption that Rh/GPP would increase with soil loss--does this occur in warming experiments? E.g. Harvard Forest or...?
+* Given Crowther et al. results, should include SOC (from soilsgrid1km)
