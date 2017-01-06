@@ -19,7 +19,8 @@ With eight (if I enter 2014-2016) more years' data, **can we test this**?
 
 
 Next steps?
-- Talk to Chris or someone
-- SRDB - prioritize ones with Rh
+- Make a report (Rmarkdown)
+- Discuss with Chris, Claire, Rodrigo, Kathe or someone?
+- SRDB - update; prioritize studies reporting Rh
 - Check Hashimoto, Hursh papers for factors affecting Rs and Rh, include
 - Could we calculate a Q10 or flux from this? Hmm.
