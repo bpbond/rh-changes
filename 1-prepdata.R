@@ -181,14 +181,14 @@ gpp <- gpp * 1000 * 60 * 60 * 24 * 365  # Convert from kgC/m2/s to gC/m2/yr
 # 4. Match with MODIS GPP data
 dir <- "/Users/d3x290/Data/MODIS_GPP/"
 # Downloaded 6 Jan 2017 from http://www.ntsg.umt.edu/project/mod17
-modgpp <- extract_geotiff_data(dir, "modgpp", d$Longitude, d$Latitude, d$Study_midyear, d$YearsOfData, file_startyear = 2000)
-modgpp <- modgpp * 0.1 # scale factor, per README file; results in gC/m2
-modgpp <- modgpp * 12 # from mean monthly value to annual sum
+modisgpp <- extract_geotiff_data(dir, "modisgpp", d$Longitude, d$Latitude, d$Study_midyear, d$YearsOfData, file_startyear = 2000)
+modisgpp <- modisgpp * 0.1 # scale factor, per README file; results in gC/m2
+modisgpp <- modisgpp * 12 # from mean monthly value to annual sum
 
 # There are some crazy (>30,000 gC/m2) values in MODIS GPP. Remove those
-modgpp$modgpp[modgpp$modgpp > 10000] <- NA
+modisgpp$modisgpp[modisgpp$modisgpp > 10000] <- NA
 
-srdb_filtered <- bind_cols(d, tmp, pre, pet, gpp, modgpp)
+srdb_filtered <- bind_cols(d, tmp, pre, pet, gpp, modisgpp)
 save_data(srdb_filtered)
 
 printlog("All done with", SCRIPTNAME)

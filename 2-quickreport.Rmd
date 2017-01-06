@@ -66,7 +66,7 @@ So yes, there seem to be continuous increases with time in the relationship betw
 
 GPP is the ultimate source for both the autotrophic and heterotrophic soil surface CO~2~ fluxes, and measured [RS is related to GPP](http://www.biogeosciences.net/7/1915/2010/). If SOC is being increasingly lost, i.e. R~H~ is increasing, we'd expect to see both the R~H~:GPP and R~S~:GPP ratios increase over time.
 
-There are three (?) sources of GPP data. **The first source** is the [Beer et al. 2010](http://www.sciencemag.org/cgi/content/short/329/5993/834) dataset.
+There are three (?) sources of global GPP data. **The first source** is the [Beer et al. 2010](http://www.sciencemag.org/cgi/content/short/329/5993/834) dataset.
 
 ```{r, echo=FALSE, fig.height=4}
 d2 <- filter(d, gpp > 0)
@@ -85,9 +85,30 @@ m3 <- lm(Rs_annual/gpp ~ Study_midyear + tmp_norm * pre_norm, data=d2)
 summary(m3)
 ```
 
-Both the RS/gpp and RH/gpp ratios show increases over time, even after taking into account climate normal effects.
+Both the R~S~/gpp and R~H~/gpp ratios show increases over time, even after taking into account climate normal effects.
 
-The **second GPP data source** is within the SRDB itself, i.e. as reported by study authors.
+The **second source of GPP data** is the MODIS GPP product. It's only 2000-2015, versus 1982-2011 for Beer, but is a completely independent product.
+
+```{r, echo=FALSE, fig.height=4}
+d2modis <- filter(d, modisgpp > 0)
+d2modis %>% 
+  select(Study_midyear, Rs_annual, Rh_annual, modisgpp) %>% 
+  gather(flux, value, -Study_midyear, -modisgpp) %>%
+  filter(is.finite(value/modisgpp), !is.na(value)) %>%
+  qplot(Study_midyear, value/modisgpp, data=., color=flux) + geom_smooth(method = "lm") + coord_cartesian(ylim = c(0,4))
+
+```
+
+```{r, echo=FALSE}
+m2modis <- lm(Rh_annual/modisgpp ~ Study_midyear + tmp_norm * pre_norm, data=d2modis)
+summary(m2modis)
+m3modis <- lm(Rs_annual/modisgpp ~ Study_midyear + tmp_norm * pre_norm, data=d2modis)
+summary(m3modis)
+```
+
+The Beer and MODIS GPP data are fairly correlated (R^2^ = ~0.75) so it's not surprising that here, too, both the R~S~/gpp and R~H~/gpp ratios show significant increases over time.
+
+The **third GPP data source** is within the SRDB itself, i.e. as reported by study authors.
 
 ```{r, echo=FALSE, fig.height=4}
 d %>% 
@@ -107,11 +128,9 @@ summary(m5)
 
 Not much to see here: the number of data points is relatively small, and lots of noise. No trends.
 
-The **third source of GPP data** is the MODIS GPP product. This seems like a PITA so I haven't worked with this yet.
-
 ### 3. Climate effects on R~H~
 
-Following the logic of the 2010 Nature paper, we'd also expect to see climate anomalies associated with higher RH values, relative to the climate-normal baseline.
+Following the logic of the 2010 Nature paper, we'd also expect to see climate anomalies associated with higher R~H~ values, relative to the climate-normal baseline.
 
 ```{r, echo=FALSE}
 m6 <- lm(sqrt(Rh_annual) ~ tmp_norm + tmp_anom + pre_norm + pre_anom + pet_norm + pet_anom + Study_midyear , data=d)
@@ -124,13 +143,13 @@ Interestingly, while R~S~ continues to show changes driven by temperature anomal
 
 Test  | N | Result consistent with R~H~ feedback?
 ------------- |  ------------- | -------------
-Changing R~H~:R~S~ ratio over time  | 207 | Yes
-Changing R~H~:Beer GPP over time  | 215 | Yes
-Changing R~S~:Beer GPP over time  | 1283 | Yes
-Changing R~H~:study GPP over time  | 20 | No: no trend
-Changing R~S~:study GPP over time  | 101 | No: no trend
-Changing R~H~:MODIS GPP over time  | - | -
-Changing R~S~:MODIS GPP over time  | - | -
+Increasing R~H~:R~S~ ratio over time  | 207 | Yes
+Increasing R~H~:Beer GPP over time  | 215 | Yes
+Increasing R~S~:Beer GPP over time  | 1283 | Yes
+Increasing R~H~:MODIS GPP over time  | 150 | Yes
+Increasing R~S~:MODIS GPP over time  | 783 | Yes
+Increasing R~H~:study GPP over time  | 20 | No: no trend
+Increasing R~S~:study GPP over time  | 101 | No: no trend
 R~H~ trend over time | 216 | Yes
 
 ### Caveats and next steps
