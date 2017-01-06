@@ -94,7 +94,7 @@ extract_ncdf_data <- function(filename, lon, lat, midyear, nyears, file_startyea
 openlog(file.path(outputdir(), paste0(SCRIPTNAME, ".log.txt")), sink = TRUE)
 printlog("Welcome to", SCRIPTNAME)
 
-# 1. Get SRDB data, filter for XXXXX
+# 1. Get SRDB data and filter
 
 fn <- "/Users/d3x290/Documents/Work/Data-ongoing/Soil respiration database/srdb-data.xlsx"
 printlog("Reading", fn)
@@ -116,18 +116,21 @@ print_dims(d)
 
 #d <- data.frame(Longitude=-97, Latitude=55.5, Study_midyear=2001, YearsOfData=2)
 
-# 2. Match with CRU climate data (downloaded January 5, 2017)
+# 2. Match with CRU climate data
 
 fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.tmp.dat.nc.gz"
+# Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/tmp/cru_ts3.24.1901.2015.tmp.dat.nc.gz
 tmp <- extract_ncdf_data(fn, d$Longitude, d$Latitude, d$Study_midyear, d$YearsOfData, file_startyear = 1901)
 fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.pre.dat.nc.gz"
+# Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pre/cru_ts3.24.1901.2015.pre.dat.nc.gz
 pre <- extract_ncdf_data(fn, d$Longitude, d$Latitude, d$Study_midyear, d$YearsOfData, file_startyear = 1901)
 fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.pet.dat.nc.gz"
+# Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pet/cru_ts3.24.1901.2015.pet.dat.nc.gz
 pet <- extract_ncdf_data(fn, d$Longitude, d$Latitude, d$Study_midyear, d$YearsOfData, file_startyear = 1901)
 
-# 3. Match with GPP data (downloaded January 5, 2017)
-
+# 3. Match with GPP data
 fn <- "/Users/d3x290/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc.gz"
+# Downloaded 5 Jan 2017 from https://www.bgc-jena.mpg.de/geodb/tmpdnld/201715151429EnsembleGPP_GL.nc
 gpp <- extract_ncdf_data(fn, d$Longitude, d$Latitude, d$Study_midyear, d$YearsOfData, file_startyear = 1982)
 gpp <- gpp * 1000 * 60 * 60 * 24 * 365  # Convert from kgC/m2/s to gC/m2/yr
 
