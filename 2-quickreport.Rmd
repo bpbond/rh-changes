@@ -23,11 +23,11 @@ d$pet_anom <- d$pet - d$pet_norm
 
 ### Background
 
-Our [2010 Nature paper](http://www.nature.com/nature/journal/v464/n7288/full/nature08930.html) concluded by saying yeah, R~S~ is increasing globally, based on an analysis of a soil respiration database (SRDB), **but** we can't distinguish whether this is an acceleration of the C cycle, or a feedback:
+Our [2010 Nature paper](http://www.nature.com/nature/journal/v464/n7288/full/nature08930.html) concluded by saying yeah, soil respiration (R~S~) is increasing globally, based on an analysis of a soil respiration database (SRDB), **but** we can't distinguish whether this is an acceleration of the C cycle, or a feedback:
 
 >This positive global R~S~ response does not necessarily constitute a positive feedback loop between soil and the atmosphere; it could be driven by higher carbon inputs to soil rather than by mobilization of stored older carbon, as the temperature sensitivity and priming potential of recalcitrant carbon are uncertain. An interesting test is possible here, as a subset of studies using S1 estimated the source fluxes of R~S~. In these partitioned R~S~ data (N=206), the temperature anomaly is significant...on both the autotrophic and heterotrophic components of R~S~. These data are limited and subject to larger errors because of the imprecision in the various methods used to partition R~S~ sources; nonetheless, they suggest that both these R~S~ sources are responding to climate changes.
 
-Seven years later, we have a _lot_ more data, both within the SRDB and from other sources. How can we test whether R~H~ is in fact increasing? Various lines of evidence:
+Seven years later, we have a _lot_ more data, both within the SRDB and from other sources. How can we test whether heterotrophic respiration (R~H~) is in fact increasing? Various lines of evidence:
 
 ### 1. R~H~ versus R~S~
 
@@ -60,11 +60,11 @@ qplot(Rs_annual, Rh_annual, data=d1, log="xy", color=group) + geom_smooth(method
  #    x
 ```
 
-So yes, there seem to be continuous increases with time in the relationship between R~H~ and R~S~--i.e., more recent studies exhibit higher ratios. This is what we'd expect to see if R~H~ were increasing due to a climate feedback (SOC loss).
+(Notice that lines later in time are angled more steeply.) So yes, there seem to be continuous increases with time in the relationship between R~H~ and R~S~--i.e., more recent studies exhibit higher ratios. This is what we'd expect to see if R~H~ were increasing due to a climate feedback (SOC loss).
 
 ### 2. R~H~ and R~S~ versus GPP
 
-GPP is the ultimate source for both the autotrophic and heterotrophic soil surface CO~2~ fluxes, and measured [RS is related to GPP](http://www.biogeosciences.net/7/1915/2010/). If SOC is being increasingly lost, i.e. R~H~ is increasing, we'd expect to see both the R~H~:GPP and R~S~:GPP ratios increase over time.
+Gross primary production (GPP) is the ultimate source for both the autotrophic and heterotrophic soil surface CO~2~ fluxes, and measured [RS is related to GPP](http://www.biogeosciences.net/7/1915/2010/). If SOC is being increasingly lost, i.e. R~H~ is increasing, we'd expect to see both the R~H~:GPP and R~S~:GPP ratios increase over time.
 
 There are three (?) sources of global GPP data. **The first source** is the [Beer et al. 2010](http://www.sciencemag.org/cgi/content/short/329/5993/834) dataset.
 
@@ -137,7 +137,7 @@ m6 <- lm(sqrt(Rh_annual) ~ tmp_norm + tmp_anom + pre_norm + pre_anom + pet_norm 
 summary(m6)
 ```
 
-Interestingly, while R~S~ continues to show changes driven by temperature anomalies (not shown), R~H~ is affected by the precip norm (i.e. 1961-1990); the precip anomaly (responding positively); and year (there's a positive trend for unknown reasons). We don't see any temperature effect. This dataset is significantly larger than the 2010 one (N=`r nrow(subset(d, !is.na(Rh_annual)))` now versus 163 then).
+Interestingly, while R~S~ continues to show changes driven by temperature anomalies (not shown), R~H~ is affected by the precip norm (i.e. 1961-1990); the precip anomaly (responding positively); and year (there's a positive trend for unknown reasons). We don't see any temperature effect. This dataset is somewhat larger than the 2010 one (N=`r length(residuals(m6))` now versus 163 then).
 
 ### Summary
 
@@ -146,23 +146,25 @@ Test  | N | Result consistent with R~H~ feedback?
 Increasing R~H~:R~S~ ratio over time  | 207 | Yes
 Increasing R~H~:Beer GPP over time  | 215 | Yes
 Increasing R~S~:Beer GPP over time  | 1283 | Yes
-Increasing R~H~:MODIS GPP over time  | 150 | Yes
+Increasing R~H~:MODIS GPP over time  | 143 | Yes
 Increasing R~S~:MODIS GPP over time  | 783 | Yes
 Increasing R~H~:study GPP over time  | 20 | No: no trend
 Increasing R~S~:study GPP over time  | 101 | No: no trend
-R~H~ trend over time | 216 | Yes
+R~H~ trend over time | 190 | Yes
 
 ### Caveats and next steps
 
 Caveats:
 
-* Stitching together a bunch of things here--no single one of them is definitive proof.
-* Collectively though, they're suggestive.
-* These regression tests are not very sophisticated (yet).
+* Stitching together a bunch of things here--no single one of them is definitive proof. Collectively though, they're suggestive.
+* These regression tests are not very sophisticated, and most have very low overall explanatory power (R^2^ values are 0.05-0.25). Lots of 'other' variability.
 * Not testing LAI or Ndep (neither necessary?).
 
-Next steps?
+Next steps:
 
+* Discuss with Chris.
 * Check Hashimoto and Hursh publications re factors affecting global soil fluxes.
 * Update the SRDB - in particular, prioritize studies reporting R~H~.
-* What other tests can we bring to bear/apply?
+* What other statistical approaches can we bring to bear/apply?
+* What other datasets would help more stringent tests?
+* Can we compute an implied Q10, or examine whether results are consistent with [Crowther et al. (2016)](http://www.nature.com/nature/journal/v540/n7631/full/nature20150.html)?
