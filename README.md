@@ -10,9 +10,9 @@ Next steps?
 - Could we calculate a Q10 or flux from this? Hmm.
 
 SRDB updating priority:
-- ~~2013 and 2014 studies reporting RH~~
-- 2013 and 2014 studies reporting RS
-- 2015 studies reporting RH
-- 2015 studies reporting RS
+- ~~2013 and 2014 studies obviously reporting RH~~
+- 2013 and 2014 studies obviously reporting RS
+- 2015 studies obviously reporting RH
+- 2015 studies obviously reporting RS
 - other 2013-2015 studies
 - 2016
