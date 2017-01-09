@@ -30,9 +30,14 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
   # Find nearest neighbors for all lon/lat pairs
   for(i in seq_along(lon)) {
     sp <- SpatialPoints(cbind(lon[i], lat[i]))
-    midyear_layer <- (midyear[i] - file_startyear) * 12
-    start_layer <- midyear_layer - nyears[i] / 2 * 12
-    nlayers <- nyears[i] * 12
+    
+    if(is.null(file_startyear)) {
+      start_layer <- nlayers <- 1  # no time dimension
+    } else {
+      midyear_layer <- (midyear[i] - file_startyear) * 12
+      start_layer <- midyear_layer - nyears[i] / 2 * 12
+      nlayers <- nyears[i] * 12
+    }
     
     printit <- print_every & i %% print_every == 0
     if(printit) {
@@ -42,7 +47,7 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
     
     # Weirdly, raster::extract does not throw an error if we pass it a negative start layer
     # It just rolls merrily along, returning from the beginning of the file
-    if(start_layer < 0 | start_layer + nlayers > file_layers) {
+    if(start_layer < 0 | start_layer + nlayers - 1 > file_layers) {
       printlog(varname, "layer out of bounds #", i)
       next
     }
@@ -86,6 +91,13 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
 extract_geotiff_data <- function(directory, varname, lon, lat, midyear, nyears, file_startyear,
                                  print_every = 100) {
   
+  # Decompress if necessary
+  zipfiles <- list.files(directory, pattern = "*.tif.gz$", full.names = TRUE)
+  for(f in zipfiles) {
+    printlog("Decompressing", basename(f))
+    R.utils::gunzip(f, remove = FALSE, overwrite = TRUE)
+  }
+  
   files <- list.files(directory, pattern = "*.tif$", full.names = TRUE)
   printlog("Creating raster stack from", length(files), "files in", directory)
   
@@ -93,9 +105,17 @@ extract_geotiff_data <- function(directory, varname, lon, lat, midyear, nyears, 
   # used below. I don't anticipate running this program often enough to care, but FYI.
   nc <- stack(as.list(files))
   
-  extract_data(nc, varname, lon, lat, midyear, nyears, 
+  out <- extract_data(nc, varname, lon, lat, midyear, nyears, 
                file_startyear = file_startyear, file_layers = length(files), 
                baseline = NULL, print_every)
+  
+  # Clean up if we decompressed anything
+  for(f in zipfiles) {
+    printlog("Removing", f)
+    file.remove(gsub(".gz$", "", f))  # remove the unzipped file
+  }
+  
+  out
 }
 
 # -----------------------------------------------------------------------------
@@ -188,8 +208,18 @@ modisgpp <- modisgpp * 12 # from mean monthly value to annual sum
 # There are some crazy (>30,000 gC/m2) values in MODIS GPP. Remove those
 modisgpp$modisgpp[modisgpp$modisgpp > 10000] <- NA
 
-srdb_filtered <- bind_cols(d, tmp, pre, pet, gpp, modisgpp)
-save_data(srdb_filtered)
+# 4. Match with SoilGrids1km data
+# Downloaded 9 Jan 2017 from ftp://ftp.soilgrids.org/data/archive/12.Apr.2014/
+dir <- "/Users/d3x290/Data/soilgrids1km/BLD/"
+bd <- extract_geotiff_data(dir, "BD", d$Longitude, d$Latitude, d$Study_midyear, d$YearsOfData, file_startyear = NULL)
+dir <- "/Users/d3x290/Data/soilgrids1km/ORCDRC/"
+orc <- extract_geotiff_data(dir, "ORC", d$Longitude, d$Latitude, d$Study_midyear, d$YearsOfData, file_startyear = NULL)
+
+soc <- tibble(SOC = bd$BD * orc$ORC / 1000)  # kg C in top 1 m
+
+# Done! Combine the various spatial data with the SRDB data and save
+srdb_filtered <- bind_cols(d, tmp, pre, pet, gpp, modisgpp, soc)
+save_data(srdb_filtered, scriptfolder = FALSE)
 
 printlog("All done with", SCRIPTNAME)
 closelog()
