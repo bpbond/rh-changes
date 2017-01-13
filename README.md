@@ -8,11 +8,12 @@ Next steps?
 - SRDB - update (below)
 - Check Hashimoto, Hursh papers for factors affecting Rs and Rh, include
 - Could we calculate a Q10 or flux from this? Hmm.
+- make a Fluxnet field in database? Or other way to match select data with FLUXNET data
 
 SRDB updating priority:
 - ~~2013 and 2014 studies obviously reporting RH~~
-- 2013 and 2014 studies obviously reporting RS
+- ~~2013 and 2014 studies obviously reporting RS~~
 - 2015 studies obviously reporting RH
 - 2015 studies obviously reporting RS
 - other 2013-2015 studies
-- 2016
+
