@@ -21,19 +21,17 @@ match_fluxnet <- function(d, fluxnet) {
   library(fossil)  # 0.3.7
   
   printlog("Starting FLUXNET nearest-neigbor matching...")
+  x <- d[c("Longitude", "Latitude")]
   y <- fluxnet[c("LOCATION_LONG", "LOCATION_LAT")]
+  names(y) <- names(x)
+  z <- rbind(x, y)
+  coordinates(z) <- ~ Longitude + Latitude
+  dists <- fossil::earth.dist(z, dist = FALSE)
+  dists <- dists[(nrow(x)+1):nrow(dists), 1:nrow(x)]
   
   for(i in seq_len(nrow(d))) {
-    if(i %% 10 == 0) {
-      printlog(i, "of", nrow(d))
-    }
-    x <- d[i, c("Longitude", "Latitude")]
-    names(y) <- names(x)
-    z <- rbind(x, y)
-    coordinates(z) <- ~ Longitude + Latitude
-    dists <- fossil::earth.dist(z, dist = FALSE)[1,][-1]
-    d$FLUXNET_DIST[i] <- dists[which.min(dists)]
-    d$FLUXNET_SITE_ID[i] <- fluxnet$SITE_ID[which.min(dists)]
+    d$FLUXNET_DIST[i] <- dists[,i][which.min(dists[,i])]
+    d$FLUXNET_SITE_ID[i] <- fluxnet$SITE_ID[which.min(dists[,i])]
   }
   d  
 }
@@ -210,6 +208,7 @@ print_dims(d)
 # 1.5. FLUXNET
 fluxnet <- read_csv("outputs/fluxnet.csv")
 d <- match_fluxnet(d, fluxnet)
+
 
 # 2. Match with CRU climate data
 
