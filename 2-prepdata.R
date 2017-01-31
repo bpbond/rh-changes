@@ -16,7 +16,6 @@ library(raster) # 2.5.8
 
 # -----------------------------------------------------------------------------
 # For every SRDB record, find distance and ID of nearest FLUXNET tower 
-# Slow but steady...
 match_fluxnet <- function(d, fluxnet) {
   library(fossil)  # 0.3.7
   
