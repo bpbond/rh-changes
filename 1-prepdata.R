@@ -13,6 +13,32 @@ PROBLEM       <- FALSE
 library(raster) # 2.5.8
 
 
+
+# -----------------------------------------------------------------------------
+# For every SRDB record, find distance and ID of nearest FLUXNET tower 
+# Slow but steady...
+match_fluxnet <- function(d, fluxnet) {
+  library(fossil)  # 0.3.7
+  
+  printlog("Starting FLUXNET nearest-neigbor matching...")
+  y <- fluxnet[c("LOCATION_LONG", "LOCATION_LAT")]
+  
+  for(i in seq_len(nrow(d))) {
+    if(i %% 10 == 0) {
+      printlog(i, "of", nrow(d))
+    }
+    x <- d[i, c("Longitude", "Latitude")]
+    names(y) <- names(x)
+    z <- rbind(x, y)
+    coordinates(z) <- ~ Longitude + Latitude
+    dists <- fossil::earth.dist(z, dist = FALSE)[1,][-1]
+    d$FLUXNET_DIST[i] <- dists[which.min(dists)]
+    d$FLUXNET_SITE_ID[i] <- fluxnet$SITE_ID[which.min(dists)]
+  }
+  d  
+}
+
+
 # -----------------------------------------------------------------------------
 # Extract data from a raster brick or raster stack, given vectors of lon/lat/time info
 # This is general-purpose and called by both extract_ncdf_data and extract_geotiff_data below
@@ -106,8 +132,8 @@ extract_geotiff_data <- function(directory, varname, lon, lat, midyear, nyears, 
   nc <- stack(as.list(files))
   
   out <- extract_data(nc, varname, lon, lat, midyear, nyears, 
-               file_startyear = file_startyear, file_layers = length(files), 
-               baseline = NULL, print_every)
+                      file_startyear = file_startyear, file_layers = length(files), 
+                      baseline = NULL, print_every)
   
   # Clean up if we decompressed anything
   for(f in zipfiles) {
@@ -168,16 +194,22 @@ printlog("Filtering...")
 srdb %>%
   filter(!is.na(Longitude), !is.na(Latitude), 
          !is.na(Study_midyear), !is.na(YearsOfData),
+         is.na(Duplicate_record),
          Ecosystem_state != "Managed", 
          Manipulation == "None",
          Meas_method %in% c("IRGA", "Gas chromatography")) %>%
   dplyr::select(Quality_flag, Study_midyear, YearsOfData, Longitude, Latitude, 
-                Rs_annual, Rh_annual,
+                Rs_annual, Rh_annual, Stage,
                 GPP) ->
   d
 print_dims(d)
 
 #d <- d[1,]
+
+
+# 1.5. FLUXNET
+fluxnet <- read_csv("outputs/fluxnet.csv")
+d <- match_fluxnet(d, fluxnet)
 
 # 2. Match with CRU climate data
 

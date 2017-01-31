@@ -14,7 +14,7 @@ library(tidyr)
 library(broom)
 library(ggplot2)
 theme_set(theme_bw())
-d <- readr::read_csv("outputs/1-prepdata/srdb_filtered.csv")
+d <- readr::read_csv("outputs/srdb_filtered.csv")
 d <- subset(d, Study_midyear >= 1989)
 d$tmp_anom <- d$tmp - d$tmp_norm
 d$pre_anom <- d$pre - d$pre_norm
@@ -162,7 +162,6 @@ Caveats:
 
 Next steps:
 
-* Discuss with Chris.
 * Check Hashimoto and Hursh publications re factors affecting global soil fluxes.
 * Update the SRDB - in particular, prioritize studies reporting R~H~.
 * What other statistical approaches can we bring to bear/apply?
@@ -171,3 +170,5 @@ Next steps:
 * Re the assumption that Rh/GPP would increase with soil loss--does this occur in warming experiments? E.g. Harvard Forest or...?
 * Given Crowther et al. results, should include SOC (from soilsgrid1km)
 * Experiment with Thiel-Sen trend estimator--sounds like could be appropriate
+* Use SIF data as independent check? Still have scale problem though
+* Fluxnet data - check RH/GPP for trend
