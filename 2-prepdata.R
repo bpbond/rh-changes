@@ -3,15 +3,14 @@
 # Load SRDB; filter for 'good' data (unmanipulated ecosystems, IRGA/GC only, etc);
 # spatially match with CRU climate, Max Planck GPP, and MODIS GPP datasets
 #
-# Ben Bond-Lamberty January 2016
+# Ben Bond-Lamberty January 2017
 
 source("0-functions.R")
 
-SCRIPTNAME  	<- "1-prepdata.R"
+SCRIPTNAME  	<- "2-prepdata.R"
 PROBLEM       <- FALSE
 
 library(raster) # 2.5.8
-
 
 
 # -----------------------------------------------------------------------------
@@ -228,7 +227,8 @@ srdb %>%
          Ecosystem_state != "Managed", 
          Manipulation == "None",
          Meas_method %in% c("IRGA", "Gas chromatography")) %>%
-  dplyr::select(Record_number, Quality_flag, Study_midyear, YearsOfData, Longitude, Latitude, 
+  dplyr::select(Record_number, Quality_flag, Study_midyear, 
+                YearsOfData, Longitude, Latitude, 
                 Rs_annual, Rh_annual, Stage, GPP, ER) ->
   srdb
 print_dims(srdb)
@@ -256,10 +256,10 @@ for(i in seq_len(nrow(fd))) {
 printlog("Computing FLUXNET means as necessary and merging back in...")
 bind_rows(x) %>%
   left_join(fluxnet, by = c("FLUXNET_SITE_ID" = "SITE_ID", "Year" = "TIMESTAMP")) %>%
-  dplyr::select(-SITE_NAME, -IGBP) %>%
+  dplyr::select(-SITE_NAME) %>%
   rename(FLUXNET_MAT = MAT, FLUXNET_MAP = MAP) %>%
   group_by(FLUXNET_SITE_ID, Record_number) %>%
-  summarise_all(mean) %>%
+  summarise_at(vars(-IGBP), mean) %>%
   right_join(srdb, by = c("Record_number", "FLUXNET_SITE_ID")) ->
   srdb
 
@@ -274,6 +274,7 @@ pre <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, 
 fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.pet.dat.nc.gz"
 # Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pet/cru_ts3.24.1901.2015.pet.dat.nc.gz
 pet <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
+
 
 # 4. Match with Max Planck GPP data
 fn <- "/Users/d3x290/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc.gz"

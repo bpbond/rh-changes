@@ -1,6 +1,6 @@
 # Prep the FLUXNET data
 #
-# Ben Bond-Lamberty January 2016
+# Ben Bond-Lamberty January 2017
 
 source("0-functions.R")
 
