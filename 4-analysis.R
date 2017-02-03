@@ -1,6 +1,6 @@
 # Heterotrophic respiration - main analysis script
 #
-# Ben Bond-Lamberty January 2017
+# Ben Bond-Lamberty February 2017
 
 source("0-functions.R")
 
@@ -9,21 +9,44 @@ PROBLEM       <- FALSE
 
 MAX_FLUXNET_DIST <- 1.0  # km
 MIN_NEE_QC <- 0.5
+SRDB_MINYEAR <- 1989
 
 library(broom)  # 0.4.1
 library(Kendall) # 2.2
+library(MASS) # 7.3.45
 
-# ==============================================================================
-# -------------- Main ------------------- 
+
+# --------------------- Main --------------------------- 
 
 openlog(file.path(outputdir(), paste0(SCRIPTNAME, ".log.txt")), sink = TRUE)
 printlog("Welcome to", SCRIPTNAME)
 
-srdb <- read_csv("outputs/srdb_filtered.csv") 
+read_csv(SRDB_FILTERED_FILE) %>%
+  print_dims() ->
+  srdb
 
-print_dims(srdb)
+printlog("Filtering for studies after", SRDB_MINYEAR)
+srdb <- subset(srdb, Study_midyear >= SRDB_MINYEAR)
 
-# -------------- SRDB Rh:Rs analysis ------------------- 
+
+# -------------- 1. SRDB Rh:Rs analysis ------------------- 
+
+printlog(SEPARATOR)
+printlog("SRDB Rh:Rs analysis")
+
+#s1 <- subset(srdb, !is.na(Stage))
+s1 <- srdb
+m1_rh_rs <- lm(Rh_annual/Rs_annual ~ Study_midyear + tmp_norm * pre_norm, data = s1)
+m1_rh_rs <- MASS::stepAIC(m1_rh_rs, direction = "both")
+print(summary(m1_rh_rs))
+
+printlog("Mann-Kendall trend test:")
+mk1_rh_rs <- MannKendall(s1$Rh_annual / s1$Rs_annual)
+print(mk1_rh_rs)
+
+# FIND WHAT HAS EMPTY 'STAGE' AND FILL IF POSSIBLE
+# Find out about robust regression w/ factors
+
 
 srdb %>%
   filter(Year >= 1989, !is.na(Rs_annual), !is.na(Rh_annual)) %>%
@@ -31,61 +54,79 @@ srdb %>%
          yeargroup = cut(Year, breaks = c(1989, 1994, 1999, 2004, 2009, 2014),
                          labels = c("1990-1994", "1995-1999", "2000-2004", "2005-2009", "2010-2014"))) %>%
   group_by(yeargroup) %>% 
-  mutate(group = paste0(yeargroup, " (N = ", n(), ")")) -> 
-  x
+  mutate(group_midyear = mean(Year),
+         group = paste0(yeargroup, " (N = ", n(), ")")) -> 
+  s3
 
-
-p1 <- ggplot(x, aes(Rs_annual, Rh_annual, color = group)) +
+p1_rh_rs <- ggplot(s3, aes(Rs_annual, Rh_annual, color = group)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() + scale_y_log10() +
-#  scale_color_grey("Study year") +
+  #  scale_color_discrete("Year") +
+  scale_color_grey("Year", start = 0.8, end = 0.2) +
   annotation_logticks() +
   xlab(expression(R[S]~(g~C~m^-2~yr^-1))) +
   ylab(expression(R[H]~(g~C~m^-2~yr^-1)))
 
-p1 <- p1 + coord_cartesian(xlim=c(80, 3200), ylim=c(70, 2000))
+p1_rh_rs <- p1_rh_rs + coord_cartesian(xlim=c(80, 3300), ylim=c(70, 2000))
 printlog("NOTE we are plotting this graph with one point cut off:")
-printlog(x[which.min(x$Rs_annual), c("Rs_annual", "Rh_annual")])
+printlog(s3[which.min(s3$Rs_annual), c("Rs_annual", "Rh_annual")])
 
-print(p1)
-save_plot("srdb-rh-rs")
+print(p1_rh_rs)
+save_plot("1-srdb-rh-rs")
+
+# TODO: make a faceted plot by biome/leaf type/somthing showing Rh/Rs change
 
 
-# --------------- FLUXNET analysis --------------------- 
+# ------------- 2. SRDB Rh:climate analysis --------------- 
+
+# Compute anomalies from the HadCRUT baseline
+srdb$tmp_anom <- srdb$tmp - srdb$tmp_norm
+srdb$pre_anom <- srdb$pre - srdb$pre_norm
+srdb$pet_anom <- srdb$pet - srdb$pet_norm
+
+m2 <- lm(sqrt(Rh_annual) ~ tmp_norm + tmp_anom + pre_norm + pre_anom + pet_norm + pet_anom + Study_midyear * Stage, 
+         data = srdb)
+m2 <- stepAIC(m2, direction = "both")
+print(summary(m2))
+
+
+# --------------- 3. FLUXNET analysis --------------------- 
 
 printlog(SEPARATOR)
 printlog("FLUXNET data analysis")
 printlog("Filtering to MAX_FLUXNET_DIST =", MAX_FLUXNET_DIST)
-x <- subset(srdb, FLUXNET_DIST <= MAX_FLUXNET_DIST)
-print_dims(x)
+s3 <- subset(srdb, FLUXNET_DIST <= MAX_FLUXNET_DIST)
+print_dims(s3)
 printlog("Filtering to MIN_NEE_QC =", MIN_NEE_QC)
-x <- subset(x, NEE_VUT_REF_QC >= MIN_NEE_QC)
-print_dims(x)
+s3 <- subset(s3, NEE_VUT_REF_QC >= MIN_NEE_QC)
+print_dims(s3)
 
-x %>%
+s3 %>%
   mutate(tmp_trend_label = if_else(tmp_trend > 0, "Warming", "Cooling"),
          pre_trend_label = if_else(pre_trend > 0, "Wetter", "Drier")) ->
-  x
+  s3
 
 # There are almost no FLUXNET sites with cooling trends, so we just 
 # Looking at precip effect
-x %>%
+s3 %>%
   group_by(pre_trend_label) %>%
   do(mod = lm(Rs_annual/GPP_NT_VUT_REF ~ Year, weights = YearsOfData, data = .)) %>%
   tidy(mod) %>%
   filter(term == "Year") %>%
-  print
+  print ->
+  s3_models
 
 printlog("Mann-Kendall trend test, drier-trend sites:")
-x1 <- filter(x, pre_trend_label == "Drier")
-print(MannKendall(x1$Rs_annual / x1$GPP_NT_VUT_REF))
+s3_dry <- filter(s3, pre_trend_label == "Drier")
+mk3_fluxnet_dry <- MannKendall(s3_dry$Rs_annual / s3_dry$GPP_NT_VUT_REF)
+print(mk3_fluxnet_dry)
 printlog("Mann-Kendall trend test, wetter-trend sites:")
-x2 <- filter(x, pre_trend_label == "Wetter")
-print(MannKendall(x2$Rs_annual / x2$GPP_NT_VUT_REF))
+s3_wet <- filter(s3, pre_trend_label == "Wetter")
+mk3_fluxnet_wet <- MannKendall(s3_wet$Rs_annual / s3_wet$GPP_NT_VUT_REF)
+print(mk3_fluxnet_wet)
 
-
-p <- ggplot(x, aes(Year, Rs_annual / GPP_NT_VUT_REF, group = FLUXNET_SITE_ID)) + 
+p <- ggplot(s3, aes(Year, Rs_annual / GPP_NT_VUT_REF, group = FLUXNET_SITE_ID)) + 
   geom_point(aes(color = IGBP)) + 
   facet_grid( ~ pre_trend_label, scales = "free") + 
   geom_smooth(method = "lm", color = "grey", fill = NA) + 
@@ -94,6 +135,12 @@ p <- ggplot(x, aes(Year, Rs_annual / GPP_NT_VUT_REF, group = FLUXNET_SITE_ID)) +
 
 print(p)
 save_plot("fluxnet")
+
+# ----------- 4. Remotely sensed GPP analysis -------------- 
+
+
+
+# ----------------------- Clean up ------------------------- 
 
 printlog("All done with", SCRIPTNAME)
 closelog()

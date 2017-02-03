@@ -1,0 +1,65 @@
+# Heterotrophic respiration - quality control
+# Make a bunch of plots so we can check whether the various datasets
+# (Fluxnet, Beer GPP, MODIS GPP, SRDB) agree with each other
+# Ben Bond-Lamberty February 2017
+
+source("0-functions.R")
+
+SCRIPTNAME  	<- "3-qc.R"
+PROBLEM       <- FALSE
+
+
+# --------------------- Main --------------------------- 
+
+openlog(file.path(outputdir(), paste0(SCRIPTNAME, ".log.txt")), sink = TRUE)
+printlog("Welcome to", SCRIPTNAME)
+
+read_csv("outputs/srdb_filtered.csv") %>%
+  print_dims() ->
+  srdb
+
+# Check to see if climate data matches/makes sense
+# Note that the FLUXNET data is from the nearest tower,
+# which can be a looooong way away
+# (That's fine--we filter this to <1 km before analyzing)
+
+srdb %>%
+  dplyr::select(Biome, mat_srdb, mat_fluxnet, mat_hadcrut4) %>%
+  gather(dataset, value, -Biome, -mat_hadcrut4) %>%
+  qplot(mat_hadcrut4, value, color = Biome, data = .) + 
+  facet_grid(dataset ~ .) + geom_abline() + 
+  geom_smooth(method = "lm", aes(group = 1))
+save_plot("mat_comparison")
+
+srdb %>%
+  dplyr::select(Biome, map_srdb, map_fluxnet, map_hadcrut4) %>%
+  gather(dataset, value, -Biome, -map_hadcrut4) %>%
+  qplot(map_hadcrut4, value, color = Biome, data = .) + 
+  facet_grid(dataset ~ .) + geom_abline() + 
+  geom_smooth(method = "lm", aes(group = 1))
+save_plot("map_comparison")
+
+qplot(mat_hadcrut4, map_hadcrut4, data = srdb, color = Biome)
+save_plot("climate_space")
+
+# Check to see if GPP matches/makes sense
+
+srdb %>%
+  dplyr::select(Biome, gpp_fluxnet, gpp_beer, gpp_modis, gpp_srdb) %>%
+  gather(dataset, value, -Biome, -gpp_modis) %>%
+  qplot(gpp_modis, value, color = Biome, data = .) + 
+  facet_grid(dataset ~ .) + geom_abline() + 
+  geom_smooth(method = "lm", aes(group = 1))
+save_plot("gpp_comparison")
+
+qplot(RECO_NT_VUT_REF, ER, data = srdb, color = Biome) +
+  geom_abline() + geom_smooth(method = "lm", aes(group = 1))
+save_plot("reco_comparison")
+
+
+# ----------------------- Clean up ------------------------- 
+
+printlog("All done with", SCRIPTNAME)
+closelog()
+
+if(PROBLEM) warning("There was a problem - see log")

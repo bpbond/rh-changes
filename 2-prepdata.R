@@ -14,11 +14,25 @@ library(raster) # 2.5.8
 
 
 # -----------------------------------------------------------------------------
+# For every SRDB record, 'expand' so there's one year per row
+expand_datayears <- function(fd) {
+  x <- list()
+  for(i in seq_len(nrow(fd))) {
+    x[[i]] <- tibble(Record_number = fd$Record_number[i],
+                     FLUXNET_SITE_ID = fd$FLUXNET_SITE_ID[i],
+                     Year = seq(ceiling(fd$Study_midyear[i] - 0.5 - fd$YearsOfData[i] / 2), 
+                                floor(fd$Study_midyear[i] - 0.5 + fd$YearsOfData[i] / 2)))
+  }
+  bind_rows(x)  
+}
+
+
+# -----------------------------------------------------------------------------
 # For every SRDB record, find distance and ID of nearest FLUXNET tower 
 match_fluxnet <- function(d, fluxnet) {
   library(fossil)  # 0.3.7
   
-  printlog("Starting FLUXNET nearest-neigbor matching...")
+  printlog("Starting FLUXNET nearest-neighbor matching...")
   x <- d[c("Longitude", "Latitude")]
   y <- fluxnet[c("LOCATION_LONG", "LOCATION_LAT")]
   names(y) <- names(x)
@@ -117,17 +131,17 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
         trend[i] <- m$coefficients[2]
         trend_p[i] <- summary(m)$coefficients[2, 4]
       }, silent = TRUE)
-
+      
       if(printit) {
         printlog(varname, "trend:", trend[i], "p =", trend_p[i])
       }
     }
   }
-
+  
   # Assemble output data set and return  
   out <- tibble(x = x)
   names(out) <- c(varname)
-
+  
   if(!is.null(baseline)) {
     out <- bind_cols(out, tibble(normx = normx))
     names(out)[2] <- paste0(varname, "_norm")
@@ -211,6 +225,7 @@ extract_ncdf_data <- function(filename, lon, lat, midyear, nyears, file_startyea
 
 openlog(file.path(outputdir(), paste0(SCRIPTNAME, ".log.txt")), sink = TRUE)
 printlog("Welcome to", SCRIPTNAME)
+all_data <- list()
 
 # 1. Get SRDB data and filter
 
@@ -229,7 +244,9 @@ srdb %>%
          Meas_method %in% c("IRGA", "Gas chromatography")) %>%
   dplyr::select(Record_number, Quality_flag, Study_midyear, 
                 YearsOfData, Longitude, Latitude, 
-                Rs_annual, Rh_annual, Stage, GPP, ER) ->
+                Biome, Ecosystem_type, Leaf_habit, Stage,
+                MAT, MAP, Study_temp, Study_precip, Partition_method,
+                Rs_annual, Rh_annual, GPP, ER) ->
   srdb
 print_dims(srdb)
 
@@ -238,42 +255,38 @@ print_dims(srdb)
 # Start by finding the nearest Fluxnet station, and its distance in km
 fluxnet <- read_csv("outputs/fluxnet.csv")
 srdb <- match_fluxnet(srdb, fluxnet)
-srdb %>%
-  dplyr::select(Record_number, Study_midyear, YearsOfData, FLUXNET_SITE_ID) ->
-  fd
 
 # Expand the srdb data so that we have an entry for every integer year;
 # merge with the Fluxnet data; and put back together
 printlog("Building merge data by expanding SRDB years...")
-x <- list()
-for(i in seq_len(nrow(fd))) {
-  x[[i]] <- tibble(Record_number = fd$Record_number[i],
-                   FLUXNET_SITE_ID = fd$FLUXNET_SITE_ID[i],
-                   Year = seq(ceiling(fd$Study_midyear[i] - 0.5 - fd$YearsOfData[i] / 2), 
-                              floor(fd$Study_midyear[i] - 0.5 + fd$YearsOfData[i] / 2)))
-}
+srdb %>%
+  dplyr::select(Record_number, Study_midyear, YearsOfData, FLUXNET_SITE_ID) %>%
+  expand_datayears ->
+  srdb_expanded
 
 printlog("Computing FLUXNET means as necessary and merging back in...")
-bind_rows(x) %>%
+srdb_expanded %>%
   left_join(fluxnet, by = c("FLUXNET_SITE_ID" = "SITE_ID", "Year" = "TIMESTAMP")) %>%
   dplyr::select(-SITE_NAME) %>%
-  rename(FLUXNET_MAT = MAT, FLUXNET_MAP = MAP) %>%
-  group_by(FLUXNET_SITE_ID, Record_number) %>%
-  summarise_at(vars(-IGBP), mean) %>%
+  rename(mat_fluxnet = MAT, map_fluxnet = MAP) %>%
+  group_by(FLUXNET_SITE_ID, Record_number, IGBP) %>%
+  summarise_all(mean) %>%
   right_join(srdb, by = c("Record_number", "FLUXNET_SITE_ID")) ->
   srdb
 
+all_data[["srdb"]] <- srdb
 
 # 3. Match with CRU climate data
 fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.tmp.dat.nc.gz"
 # Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/tmp/cru_ts3.24.1901.2015.tmp.dat.nc.gz
-tmp <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
+all_data[["tmp"]] <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
 fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.pre.dat.nc.gz"
 # Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pre/cru_ts3.24.1901.2015.pre.dat.nc.gz
 pre <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
+all_data[["pre"]] <- pre * 10 # to mm
 fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.pet.dat.nc.gz"
 # Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pet/cru_ts3.24.1901.2015.pet.dat.nc.gz
-pet <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
+all_data[["pet"]] <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
 
 
 # 4. Match with Max Planck GPP data
@@ -281,7 +294,7 @@ fn <- "/Users/d3x290/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc.gz"
 # Downloaded 5 Jan 2017 from https://www.bgc-jena.mpg.de/geodb/tmpdnld/201715151429EnsembleGPP_GL.nc
 # See https://www.bgc-jena.mpg.de/bgi/index.php/Services/Overview
 gpp <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, baseline = NULL, trendline = NULL, file_startyear = 1982)
-gpp <- gpp * 1000 * 60 * 60 * 24 * 365  # Convert from kgC/m2/s to gC/m2/yr
+all_data[["gpp"]] <- gpp * 1000 * 60 * 60 * 24 * 365  # Convert from kgC/m2/s to gC/m2/yr
 
 
 # 5. Match with MODIS GPP data
@@ -290,9 +303,9 @@ dir <- "/Users/d3x290/Data/MODIS_GPP/"
 modisgpp <- extract_geotiff_data(dir, "modisgpp", srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 2000)
 modisgpp <- modisgpp * 0.1 # scale factor, per README file; results in gC/m2
 modisgpp <- modisgpp * 12 # from mean monthly value to annual sum
-
 # There are some crazy (>10,000 gC/m2) values in MODIS GPP. Remove those
 modisgpp$modisgpp[modisgpp$modisgpp > 10000] <- NA
+all_data[["modisgpp"]] <- modisgpp
 
 
 # 6. Match with SoilGrids1km data
@@ -302,14 +315,25 @@ bd <- extract_geotiff_data(dir, "BD", srdb$Longitude, srdb$Latitude, srdb$Study_
 dir <- "/Users/d3x290/Data/soilgrids1km/ORCDRC/"
 orc <- extract_geotiff_data(dir, "ORC", srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = NULL)
 
-soc <- tibble(SOC = bd$BD * orc$ORC / 1000)  # kg C in top 1 m
+all_data[["soc"]] <- tibble(SOC = bd$BD * orc$ORC / 1000)  # kg C in top 1 m
 
+modisgpp <- tibble(modisgpp = 1:nrow(srdb))
 
 # Done! Combine the various spatial data with the SRDB data and save
-srdb_filtered <- bind_cols(srdb, tmp, pre, pet, gpp, modisgpp, soc)
-save_data(srdb_filtered, scriptfolder = FALSE)
+bind_cols(all_data) %>%
+  rename(gpp_modis = modisgpp, 
+         gpp_beer = gpp, 
+         gpp_srdb = GPP,
+         gpp_fluxnet = GPP_NT_VUT_REF,
+         tmp_hadcrut4 = tmp,
+         pre_hadcrut4 = pre,
+         mat_hadcrut4 = tmp_norm,
+         map_hadcrut4 = pre_norm,
+         mat_srdb = MAT,
+         map_srdb = MAP) ->
+  srdb_filtered
 
-# Plot a few sanity checks
+save_data(srdb_filtered, scriptfolder = FALSE, fname = basename(SRDB_FILTERED_FILE))
 
 
 printlog("All done with", SCRIPTNAME)

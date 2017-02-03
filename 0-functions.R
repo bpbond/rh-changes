@@ -11,12 +11,14 @@ PROBLEM			<- FALSE
 OUTPUT_DIR		<- "outputs/"
 SEPARATOR		<- "-------------------"
 
+SRDB_FILTERED_FILE <- file.path(OUTPUT_DIR, "srdb_filtered.csv")
 
 # -----------------------------------------------------------------------------
 # Print dimensions of data frame
 print_dims <- function(d, dname = deparse(substitute(d))) {
   stopifnot(is.data.frame(d) | is.matrix(d))
   printlog(dname, "rows =", nrow(d), "cols =", ncol(d))
+  invisible(d)
 } # print_dims
 
 # -----------------------------------------------------------------------------
@@ -103,11 +105,11 @@ if(!file.exists(OUTPUT_DIR)) {
 
 # if(require(checkpoint) & exists("CHECKPOINTDATE"))
 #   try(checkpoint(CHECKPOINTDATE)) # 'try' b/c errors w/o network (issue #171)
+library(dplyr)
+library(tidyr)
+library(readr)
 library(ggplot2)
 theme_set(theme_bw())
 library(luzlogr)  # 0.2.0
-library(readr)
 library(R.utils)
 library(assertthat)
-library(tidyr)
-library(dplyr)
