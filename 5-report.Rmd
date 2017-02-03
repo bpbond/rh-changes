@@ -20,10 +20,15 @@ Here we show that:
 * The ratios of both _R_~H~ and _R_~S~ to remotely-sensed (MODIS) GPP are rising over time. Both trends are steeper for deciduous ecosystems.
 * The ratios of both _R_~H~ and _R_~S~ to data synthesis (Beer et al.) GPP are rising over time. The _R_~S~ trend is steeper for deciduous ecosystems.
 * The ratio of _R_~S~ to FLUXNET GPP (in contrast to previous GPPs, a local measurement but smaller N) is rising in ecosystems that have experienced positive 1991-2010 precipitation trends.
-* This shows a consistent picture of rising _R_~H~, both in absolute terms and relative to _R_~S~ and GPP. This in turn implies a SOC feedback to the atmosphere driven by climate change.
+
+Implications:
+
+* This shows a consistent picture of rising _R_~H~, both in absolute terms and relative to _R_~S~ and GPP.
+* This in turn implies a SOC feedback to the atmosphere driven by climate change.
 
 To-do list:
 
+* Update SRDB through 2015
 * Incorporate a SIF analysis, akin to the GPP ones?
 * Double-check Fluxnet sites; where is Harvard for example?
 * Look at SOC, given its importance (cf. Crowther 2016)
