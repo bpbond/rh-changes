@@ -26,17 +26,17 @@ read_csv("outputs/srdb_filtered.csv") %>%
 srdb %>%
   dplyr::select(Biome, mat_srdb, mat_fluxnet, mat_hadcrut4) %>%
   gather(dataset, value, -Biome, -mat_hadcrut4) %>%
-  qplot(mat_hadcrut4, value, color = Biome, data = .) + 
+  qplot(mat_hadcrut4, value, color = Biome, data = ., na.rm = TRUE) + 
   facet_grid(dataset ~ .) + geom_abline() + 
-  geom_smooth(method = "lm", aes(group = 1))
+  geom_smooth(method = "lm", aes(group = 1), na.rm = TRUE)
 save_plot("mat_comparison")
 
 srdb %>%
   dplyr::select(Biome, map_srdb, map_fluxnet, map_hadcrut4) %>%
   gather(dataset, value, -Biome, -map_hadcrut4) %>%
-  qplot(map_hadcrut4, value, color = Biome, data = .) + 
+  qplot(map_hadcrut4, value, color = Biome, data = ., na.rm = TRUE) + 
   facet_grid(dataset ~ .) + geom_abline() + 
-  geom_smooth(method = "lm", aes(group = 1))
+  geom_smooth(method = "lm", aes(group = 1), na.rm = TRUE)
 save_plot("map_comparison")
 
 qplot(mat_hadcrut4, map_hadcrut4, data = srdb, color = Biome)
@@ -47,13 +47,16 @@ save_plot("climate_space")
 srdb %>%
   dplyr::select(Biome, gpp_fluxnet, gpp_beer, gpp_modis, gpp_srdb) %>%
   gather(dataset, value, -Biome, -gpp_modis) %>%
-  qplot(gpp_modis, value, color = Biome, data = .) + 
+  qplot(gpp_modis, value, color = Biome, data = ., na.rm = TRUE) + 
   facet_grid(dataset ~ .) + geom_abline() + 
-  geom_smooth(method = "lm", aes(group = 1))
+  geom_smooth(method = "lm", aes(group = 1), na.rm = TRUE)
 save_plot("gpp_comparison")
 
-qplot(RECO_NT_VUT_REF, ER, data = srdb, color = Biome) +
-  geom_abline() + geom_smooth(method = "lm", aes(group = 1))
+qplot(FLUXNET_DIST, gpp_fluxnet - gpp_modis, data = srdb, log = "x", color = Biome, na.rm = TRUE)
+save_plot("gpp_distance")
+
+qplot(RECO_NT_VUT_REF, ER, data = srdb, color = Biome, na.rm = TRUE) +
+  geom_abline() + geom_smooth(method = "lm", aes(group = 1), na.rm = TRUE)
 save_plot("reco_comparison")
 
 

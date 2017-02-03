@@ -34,11 +34,12 @@ srdb <- subset(srdb, Study_midyear >= SRDB_MINYEAR)
 printlog(SEPARATOR)
 printlog("SRDB Rh:Rs analysis")
 
-#s1 <- subset(srdb, !is.na(Stage))
-s1 <- srdb
-m1_rh_rs <- lm(Rh_annual/Rs_annual ~ Study_midyear + tmp_norm * pre_norm, data = s1)
+s1 <- subset(srdb, !is.na(Stage) & !is.na(Rh_annual) & !is.na(Rs_annual))
+#s1 <- srdb
+m1_rh_rs <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + mat_hadcrut4 * map_hadcrut4, data = s1)
 m1_rh_rs <- MASS::stepAIC(m1_rh_rs, direction = "both")
 print(summary(m1_rh_rs))
+m1_rh_rs_trend <- summary(m1_rh_rs)$coefficients["Study_midyear", "Pr(>|t|)"]
 
 printlog("Mann-Kendall trend test:")
 mk1_rh_rs <- MannKendall(s1$Rh_annual / s1$Rs_annual)
@@ -81,11 +82,11 @@ save_plot("1-srdb-rh-rs")
 # ------------- 2. SRDB Rh:climate analysis --------------- 
 
 # Compute anomalies from the HadCRUT baseline
-srdb$tmp_anom <- srdb$tmp - srdb$tmp_norm
-srdb$pre_anom <- srdb$pre - srdb$pre_norm
+srdb$tmp_anom <- srdb$tmp_hadcrut4 - srdb$mat_hadcrut4
+srdb$pre_anom <- srdb$pre_hadcrut4 - srdb$map_hadcrut4
 srdb$pet_anom <- srdb$pet - srdb$pet_norm
 
-m2 <- lm(sqrt(Rh_annual) ~ tmp_norm + tmp_anom + pre_norm + pre_anom + pet_norm + pet_anom + Study_midyear * Stage, 
+m2 <- lm(sqrt(Rh_annual) ~ mat_hadcrut4 + tmp_anom + map_hadcrut4 + pre_anom + pet_norm + pet_anom + Study_midyear * Stage, 
          data = srdb)
 m2 <- stepAIC(m2, direction = "both")
 print(summary(m2))
@@ -111,7 +112,7 @@ s3 %>%
 # Looking at precip effect
 s3 %>%
   group_by(pre_trend_label) %>%
-  do(mod = lm(Rs_annual/GPP_NT_VUT_REF ~ Year, weights = YearsOfData, data = .)) %>%
+  do(mod = lm(Rs_annual/gpp_fluxnet ~ Year, weights = YearsOfData, data = .)) %>%
   tidy(mod) %>%
   filter(term == "Year") %>%
   print ->
@@ -119,22 +120,23 @@ s3 %>%
 
 printlog("Mann-Kendall trend test, drier-trend sites:")
 s3_dry <- filter(s3, pre_trend_label == "Drier")
-mk3_fluxnet_dry <- MannKendall(s3_dry$Rs_annual / s3_dry$GPP_NT_VUT_REF)
+mk3_fluxnet_dry <- MannKendall(s3_dry$Rs_annual / s3_dry$gpp_fluxnet)
 print(mk3_fluxnet_dry)
 printlog("Mann-Kendall trend test, wetter-trend sites:")
 s3_wet <- filter(s3, pre_trend_label == "Wetter")
-mk3_fluxnet_wet <- MannKendall(s3_wet$Rs_annual / s3_wet$GPP_NT_VUT_REF)
+mk3_fluxnet_wet <- MannKendall(s3_wet$Rs_annual / s3_wet$gpp_fluxnet)
 print(mk3_fluxnet_wet)
 
-p <- ggplot(s3, aes(Year, Rs_annual / GPP_NT_VUT_REF, group = FLUXNET_SITE_ID)) + 
-  geom_point(aes(color = IGBP)) + 
+p_fluxnet <- ggplot(s3, aes(Year, Rs_annual / gpp_fluxnet, group = FLUXNET_SITE_ID)) + 
+  geom_point(aes(color = IGBP), na.rm = TRUE) + 
   facet_grid( ~ pre_trend_label, scales = "free") + 
-  geom_smooth(method = "lm", color = "grey", fill = NA) + 
-  geom_smooth(method = "lm", group = 1) +
+  geom_smooth(method = "lm", color = "grey", fill = NA, na.rm = TRUE) + 
+  geom_smooth(method = "lm", group = 1, na.rm = TRUE) +
   ylab(expression(R[S]:GPP[fluxnet]))
 
-print(p)
+print(p_fluxnet)
 save_plot("fluxnet")
+
 
 # ----------- 4. Remotely sensed GPP analysis -------------- 
 

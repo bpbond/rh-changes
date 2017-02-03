@@ -1,0 +1,68 @@
+---
+title: "5-report"
+author: "Ben Bond-Lamberty"
+date: "2/3/2017"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("4-analysis.R")
+```
+
+## Abstract
+
+## Introduction
+
+## Methods and results
+
+### SRDB analysis
+
+The _R_~H~:_R_~S~ ratio is rising over time in the SRDB (total N = `r nrow(s1)`; note for clarity this figure cuts off one extremely low-_R_~S~ point):
+
+```{r, echo = FALSE}
+print(p1_rh_rs)
+```
+
+This rise is not significant using a basic Mann-Kendall trend test (`r pclean(mk1_rh_rs$sl)`) but is once we control for climate:
+
+```{r, echo = FALSE}
+print(summary(m1_rh_rs))
+```
+
+This says that a temopral trend exists (`r pclean(m1_rh_rs_trend)`) independent of sites' MAT and MAP, i.e. this trend was not induced by a site selection bias (e.g. researchers sampling more disturbed sites, or more productive sites that typically exhibit higher _R_~H~:_R_~S~) over time.
+
+### Remote sensing analyses
+
+OK, perhaps _R_~H~:_R_~S~ is rising over time, but this could be due to either an acceleration of the C cycle, or SOC loss and thus a climate feedback (cf. [Bond-Lamberty and Thomson 2010](http://www.nature.com/nature/journal/v464/n7288/full/nature08930.html)). One way to test for this would be to look at the ratio of soil respiration (both _R_~H~ and _R_~S~) to GPP. If increased SOC losses are feeding the soil respiration fluxes, we would expect them to rise _faster_ than GPP.
+
+#### MODIS GPP
+
+
+#### Beer GPP
+
+
+#### SIF (?)
+
+
+### FLUXNET analysis
+
+A reasonable objection to the above is that there's an enormous spatial mismatch between remotely-sensed data and the chamber measurements used to compute _R_~H~ and _R_~S~. We use FLUXNET Tier 1 data to identify GPP measurements made in the same location and year, using a standardized methodology, and compare these against _R_~S~. (The tradeoff, as compared to a global GPP product, is that this drastically reduces the number of data points; a FLUXNET-_R_~H~ comparison is not possible.)
+
+```{r, echo = FALSE}
+print(p_fluxnet)
+```
+
+Almost all FLUXNET sites experienced 1991-2010 warming trends, but  precipitation trends were more variable, and the graph above is segmented by whether the site became drier (left) or wetter (right). Grey trend lines correspond to repeated measurements at individual FLUXNET sites. The overall trend for sites with precipitation increases, on the right, is significant (Mann-Kendall `r pclean(mk3_fluxnet_wet$sl)`); it appears to be driven by rising _R_~S~:GPP in DBF (deciduous broadleaf) sites, although this is somewhat speculative given the low sample size.
+
+## Discussion
+
+### Potential source of error
+
+**Site selection bias.** Researchers might be sampling more recently-disturbed sites over time; we control this by testing for the interaction of `Year` and `Stage`, a field in the SRDB that records "Aggrading" or "Mature". Another possibility is preferential sampling of more-productive sites over time, with higher _R_~H~:_R_~S~, and we control for this by testing the _R_~H~:_R_~S~ trend against MAT and MAP.
+
+**Measurement bias.** We use only IRGA has gas chromatography methods from 1989 onwards. These are standardized and modern techniques.
+
+**Partitioning method bias.**
+
+**Random error.** We always test for influential outliers. But this is a correlative, observational study, and the possibility of a Type I error can never be completely excluded. 

@@ -99,6 +99,26 @@ is_outlier <- function(x, devs = 3.2) {
   x < lims[ 1 ] | x > lims[2]
 } # is_outlier
 
+# -----------------------------------------------------------------------------
+# 'Pretty n' function to round a numeric value and print that # of digits
+pn <- function(x, n) {
+  formatC(round(unlist(x), n), digits = n, format = "f")
+} # pn
+
+# -----------------------------------------------------------------------------
+# 'Clean p value' function to pretty-print p value(s), specifically
+pclean <- function(x, digits = 3, printP = TRUE) {
+  x <- as.vector(x)
+  ltstring <- paste0("< 0.", paste(rep("0", digits - 1), collapse = ""), "1")
+  valstring <- ifelse(x < 10 ^ -digits, ltstring, pn(x, digits))
+  if(printP) {
+    paste("P", ifelse(x < 10 ^ -digits, valstring, paste("=", valstring)))
+  } else {
+    valstring
+  }
+} # pclean
+
+
 if(!file.exists(OUTPUT_DIR)) {
   dir.create(OUTPUT_DIR)
 }
