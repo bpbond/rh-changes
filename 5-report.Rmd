@@ -14,6 +14,8 @@ source("4-analysis.R")
 
 ## Introduction
 
+R~H~ generally varies in a predictable way with R~S~ ([B-L 2004](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2004.00816.x/abstract), [Subke 2006](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2006.01117.x/abstract)). Everything else being equal, we would expect this ratio to change (increase) if soil C is being increasingly mineralized into R~H~.
+
 ## Methods and results
 
 ### SRDB analysis
@@ -30,39 +32,57 @@ This rise is not significant using a basic Mann-Kendall trend test (`r pclean(mk
 print(summary(m1_rh_rs))
 ```
 
-This says that a temopral trend exists (`r pclean(m1_rh_rs_trend)`) independent of sites' MAT and MAP, i.e. this trend was not induced by a site selection bias (e.g. researchers sampling more disturbed sites, or more productive sites that typically exhibit higher _R_~H~:_R_~S~) over time.
+This says that a temopral trend exists (`r pclean(m1_rh_rs_trend)`) independent of sites' MAT and MAP, i.e. this trend was not induced by a site selection bias (e.g. more productive sites that typically exhibit higher _R_~H~:_R_~S~) over time. The regression also tests for researchers sampling more disturbed sites in recent years; this factor is not significant.
 
 ### Remote sensing analyses
 
-OK, perhaps _R_~H~:_R_~S~ is rising over time, but this could be due to either an acceleration of the C cycle, or SOC loss and thus a climate feedback (cf. [Bond-Lamberty and Thomson 2010](http://www.nature.com/nature/journal/v464/n7288/full/nature08930.html)). One way to test for this would be to look at the ratio of soil respiration (both _R_~H~ and _R_~S~) to GPP. If increased SOC losses are feeding the soil respiration fluxes, we would expect them to rise _faster_ than GPP.
+Perhaps _R_~H~:_R_~S~ is rising over time, but this could be due to either an acceleration of the C cycle, or SOC loss and thus a climate feedback (cf. [Bond-Lamberty and Thomson 2010](http://www.nature.com/nature/journal/v464/n7288/full/nature08930.html)). One way to test for this difference would be to look at the ratio of soil respiration (either _R_~H~ and _R_~S~) to gross primary production (GPP), the ultimate source for both the autotrophic and heterotrophic soil surface CO~2~ fluxes. If increased SOC losses are feeding the soil respiration fluxes, we would expect them to rise _faster_ than GPP.
 
-#### MODIS GPP
+```{r, echo = FALSE}
+print(p_gpp_remotesensing)
+```
 
+Here we run both a naive and rigorous Mann-Kendall trend test, not accouting for climate, and fit a linear model with leaf habit, mean annual temperature, mean annual precipitation, and time (the trend test) as interacting factors. Generally:
 
-#### Beer GPP
+Resp. flux | GPP source  | M-K trend? | lm trend? | Higher deciduous trend?
+---------------- | ----------- | ---------- | --------- | -----------------
+_R_~S~ | MODIS       | `r pclean(mk_gpp_modis_rs$sl)`   | Yes    | Yes
+_R_~H~ | MODIS       | `r pclean(mk_gpp_modis_rh$sl)`   | Yes    | Yes
+_R_~S~ | Beer et al. | `r pclean(mk_gpp_beer_rs$sl)`   | Yes    | Yes
+_R_~H~ | Beer et al. | `r pclean(mk_gpp_beer_rh$sl)`   | Yes    | No
 
+Both _R_~H~ (the variable of primary interest, but many fewer measurements) and _R_~S~ (which incorporates both _R_~H~ and belowground _R_~A~) seem to be rising relative to GPP with time, and doing so faster in deciduous ecosystems.
 
 #### SIF (?)
 
+To do?
 
 ### FLUXNET analysis
 
-A reasonable objection to the above is that there's an enormous spatial mismatch between remotely-sensed data and the chamber measurements used to compute _R_~H~ and _R_~S~. We use FLUXNET Tier 1 data to identify GPP measurements made in the same location and year, using a standardized methodology, and compare these against _R_~S~. (The tradeoff, as compared to a global GPP product, is that this drastically reduces the number of data points; a FLUXNET-_R_~H~ comparison is not possible.)
+A reasonable objection to the above is that there's an enormous spatial mismatch between remotely-sensed data and the chamber measurements used to compute _R_~H~ and _R_~S~. To address this problem, we use FLUXNET Tier 1 data to identify GPP measurements made in the same location and year as _R_~S~ measurements. The advantage is this is a local (<= `r MAX_FLUXNET_DIST` km), empirical, and highly standardized GPP measurement. The tradeoff, as compared to a global GPP product, is that it drastically reduces the number of available data points; a FLUXNET-_R_~H~ comparison is not possible.
 
 ```{r, echo = FALSE}
 print(p_fluxnet)
 ```
 
-Almost all FLUXNET sites experienced 1991-2010 warming trends, but  precipitation trends were more variable, and the graph above is segmented by whether the site became drier (left) or wetter (right). Grey trend lines correspond to repeated measurements at individual FLUXNET sites. The overall trend for sites with precipitation increases, on the right, is significant (Mann-Kendall `r pclean(mk3_fluxnet_wet$sl)`); it appears to be driven by rising _R_~S~:GPP in DBF (deciduous broadleaf) sites, although this is somewhat speculative given the low sample size.
+Almost all FLUXNET sites experienced 1991-2010 warming trends, but  precipitation trends were more variable, and the graph above is segmented by whether the site became drier (left) or wetter (right). Grey trend lines correspond to repeated measurements at individual FLUXNET sites. The overall trend for sites with precipitation increases, on the right, is significant (Mann-Kendall `r pclean(mk3_fluxnet_wet$sl)`); it appears to be driven by rising _R_~S~:GPP in DBF (deciduous broadleaf) sites. This is somewhat speculative given the low sample size, but consistent with the MODIS and Beer et al. GPP results above.
+
+TODO - double-check Fluxnet sites; where is Harvard for example?
 
 ## Discussion
+
+### Implications
+
+Implications.
 
 ### Potential source of error
 
 **Site selection bias.** Researchers might be sampling more recently-disturbed sites over time; we control this by testing for the interaction of `Year` and `Stage`, a field in the SRDB that records "Aggrading" or "Mature". Another possibility is preferential sampling of more-productive sites over time, with higher _R_~H~:_R_~S~, and we control for this by testing the _R_~H~:_R_~S~ trend against MAT and MAP.
 
+TODO - need to look at SOC, given its importance (cf. Crowther 2016).
+
 **Measurement bias.** We use only IRGA has gas chromatography methods from 1989 onwards. These are standardized and modern techniques.
 
-**Partitioning method bias.**
+**Partitioning method bias.** TODO - need to check this more rigorously.
 
 **Random error.** We always test for influential outliers. But this is a correlative, observational study, and the possibility of a Type I error can never be completely excluded. 

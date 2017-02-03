@@ -81,6 +81,9 @@ save_plot("1-srdb-rh-rs")
 
 # ------------- 2. SRDB Rh:climate analysis --------------- 
 
+printlog(SEPARATOR)
+printlog("SRDB Rh climate analysis")
+
 # Compute anomalies from the HadCRUT baseline
 srdb$tmp_anom <- srdb$tmp_hadcrut4 - srdb$mat_hadcrut4
 srdb$pre_anom <- srdb$pre_hadcrut4 - srdb$map_hadcrut4
@@ -93,6 +96,9 @@ print(summary(m2))
 
 
 # --------------- 3. FLUXNET analysis --------------------- 
+
+printlog(SEPARATOR)
+printlog("FLUXNET analysis")
 
 printlog(SEPARATOR)
 printlog("FLUXNET data analysis")
@@ -135,11 +141,102 @@ p_fluxnet <- ggplot(s3, aes(Year, Rs_annual / gpp_fluxnet, group = FLUXNET_SITE_
   ylab(expression(R[S]:GPP[fluxnet]))
 
 print(p_fluxnet)
-save_plot("fluxnet")
+save_plot("gpp_fluxnet")
 
 
 # ----------- 4. Remotely sensed GPP analysis -------------- 
 
+printlog(SEPARATOR)
+printlog("Remote sensing analysis")
+
+srdb %>%
+  dplyr::select(Study_midyear, Biome, Leaf_habit, mat_hadcrut4, map_hadcrut4,
+                gpp_beer, gpp_modis, Rs_annual, Rh_annual) %>%
+  rename(`Beer et al.` = gpp_beer,
+         MODIS = gpp_modis) %>%
+  gather(Flux, fluxvalue, Rs_annual, Rh_annual) %>%
+  gather(GPP, gppvalue, `Beer et al.`, MODIS) %>%
+  filter(gppvalue > 0, !is.na(Leaf_habit)) -> 
+  s_gpp
+
+MAX_FLUX_TO_GPP <- 5   # chosen based on distribution
+s_gpp %>%
+  filter(fluxvalue / gppvalue >= MAX_FLUX_TO_GPP) ->
+s_gpp_excluded
+s_gpp %>%
+  filter(fluxvalue / gppvalue < MAX_FLUX_TO_GPP) ->
+  s_gpp_included
+
+p_gpp_remotesensing <- ggplot(s_gpp_included, aes(Study_midyear, fluxvalue / gppvalue, color = Leaf_habit)) +
+  geom_point() +
+  geom_smooth(data = subset(s_gpp_included, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm") +
+  facet_grid(Flux ~ GPP, scales = "free") +
+  scale_color_discrete("Leaf habit") +
+  xlab("Year") +
+  ylab("Respiration:GPP") +
+  coord_cartesian(ylim = c(0, 2))
+  
+print(p_gpp_remotesensing)
+save_plot("gpp_remotesensing")
+
+printlog("Rs:MODIS GPP trend tests")
+s_gpp_modis_rs <- subset(s_gpp, GPP == "MODIS" & Flux == "Rs_annual")
+mk_gpp_modis_rs <- MannKendall(s_gpp_modis_rs$fluxvalue / s_gpp_modis_rs$gppvalue)
+print(mk_gpp_modis_rs)
+
+m_gpp_modis_rs <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_midyear * Leaf_habit, 
+                     data = s_gpp_modis_rs)
+m_gpp_modis_rs <- stepAIC(m_gpp_modis_rs, direction = "both")
+print(summary(m_gpp_modis_rs))
+
+
+printlog("Rh:MODIS GPP trend tests")
+s_gpp_modis_rh <- subset(s_gpp, GPP == "MODIS" & Flux == "Rh_annual")
+mk_gpp_modis_rh <- MannKendall(s_gpp_modis_rh$fluxvalue / s_gpp_modis_rh$gppvalue)
+print(mk_gpp_modis_rh)
+printlog("Rh:MODIS GPP trend tests (dbf)")
+s_gpp_modis_rh_dbf <- subset(s_gpp_modis_rh, Leaf_habit == "Deciduous")
+mk_gpp_modis_rh_dbf <- MannKendall(s_gpp_modis_rh_dbf$fluxvalue / s_gpp_modis_rh_dbf$gppvalue)
+print(mk_gpp_modis_rh_dbf)
+printlog("Rh:MODIS GPP trend tests (enf)")
+s_gpp_modis_rh_enf <- subset(s_gpp_modis_rh, Leaf_habit == "Evergreen")
+mk_gpp_modis_rh_enf <- MannKendall(s_gpp_modis_rh_enf$fluxvalue / s_gpp_modis_rh_enf$gppvalue)
+print(mk_gpp_modis_rh_enf)
+
+m_gpp_modis_rh <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_midyear * Leaf_habit, 
+         data = s_gpp_modis_rh)
+m_gpp_modis_rh <- stepAIC(m_gpp_modis_rh, direction = "both")
+print(summary(m_gpp_modis_rh))
+
+
+printlog("Rs:Beer GPP trend tests")
+s_gpp_beer_rs <- subset(s_gpp, GPP == "Beer et al." & Flux == "Rs_annual")
+mk_gpp_beer_rs <- MannKendall(s_gpp_beer_rs$fluxvalue / s_gpp_beer_rs$gppvalue)
+print(mk_gpp_beer_rs)
+
+m_gpp_beer_rs <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_midyear * Leaf_habit, 
+                     data = s_gpp_beer_rs)
+m_gpp_beer_rs <- stepAIC(m_gpp_beer_rs, direction = "both")
+print(summary(m_gpp_beer_rs))
+
+
+printlog("Rh:Beer GPP trend tests")
+s_gpp_beer_rh <- subset(s_gpp, GPP == "Beer et al." & Flux == "Rh_annual")
+mk_gpp_beer_rh <- MannKendall(s_gpp_beer_rh$fluxvalue / s_gpp_beer_rh$gppvalue)
+print(mk_gpp_beer_rh)
+printlog("Rh:Beer GPP trend tests (dbf)")
+s_gpp_beer_rh_dbf <- subset(s_gpp_beer_rh, Leaf_habit == "Deciduous")
+mk_gpp_beer_rh_dbf <- MannKendall(s_gpp_beer_rh_dbf$fluxvalue / s_gpp_beer_rh_dbf$gppvalue)
+print(mk_gpp_beer_rh_dbf)
+printlog("Rh:Beer GPP trend tests (enf)")
+s_gpp_beer_rh_enf <- subset(s_gpp_beer_rh, Leaf_habit == "Evergreen")
+mk_gpp_beer_rh_enf <- MannKendall(s_gpp_beer_rh_enf$fluxvalue / s_gpp_beer_rh_enf$gppvalue)
+print(mk_gpp_beer_rh_enf)
+
+m_gpp_beer_rh <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_midyear * Leaf_habit, 
+                     data = s_gpp_beer_rh)
+m_gpp_beer_rh <- stepAIC(m_gpp_beer_rh, direction = "both")
+print(summary(m_gpp_beer_rh))
 
 
 # ----------------------- Clean up ------------------------- 
