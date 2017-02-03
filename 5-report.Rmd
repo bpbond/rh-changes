@@ -2,7 +2,9 @@
 title: "5-report"
 author: "Ben Bond-Lamberty"
 date: "2/3/2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include = FALSE}
@@ -11,6 +13,27 @@ source("4-analysis.R")
 ```
 
 ## Abstract
+
+Here we show that:
+
+* The _R_~H~:_R_~S~ ratio is rising over time, after controlling for climate, measurement method, and disturbance.
+* The ratios of both _R_~H~ and _R_~S~ to remotely-sensed (MODIS) GPP are rising over time. Both trends are steeper for deciduous ecosystems.
+* The ratios of both _R_~H~ and _R_~S~ to data synthesis (Beer et al.) GPP are rising over time. The _R_~S~ trend is steeper for deciduous ecosystems.
+* The ratio of _R_~S~ to FLUXNET GPP (in contrast to previous GPPs, a local measurement but smaller N) is rising in ecosystems that have experienced positive 1991-2010 precipitation trends.
+* This shows a consistent picture of rising _R_~H~, both in absolute terms and relative to _R_~S~ and GPP. This in turn implies a SOC feedback to the atmosphere driven by climate change.
+
+To-do list:
+
+* Incorporate a SIF analysis, akin to the GPP ones?
+* Double-check Fluxnet sites; where is Harvard for example?
+* Look at SOC, given its importance (cf. Crowther 2016)
+* Check bias due to partitioning method
+
+SRDB status:
+
+* `r nrow(srdb)` records used here, `r min(srdb$Study_midyear)` - `r max(srdb$Study_midyear)`
+* `r sum(!is.na(srdb$Rs_annual))` annual _R_~S~ observations
+* `r sum(!is.na(srdb$Rh_annual))` annual _R_~H~ observations
 
 ## Introduction
 
@@ -42,7 +65,9 @@ Perhaps _R_~H~:_R_~S~ is rising over time, but this could be due to either an ac
 print(p_gpp_remotesensing)
 ```
 
-Here we run both a naive and rigorous Mann-Kendall trend test, not accouting for climate, and fit a linear model with leaf habit, mean annual temperature, mean annual precipitation, and time (the trend test) as interacting factors. Generally:
+(Note that for clarity, this graph does not show a number of high RS:GPP points. It also excludes (removes from the data set) `r nrow(s_gpp_excluded)` points with R:GPP > `r MAX_FLUX_TO_GPP`.)
+
+Here we perform a (naive and rigorous) Mann-Kendall trend test, that does not accout for climate, and fit a linear model with leaf habit, mean annual temperature, mean annual precipitation, and time (the trend test) as interacting factors. Generally:
 
 Resp. flux | GPP source  | M-K trend? | lm trend? | Higher deciduous trend?
 ---------------- | ----------- | ---------- | --------- | -----------------
@@ -67,8 +92,6 @@ print(p_fluxnet)
 
 Almost all FLUXNET sites experienced 1991-2010 warming trends, but  precipitation trends were more variable, and the graph above is segmented by whether the site became drier (left) or wetter (right). Grey trend lines correspond to repeated measurements at individual FLUXNET sites. The overall trend for sites with precipitation increases, on the right, is significant (Mann-Kendall `r pclean(mk3_fluxnet_wet$sl)`); it appears to be driven by rising _R_~S~:GPP in DBF (deciduous broadleaf) sites. This is somewhat speculative given the low sample size, but consistent with the MODIS and Beer et al. GPP results above.
 
-TODO - double-check Fluxnet sites; where is Harvard for example?
-
 ## Discussion
 
 ### Implications
@@ -79,10 +102,8 @@ Implications.
 
 **Site selection bias.** Researchers might be sampling more recently-disturbed sites over time; we control this by testing for the interaction of `Year` and `Stage`, a field in the SRDB that records "Aggrading" or "Mature". Another possibility is preferential sampling of more-productive sites over time, with higher _R_~H~:_R_~S~, and we control for this by testing the _R_~H~:_R_~S~ trend against MAT and MAP.
 
-TODO - need to look at SOC, given its importance (cf. Crowther 2016).
-
 **Measurement bias.** We use only IRGA has gas chromatography methods from 1989 onwards. These are standardized and modern techniques.
 
 **Partitioning method bias.** TODO - need to check this more rigorously.
 
-**Random error.** We always test for influential outliers. But this is a correlative, observational study, and the possibility of a Type I error can never be completely excluded. 
+**Random error.** We always test for influential outliers. But this is a correlative, observational study, and the possibility of a Type I error can never be completely excluded. There's a **lot** of noise.

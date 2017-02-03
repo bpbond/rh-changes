@@ -10,6 +10,7 @@ PROBLEM       <- FALSE
 MAX_FLUXNET_DIST <- 1.0  # km
 MIN_NEE_QC <- 0.5
 SRDB_MINYEAR <- 1989
+MAX_FLUX_TO_GPP <- 5   # Exclude ratios above this value; chosen based on distribution
 
 library(broom)  # 0.4.1
 library(Kendall) # 2.2
@@ -159,7 +160,6 @@ srdb %>%
   filter(gppvalue > 0, !is.na(Leaf_habit)) -> 
   s_gpp
 
-MAX_FLUX_TO_GPP <- 5   # chosen based on distribution
 s_gpp %>%
   filter(fluxvalue / gppvalue >= MAX_FLUX_TO_GPP) ->
 s_gpp_excluded
