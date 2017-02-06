@@ -1,7 +1,7 @@
 # Prep data for heterotrophic respiration analysis
 #
 # Load SRDB; filter for 'good' data (unmanipulated ecosystems, IRGA/GC only, etc);
-# spatially match with CRU climate, Max Planck GPP, and MODIS GPP datasets
+# spatially match with CRU climate, Max Planck GPP, MODIS GPP, FLUXNET, and SoilGrids1km datasets
 #
 # Ben Bond-Lamberty January 2017
 
@@ -9,6 +9,8 @@ source("0-functions.R")
 
 SCRIPTNAME  	<- "2-prepdata.R"
 PROBLEM       <- FALSE
+
+APPEND_ONLY <- TRUE
 
 library(raster) # 2.5.8
 
@@ -231,7 +233,7 @@ all_data <- list()
 
 fn <- "/Users/d3x290/Documents/Work/Data-ongoing/Soil respiration database/srdb-data.xlsx"
 printlog("Reading", fn)
-srdb <- readxl::read_excel(fn)
+srdb <- read_csv("outputs/srdb-data.csv", col_types = "icicicccccdddddccddccccccccddcdddddcddcddddididdddddddddddcccccddddddddcddddddcdcddddddddddddddddddddddc")
 print_dims(srdb)
 
 printlog("Filtering...")
@@ -251,9 +253,24 @@ srdb %>%
 print_dims(srdb)
 
 
+if(file.exists(SRDB_FILTERED_FILE)) {
+  old_data <- read_csv(SRDB_FILTERED_FILE)
+  if(APPEND_ONLY) {
+    printlog("Filtering pre-calculated data...")
+    srdb <- subset(srdb, !(Record_number %in% old_data$Record_number))
+  }
+} else {
+  old_data <- tibble()
+}
+
+if(!nrow(srdb)) {
+  closelog()
+  stop("No rows of data--nothing to do!")
+}
+
 # 2. FLUXNET
 # Start by finding the nearest Fluxnet station, and its distance in km
-fluxnet <- read_csv("outputs/fluxnet.csv")
+fluxnet <- read_csv("outputs/fluxnet.csv", col_types = "cddddddccdddcdi")
 srdb <- match_fluxnet(srdb, fluxnet)
 
 # Expand the srdb data so that we have an entry for every integer year;
@@ -330,8 +347,10 @@ bind_cols(all_data) %>%
          mat_hadcrut4 = tmp_norm,
          map_hadcrut4 = pre_norm,
          mat_srdb = MAT,
-         map_srdb = MAP) ->
+         map_srdb = MAP) %>%
+  bind_rows(old_data) ->
   srdb_filtered
+
 
 save_data(srdb_filtered, scriptfolder = FALSE, fname = basename(SRDB_FILTERED_FILE))
 

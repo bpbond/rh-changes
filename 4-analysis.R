@@ -17,17 +17,27 @@ library(Kendall) # 2.2
 library(MASS) # 7.3.45
 
 
+# Save a 2x2 grid plot of linear model diagnostics
+save_model_diagnostics <- function(m, modelname = deparse(substitute(m))) {
+  old.par <- par()
+  pdf(file.path(outputdir(), paste0(modelname, ".pdf")))
+  par(mfrow = c(2, 2))
+  plot(m)
+  dev.off()
+  par(old.par)
+}
+
 # --------------------- Main --------------------------- 
 
 openlog(file.path(outputdir(), paste0(SCRIPTNAME, ".log.txt")), sink = TRUE)
 printlog("Welcome to", SCRIPTNAME)
 
 read_csv(SRDB_FILTERED_FILE) %>%
-  print_dims() ->
+  print_dims() %>%
+  filter(Study_midyear >= SRDB_MINYEAR) ->
   srdb
 
-printlog("Filtering for studies after", SRDB_MINYEAR)
-srdb <- subset(srdb, Study_midyear >= SRDB_MINYEAR)
+printlog("Filtered for studies after", SRDB_MINYEAR)
 
 
 # -------------- 1. SRDB Rh:Rs analysis ------------------- 
@@ -36,19 +46,16 @@ printlog(SEPARATOR)
 printlog("SRDB Rh:Rs analysis")
 
 s1 <- subset(srdb, !is.na(Stage) & !is.na(Rh_annual) & !is.na(Rs_annual))
-#s1 <- srdb
 m1_rh_rs <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + mat_hadcrut4 * map_hadcrut4, data = s1)
 m1_rh_rs <- MASS::stepAIC(m1_rh_rs, direction = "both")
-print(summary(m1_rh_rs))
+print(anova(m1_rh_rs))
+
 m1_rh_rs_trend <- summary(m1_rh_rs)$coefficients["Study_midyear", "Pr(>|t|)"]
+save_model_diagnostics(m1_rh_rs)
 
 printlog("Mann-Kendall trend test:")
 mk1_rh_rs <- MannKendall(s1$Rh_annual / s1$Rs_annual)
 print(mk1_rh_rs)
-
-# FIND WHAT HAS EMPTY 'STAGE' AND FILL IF POSSIBLE
-# Find out about robust regression w/ factors
-
 
 srdb %>%
   filter(Year >= 1989, !is.na(Rs_annual), !is.na(Rh_annual)) %>%
@@ -64,7 +71,6 @@ p1_rh_rs <- ggplot(s3, aes(Rs_annual, Rh_annual, color = group)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() + scale_y_log10() +
-  #  scale_color_discrete("Year") +
   scale_color_grey("Year", start = 0.8, end = 0.2) +
   annotation_logticks() +
   xlab(expression(R[S]~(g~C~m^-2~yr^-1))) +
@@ -77,8 +83,6 @@ printlog(s3[which.min(s3$Rs_annual), c("Rs_annual", "Rh_annual")])
 print(p1_rh_rs)
 save_plot("1-srdb-rh-rs")
 
-# TODO: make a faceted plot by biome/leaf type/somthing showing Rh/Rs change
-
 
 # ------------- 2. SRDB Rh:climate analysis --------------- 
 
@@ -90,27 +94,24 @@ srdb$tmp_anom <- srdb$tmp_hadcrut4 - srdb$mat_hadcrut4
 srdb$pre_anom <- srdb$pre_hadcrut4 - srdb$map_hadcrut4
 srdb$pet_anom <- srdb$pet - srdb$pet_norm
 
-m2 <- lm(sqrt(Rh_annual) ~ mat_hadcrut4 + tmp_anom + map_hadcrut4 + pre_anom + pet_norm + pet_anom + Study_midyear * Stage, 
+m2_rh_climate <- lm(sqrt(Rh_annual) ~ mat_hadcrut4 + tmp_anom + map_hadcrut4 + pre_anom + pet_norm + pet_anom + Study_midyear * Stage, 
          data = srdb)
-m2 <- stepAIC(m2, direction = "both")
-print(summary(m2))
+m2_rh_climate <- stepAIC(m2_rh_climate, direction = "both")
+print(summary(m2_rh_climate))
+save_model_diagnostics(m2_rh_climate)
 
 
 # --------------- 3. FLUXNET analysis --------------------- 
 
 printlog(SEPARATOR)
-printlog("FLUXNET analysis")
-
-printlog(SEPARATOR)
 printlog("FLUXNET data analysis")
 printlog("Filtering to MAX_FLUXNET_DIST =", MAX_FLUXNET_DIST)
-s3 <- subset(srdb, FLUXNET_DIST <= MAX_FLUXNET_DIST)
-print_dims(s3)
 printlog("Filtering to MIN_NEE_QC =", MIN_NEE_QC)
-s3 <- subset(s3, NEE_VUT_REF_QC >= MIN_NEE_QC)
-print_dims(s3)
 
 s3 %>%
+  filter(FLUXNET_DIST <= MAX_FLUXNET_DIST) %>%
+  filter(NEE_VUT_REF_QC >= MIN_NEE_QC) %>%
+  print_dims %>%
   mutate(tmp_trend_label = if_else(tmp_trend > 0, "Warming", "Cooling"),
          pre_trend_label = if_else(pre_trend > 0, "Wetter", "Drier")) ->
   s3
@@ -188,7 +189,7 @@ m_gpp_modis_rs <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_
                      data = s_gpp_modis_rs)
 m_gpp_modis_rs <- stepAIC(m_gpp_modis_rs, direction = "both")
 print(summary(m_gpp_modis_rs))
-
+save_model_diagnostics(m_gpp_modis_rs)
 
 printlog("Rh:MODIS GPP trend tests")
 s_gpp_modis_rh <- subset(s_gpp, GPP == "MODIS" & Flux == "Rh_annual")
@@ -207,6 +208,7 @@ m_gpp_modis_rh <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_
          data = s_gpp_modis_rh)
 m_gpp_modis_rh <- stepAIC(m_gpp_modis_rh, direction = "both")
 print(summary(m_gpp_modis_rh))
+save_model_diagnostics(m_gpp_modis_rh)
 
 
 printlog("Rs:Beer GPP trend tests")
@@ -218,6 +220,7 @@ m_gpp_beer_rs <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_m
                      data = s_gpp_beer_rs)
 m_gpp_beer_rs <- stepAIC(m_gpp_beer_rs, direction = "both")
 print(summary(m_gpp_beer_rs))
+save_model_diagnostics(m_gpp_beer_rs)
 
 
 printlog("Rh:Beer GPP trend tests")
@@ -237,6 +240,7 @@ m_gpp_beer_rh <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_m
                      data = s_gpp_beer_rh)
 m_gpp_beer_rh <- stepAIC(m_gpp_beer_rh, direction = "both")
 print(summary(m_gpp_beer_rh))
+save_model_diagnostics(m_gpp_beer_rh)
 
 
 # ----------------------- Clean up ------------------------- 

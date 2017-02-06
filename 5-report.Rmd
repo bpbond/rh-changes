@@ -33,6 +33,10 @@ To-do list:
 * Double-check Fluxnet sites; where is Harvard for example?
 * Look at SOC, given its importance (cf. Crowther 2016)
 * Check bias due to partitioning method
+* Read about regression with a ratio - problem?
+* Explore transformations to improve w.r.t linear model assumptions
+* Make better use of anova()
+* FIND WHAT HAS EMPTY 'STAGE' AND FILL IF POSSIBLE
 
 SRDB status:
 
@@ -110,5 +114,7 @@ Implications.
 **Measurement bias.** We use only IRGA has gas chromatography methods from 1989 onwards. These are standardized and modern techniques.
 
 **Partitioning method bias.** TODO - need to check this more rigorously.
+
+**Autocorrelation**. FLUXNET GPP uses _R_~S~ at least sometimes? And that feeds into Beer et al. upscaling product.
 
 **Random error.** We always test for influential outliers. But this is a correlative, observational study, and the possibility of a Type I error can never be completely excluded. There's a **lot** of noise.
