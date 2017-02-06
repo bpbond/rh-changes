@@ -10,7 +10,7 @@ source("0-functions.R")
 SCRIPTNAME  	<- "2-prepdata.R"
 PROBLEM       <- FALSE
 
-APPEND_ONLY <- TRUE
+APPEND_ONLY <- FALSE
 
 library(raster) # 2.5.8
 
@@ -22,6 +22,8 @@ expand_datayears <- function(fd) {
   for(i in seq_len(nrow(fd))) {
     x[[i]] <- tibble(Record_number = fd$Record_number[i],
                      FLUXNET_SITE_ID = fd$FLUXNET_SITE_ID[i],
+                     Longitude = fd$Longitude[i],
+                     Latitude = fd$Latitude[i],
                      Year = seq(ceiling(fd$Study_midyear[i] - 0.5 - fd$YearsOfData[i] / 2), 
                                 floor(fd$Study_midyear[i] - 0.5 + fd$YearsOfData[i] / 2)))
   }
@@ -277,12 +279,15 @@ srdb <- match_fluxnet(srdb, fluxnet)
 # merge with the Fluxnet data; and put back together
 printlog("Building merge data by expanding SRDB years...")
 srdb %>%
-  dplyr::select(Record_number, Study_midyear, YearsOfData, FLUXNET_SITE_ID) %>%
+  dplyr::select(Record_number, Study_midyear, YearsOfData, Longitude, Latitude, FLUXNET_SITE_ID) %>%
   expand_datayears ->
   srdb_expanded
 
+save_data(srdb_expanded)
+
 printlog("Computing FLUXNET means as necessary and merging back in...")
 srdb_expanded %>%
+  select(-Longitude, -Latitude) %>%
   left_join(fluxnet, by = c("FLUXNET_SITE_ID" = "SITE_ID", "Year" = "TIMESTAMP")) %>%
   dplyr::select(-SITE_NAME) %>%
   rename(mat_fluxnet = MAT, map_fluxnet = MAP) %>%

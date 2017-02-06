@@ -108,7 +108,8 @@ printlog("FLUXNET data analysis")
 printlog("Filtering to MAX_FLUXNET_DIST =", MAX_FLUXNET_DIST)
 printlog("Filtering to MIN_NEE_QC =", MIN_NEE_QC)
 
-s3 %>%
+srdb %>%
+  filter(!is.na(Rs_annual)) %>%
   filter(FLUXNET_DIST <= MAX_FLUXNET_DIST) %>%
   filter(NEE_VUT_REF_QC >= MIN_NEE_QC) %>%
   print_dims %>%
@@ -135,12 +136,25 @@ s3_wet <- filter(s3, pre_trend_label == "Wetter")
 mk3_fluxnet_wet <- MannKendall(s3_wet$Rs_annual / s3_wet$gpp_fluxnet)
 print(mk3_fluxnet_wet)
 
+s3 %>%
+  group_by(FLUXNET_SITE_ID) %>%
+  summarise(Year = min(Year), 
+            ratio = (Rs_annual / gpp_fluxnet)[which.min(Year)],
+            IGBP = unique(IGBP),
+            pre_trend_label = unique(pre_trend_label)) ->
+  s3_labels
+
 p_fluxnet <- ggplot(s3, aes(Year, Rs_annual / gpp_fluxnet, group = FLUXNET_SITE_ID)) + 
   geom_point(aes(color = IGBP), na.rm = TRUE) + 
   facet_grid( ~ pre_trend_label, scales = "free") + 
   geom_smooth(method = "lm", color = "grey", fill = NA, na.rm = TRUE) + 
   geom_smooth(method = "lm", group = 1, na.rm = TRUE) +
   ylab(expression(R[S]:GPP[fluxnet]))
+
+p_fluxnet <- p_fluxnet + geom_text(data = s3_labels, 
+                                   aes(y = ratio, label = FLUXNET_SITE_ID, color = IGBP), 
+                                   size = 2, nudge_y = 0.025,
+                                   alpha = 0.5)
 
 print(p_fluxnet)
 save_plot("gpp_fluxnet")
