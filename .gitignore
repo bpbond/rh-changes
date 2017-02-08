@@ -37,3 +37,6 @@ outputs/
 *.html
 *.pdf
 .Rproj.user
+
+# SRDB database - will be included eventually
+inputs/srdb-data.csv
