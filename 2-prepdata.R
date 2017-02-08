@@ -10,7 +10,7 @@ source("0-functions.R")
 SCRIPTNAME  	<- "2-prepdata.R"
 PROBLEM       <- FALSE
 
-APPEND_ONLY <- FALSE
+APPEND_ONLY <- TRUE
 
 library(raster) # 2.5.8
 
@@ -45,6 +45,8 @@ match_fluxnet <- function(d, fluxnet) {
   dists <- fossil::earth.dist(z, dist = FALSE)
   dists <- dists[(nrow(x)+1):nrow(dists), 1:nrow(x)]
   
+  d$FLUXNET_DIST <- NA_real_
+  d$FLUXNET_SITE_ID <- NA_character_
   for(i in seq_len(nrow(d))) {
     d$FLUXNET_DIST[i] <- dists[,i][which.min(dists[,i])]
     d$FLUXNET_SITE_ID[i] <- fluxnet$SITE_ID[which.min(dists[,i])]
@@ -233,9 +235,7 @@ all_data <- list()
 
 # 1. Get SRDB data and filter
 
-fn <- "/Users/d3x290/Documents/Work/Data-ongoing/Soil respiration database/srdb-data.xlsx"
-printlog("Reading", fn)
-srdb <- read_csv("outputs/srdb-data.csv", col_types = "icicicccccdddddccddccccccccddcdddddcddcddddididdddddddddddcccccddddddddcddddddcdcddddddddddddddddddddddc")
+srdb <- read_csv("inputs/srdb-data.csv", col_types = "dcicicccccdddddccddccccccccddcdddddcddcddddididdddddddddddcccccddddddddcddddddcdcddddddddddddddddddddddc")
 print_dims(srdb)
 
 printlog("Filtering...")
@@ -272,7 +272,7 @@ if(!nrow(srdb)) {
 
 # 2. FLUXNET
 # Start by finding the nearest Fluxnet station, and its distance in km
-fluxnet <- read_csv("outputs/fluxnet.csv", col_types = "cddddddccdddcdi")
+fluxnet <- read_csv("outputs/fluxnet.csv", col_types = "iddddddccdddcdi")
 srdb <- match_fluxnet(srdb, fluxnet)
 
 # Expand the srdb data so that we have an entry for every integer year;
@@ -287,7 +287,7 @@ save_data(srdb_expanded)
 
 printlog("Computing FLUXNET means as necessary and merging back in...")
 srdb_expanded %>%
-  select(-Longitude, -Latitude) %>%
+  dplyr::select(-Longitude, -Latitude) %>%
   left_join(fluxnet, by = c("FLUXNET_SITE_ID" = "SITE_ID", "Year" = "TIMESTAMP")) %>%
   dplyr::select(-SITE_NAME) %>%
   rename(mat_fluxnet = MAT, map_fluxnet = MAP) %>%
