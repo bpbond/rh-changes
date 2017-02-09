@@ -250,7 +250,7 @@ srdb %>%
                 YearsOfData, Longitude, Latitude, 
                 Biome, Ecosystem_type, Leaf_habit, Stage,
                 MAT, MAP, Study_temp, Study_precip, Partition_method,
-                Rs_annual, Rh_annual, GPP, ER) ->
+                Rs_annual, Rh_annual, Ra_annual, RC_annual, GPP, ER) ->
   srdb
 print_dims(srdb)
 

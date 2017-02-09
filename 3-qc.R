@@ -18,6 +18,12 @@ read_csv("outputs/srdb_filtered.csv") %>%
   print_dims() ->
   srdb
 
+# Check to see if Rs_annual, Ra_annual, Rh_annual are within 5%
+
+lbls <- subset(srdb, abs(Rs_annual - (Ra_annual+Rh_annual)) > Rs_annual * 0.05)
+qplot(Rs_annual, Ra_annual + Rh_annual, data=srdb) + geom_text(data=lbls, aes(label=Record_number), nudge_y = 100)
+save_plot("Rs_partitioning")
+
 # Check to see if climate data matches/makes sense
 # Note that the FLUXNET data is from the nearest tower,
 # which can be a looooong way away
