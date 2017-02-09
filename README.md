@@ -12,14 +12,14 @@ Lines of evidence:
 - RS relationship to SIF (?)
 
 Next steps?
+- SIF analysis when available
 - update SRDB (below)
 - Check Hashimoto, Hursh papers for factors affecting Rs and Rh, include
 - Could we calculate a Q10 or flux from this? Hmm.
-- make a Fluxnet field in database? Or other way to match select data with FLUXNET data
 
 SRDB updating priority:
 - ~~2013 and 2014 studies reporting RH and RS~~
 - 2015 studies reporting RS and/or RH
 - missed Epule studies
-- At this point, we have 'final' rh-changes dataset
-- other 2013-2015 studies
+- At this point, we have more-or-less-final rh-changes dataset
+- other 2013-2015 studies (and then write Scientific Data paper)
