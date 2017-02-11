@@ -38,7 +38,7 @@ post1$year <- as.numeric(unlist(regmatches(post1$REFERENCE1, re)))
 post1 %>%
   # Compute (steady state) k as flux divided by pool
   mutate(k = LTRFLLW / TLTRW) %>%
-  # Filter out a few really oddballs
+  # Filter out a few real oddballs
   filter(k < 10,  year > 1970) ->  
   post1
 

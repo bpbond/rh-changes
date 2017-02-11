@@ -29,14 +29,12 @@ Implications:
 To-do list:
 
 * Update SRDB through 2015
-* Incorporate a SIF analysis, akin to the GPP ones?
-* Double-check Fluxnet sites; where is Harvard for example?
+* Incorporate a SIF analysis
+* FLUXNET matching should depend on DBF, ENF, etc.
 * Look at SOC, given its importance (cf. Crowther 2016)
 * Check bias due to partitioning method
 * Read about regression with a ratio - problem?
-* Explore transformations to improve w.r.t linear model assumptions
 * Make better use of anova()
-* FIND WHAT HAS EMPTY 'STAGE' AND FILL IF POSSIBLE
 
 SRDB status:
 
@@ -46,13 +44,21 @@ SRDB status:
 
 ## Introduction
 
-R~H~ generally varies in a predictable way with R~S~ ([B-L 2004](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2004.00816.x/abstract), [Subke 2006](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2006.01117.x/abstract)). Everything else being equal, we would expect this ratio to change (increase) if soil C is being increasingly mineralized into R~H~.
+Perhaps the most urgent open question in terrestrial biogeochemistry and carbon cycling research, at least with respect to climate change, is the degree to which long-stored soil organic carbon (SOC) will be mineralized to the atmosphere.
+
+Our [2010 Nature paper](http://www.nature.com/nature/journal/v464/n7288/full/nature08930.html) concluded by saying yeah, soil respiration (R~S~) is increasing globally, based on an analysis of a soil respiration database (SRDB), **but** we can't distinguish whether this is an acceleration of the C cycle, or a feedback:
+
+>This positive global R~S~ response does not necessarily constitute a positive feedback loop between soil and the atmosphere; it could be driven by higher carbon inputs to soil rather than by mobilization of stored older carbon, as the temperature sensitivity and priming potential of recalcitrant carbon are uncertain.
+
+Seven years later, we have a _lot_ more data, both within the SRDB and from other sources. How can we test whether heterotrophic respiration (R~H~) is in fact increasing?
+
+R~H~ generally varies in a predictable way with R~S~ ([B-L 2004](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2004.00816.x/abstract), [Subke 2006](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2006.01117.x/abstract)). Everything else being equal, we would expect this ratio to change (increase) if soil C is being increasingly mineralized into R~H~. In addition, we would expect ecosystems' overall C balance to be affected (even though production might be itself increasing due to climate change).
 
 ## Methods and results
 
 ### SRDB analysis
 
-The _R_~H~:_R_~S~ ratio is rising over time in the SRDB (total N = `r nrow(s1)`; note for clarity this figure cuts off one extremely low-_R_~S~ point):
+The _R_~H~:_R_~S~ ratio is rising over time in the SRDB (total N = `r nrow(s_rh_rs)`; note for clarity this figure cuts off one extremely low-_R_~S~ point):
 
 ```{r, echo = FALSE}
 print(p1_rh_rs)
@@ -64,7 +70,7 @@ This rise is not significant using a basic Mann-Kendall trend test (`r pclean(mk
 print(summary(m1_rh_rs))
 ```
 
-This says that a temopral trend exists (`r pclean(m1_rh_rs_trend)`) independent of sites' MAT and MAP, i.e. this trend was not induced by a site selection bias (e.g. more productive sites that typically exhibit higher _R_~H~:_R_~S~) over time. The regression also tests for researchers sampling more disturbed sites in recent years; this factor is not significant.
+This says that a temopral trend exists (`r pclean(m1_rh_rs_trend)`) independent of sites' MAT and MAP, i.e. this trend was not induced by a site selection bias (e.g. more productive sites that typically exhibit higher _R_~H~:_R_~S~) over time. The regression also tests for researchers sampling more disturbed sites, or sites with different leaf habit (deciduous/coniferous), in recent years; this factor is not significant.
 
 ### Remote sensing analyses
 
@@ -76,7 +82,7 @@ print(p_gpp_remotesensing)
 
 (Note that for clarity, this graph does not show a number of high RS:GPP points. It also excludes (removes from the data set) `r nrow(s_gpp_excluded)` points with R:GPP > `r MAX_FLUX_TO_GPP`.)
 
-Here we perform a (naive and rigorous) Mann-Kendall trend test, that does not accout for climate, and fit a linear model with leaf habit, mean annual temperature, mean annual precipitation, and time (the trend test) as interacting factors. Generally:
+We both perform a rigorous Mann-Kendall trend test, that does not account for climate, and fit a linear model with leaf habit, mean annual temperature, mean annual precipitation, and time (the trend test) as interacting factors. Generally:
 
 Resp. flux | GPP source  | M-K trend? | lm trend? | Higher deciduous trend?
 ---------------- | ----------- | ---------- | --------- | -----------------
@@ -87,9 +93,9 @@ _R_~H~ | Beer et al. | `r pclean(mk_gpp_beer_rh$sl)`   | Yes    | No
 
 Both _R_~H~ (the variable of primary interest, but many fewer measurements) and _R_~S~ (which incorporates both _R_~H~ and belowground _R_~A~) seem to be rising relative to GPP with time, and doing so faster in deciduous ecosystems.
 
-#### SIF (?)
+#### SIF
 
-To do?
+To do.
 
 ### FLUXNET analysis
 
@@ -99,13 +105,33 @@ A reasonable objection to the above is that there's an enormous spatial mismatch
 print(p_fluxnet)
 ```
 
-Almost all FLUXNET sites experienced 1991-2010 warming trends, but  precipitation trends were more variable, and the graph above is segmented by whether the site became drier (left) or wetter (right). Grey trend lines correspond to repeated measurements at individual FLUXNET sites. The overall trend for sites with precipitation increases, on the right, is significant (Mann-Kendall `r pclean(mk3_fluxnet_wet$sl)`); it appears to be driven by rising _R_~S~:GPP in DBF (deciduous broadleaf) sites. This is somewhat speculative given the low sample size, but consistent with the MODIS and Beer et al. GPP results above.
+Almost all FLUXNET sites experienced 1991-2010 warming trends, but  precipitation trends were more variable, and the graph above is segmented by whether the site became drier (left) or wetter (right). Grey trend lines correspond to repeated measurements at individual FLUXNET sites. The M-K overall trend for sites with precipitation increases, on the right, is not significant (Mann-Kendall `r pclean(mk3_fluxnet_wet$sl)`), but is in a linear model once we control for climate and, in particular, stage:
 
-## Discussion
+```{r, echo = FALSE}
+print(summary(m_fluxnet_wet))
+hf_percnt <- round(length(m_fluxnet_wet_nohf$residuals) / length(m_fluxnet_wet$residuals) * 100, 0)
+```
 
-### Implications
+One potential problem is that Harvard Forest has a enormous number of points - `r hf_percnt`% of the 'wetter' sites, and it exhibits a falling _R_~S~:GPP ratio over time. Excluding HF gives:
 
-Implications.
+```{r, echo = FALSE}
+print(summary(m_fluxnet_wet_nohf))
+```
+
+In this case, the Mann-Kendall trend test is significant (`r pclean(mk3_fluxnet_wet_nohf$sl)`). In both cases, there's a significant temporal trend in the _R_~S~ to GPP ratio after controlling for stage (aggrading/mature), leaf habit (deciduous/evergreen), mean annual temperature, and mean annual precipitation.
+
+## Summary
+
+Test  | N | Deciduous stronger? | Consistent with R~H~ feedback?		
+------| - | ------------------- | -------------		
+↑ R~H~:R~S~ ratio over time  | `r nrow(s_rh_rs)` | ?	| Yes	
+↑ R~H~:Beer GPP over time  | `r nrow(s_gpp_beer_rh)` | Yes	| Yes
+↑ R~S~:Beer GPP over time  | `r nrow(s_gpp_beer_rs)` | Yes | Yes		
+↑ R~H~:MODIS GPP over time  | `r nrow(s_gpp_modis_rh)` | Yes	| Yes
+↑ R~S~:MODIS GPP over time  | `r nrow(s_gpp_modis_rs)` | Yes | Yes
+↑ R~S~:SIF over time  | ? | ? | ?
+↑ R~S~:FLUXNET GPP over time  | `r nrow(s_fluxnet_wet)` | Yes | Yes		
+R~H~ climate response | `r length(m2_rh_climate$residuals)` | ? | Yes
 
 ### Potential source of error
 
@@ -115,6 +141,8 @@ Implications.
 
 **Partitioning method bias.** TODO - need to check this more rigorously.
 
-**Autocorrelation**. FLUXNET GPP uses _R_~S~ at least sometimes? And that feeds into Beer et al. upscaling product.
+**Autocorrelation**. FLUXNET GPP uses _R_~S~ at least sometimes? And that feeds into Beer et al. upscaling product. Too bad; GPP, in particular FLUXNET GPP, is the gold standard we have to compare against.
 
-**Random error.** We always test for influential outliers. But this is a correlative, observational study, and the possibility of a Type I error can never be completely excluded. There's a **lot** of noise.
+**Site correlation**. The FLUXNET analysis should probably include site as a random effect to control for this. TODO.
+
+**Random error.** We always test for influential outliers. But this is a correlative, observational study, and the possibility of a Type I error can never be completely excluded. There's a lot of variability.
