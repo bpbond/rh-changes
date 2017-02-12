@@ -10,7 +10,7 @@ source("0-functions.R")
 SCRIPTNAME  	<- "2-prepdata.R"
 PROBLEM       <- FALSE
 
-APPEND_ONLY <- TRUE
+APPEND_ONLY <- FALSE
 
 library(raster) # 2.5.8
 
@@ -241,6 +241,7 @@ print_dims(srdb)
 printlog("Filtering...")
 srdb %>%
   filter(!is.na(Longitude), !is.na(Latitude), 
+         !is.na(Rs_annual) | !is.na(Rh_annual),
          !is.na(Study_midyear), !is.na(YearsOfData),
          is.na(Duplicate_record),
          Ecosystem_state != "Managed", 

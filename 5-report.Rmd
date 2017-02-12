@@ -54,7 +54,12 @@ Seven years later, we have a _lot_ more data, both within the SRDB and from othe
 
 R~H~ generally varies in a predictable way with R~S~ ([B-L 2004](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2004.00816.x/abstract), [Subke 2006](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2006.01117.x/abstract)). Everything else being equal, we would expect this ratio to change (increase) if soil C is being increasingly mineralized into R~H~. In addition, we would expect ecosystems' overall C balance to be affected (even though production might be itself increasing due to climate change).
 
-## Methods and results
+## Methods Summary
+
+We used an open-access soil respiration database (Bond-Lamberty and Thomson 2010), expanded and updated to include studies published through 2015. The database was filtered for studies that reported annual RH and/or RS; included explicit spatial and temporal data; took place in unmanaged or natural ecosystems without experimental manipulation; and used modern, standardized techniques to measure CO2. The result was a dataset (N = `r nrow(srdb)`, `r sum(!is.na(srdb$Rs_annual))` of _R_~S~ and `r sum(!is.na(srdb$Rh_annual))` of _R_~H~) of field-measured respiration fluxes between 1989 and 2014.
+
+
+## Results
 
 ### SRDB analysis
 

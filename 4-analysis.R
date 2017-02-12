@@ -91,7 +91,7 @@ printlog("NOTE we are plotting this graph with one point cut off:")
 printlog(s_rh_rs[which.min(s_rh_rs$Rs_annual), c("Rs_annual", "Rh_annual")])
 
 print(p1_rh_rs)
-save_plot("1-srdb-rh-rs")
+save_plot("1-srdb-rh-rs", ptype = ".png")
 
 
 # ------------- 2. SRDB Rh:climate analysis --------------- 
@@ -227,12 +227,16 @@ printlog("Remote sensing analysis")
 srdb %>%
   dplyr::select(Study_midyear, Biome, Leaf_habit, mat_hadcrut4, map_hadcrut4,
                 gpp_beer, gpp_modis, Rs_annual, Rh_annual) %>%
-  rename(`Beer et al.` = gpp_beer,
+  rename(`Beer` = gpp_beer,
          MODIS = gpp_modis) %>%
   gather(Flux, fluxvalue, Rs_annual, Rh_annual) %>%
-  gather(GPP, gppvalue, `Beer et al.`, MODIS) %>%
+  gather(GPP, gppvalue, Beer, MODIS) %>%
   filter(gppvalue > 0, !is.na(Leaf_habit), !is.na(fluxvalue)) -> 
   s_gpp
+
+# Make pretty facet labels
+s_gpp$Flux[s_gpp$Flux == "Rs_annual"] <- "R[S]"
+s_gpp$Flux[s_gpp$Flux == "Rh_annual"] <- "R[H]"
 
 s_gpp %>%
   filter(fluxvalue / gppvalue >= MAX_FLUX_TO_GPP) ->
@@ -243,15 +247,15 @@ s_gpp %>%
 
 p_gpp_remotesensing <- ggplot(s_gpp_included, aes(Study_midyear, fluxvalue / gppvalue, color = Leaf_habit)) +
   geom_point() +
-  geom_smooth(data = subset(s_gpp_included, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm") +
-  facet_grid(Flux ~ GPP, scales = "free") +
+  geom_smooth(data = subset(s_gpp_included, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE) +
+  facet_grid(Flux ~ GPP, scales = "free", labeller = label_parsed) +
   scale_color_discrete("Leaf habit") +
   xlab("Year") +
   ylab("Respiration:GPP") +
   coord_cartesian(ylim = c(0, 2))
 
 print(p_gpp_remotesensing)
-save_plot("gpp_remotesensing")
+save_plot("gpp_remotesensing", ptype = ".png")
 
 printlog("Rs:MODIS GPP trend tests")
 s_gpp_modis_rs <- subset(s_gpp, GPP == "MODIS" & Flux == "Rs_annual")
