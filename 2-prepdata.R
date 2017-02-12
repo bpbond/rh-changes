@@ -249,7 +249,7 @@ srdb %>%
          Meas_method %in% c("IRGA", "Gas chromatography")) %>%
   dplyr::select(Record_number, Quality_flag, Study_midyear, 
                 YearsOfData, Longitude, Latitude, 
-                Biome, Ecosystem_type, Leaf_habit, Stage,
+                Biome, Ecosystem_type, Leaf_habit, Stage, Soil_drainage,
                 MAT, MAP, Study_temp, Study_precip, Partition_method,
                 Rs_annual, Rh_annual, Ra_annual, RC_annual, GPP, ER) ->
   srdb

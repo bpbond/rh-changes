@@ -44,12 +44,17 @@ printlog("Filtered for studies after", SRDB_MINYEAR)
 printlog(SEPARATOR)
 printlog("SRDB Rh:Rs analysis")
 
-s_rh_rs <- subset(srdb, !is.na(Stage) & !is.na(Rh_annual) & !is.na(Rs_annual))
-m1_rh_rs <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + mat_hadcrut4 * map_hadcrut4, data = s_rh_rs)
+srdb %>%
+  filter(!is.na(Stage), !is.na(Leaf_habit), !is.na(Rs_annual)) ->
+  s_rh_rs
+m1_rh_rs <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + 
+                 Study_midyear * Partition_method +
+                 Study_midyear * Leaf_habit +
+                 mat_hadcrut4 * map_hadcrut4, data = s_rh_rs)
 m1_rh_rs <- MASS::stepAIC(m1_rh_rs, direction = "both")
 print(anova(m1_rh_rs))
 
-m1_rh_rs_trend <- summary(m1_rh_rs)$coefficients["Study_midyear", "Pr(>|t|)"]
+m1_rh_rs_signif <- anova(m1_rh_rs)["Study_midyear", "Pr(>F)"]
 save_model_diagnostics(m1_rh_rs)
 
 printlog("Mann-Kendall trend test:")
@@ -66,6 +71,15 @@ srdb %>%
          group = paste0(yeargroup, " (N = ", n(), ")")) -> 
   s_rh_rs
 
+# Compute summary statistics
+s_rh_rs %>%
+  group_by(yeargroup) %>%
+  summarise(rh_rs_mean = pn(mean(Rh_annual / Rs_annual), 2),
+            rh_rs_sd = pn(sd(Rh_annual / Rs_annual), 2), 
+            n = n()) ->
+  rh_rs_summary
+
+# Make Figure 1
 p1_rh_rs <- ggplot(s_rh_rs, aes(Rs_annual, Rh_annual, color = group)) +
   scale_x_log10() + scale_y_log10() +
   scale_color_grey("Year", start = 0.8, end = 0.2) +
@@ -104,10 +118,14 @@ srdb$tmp_anom <- srdb$tmp_hadcrut4 - srdb$mat_hadcrut4
 srdb$pre_anom <- srdb$pre_hadcrut4 - srdb$map_hadcrut4
 srdb$pet_anom <- srdb$pet - srdb$pet_norm
 
-m2_rh_climate <- lm(sqrt(Rh_annual) ~ mat_hadcrut4 + tmp_anom + map_hadcrut4 + pre_anom + pet_norm + pet_anom + Study_midyear * Stage, 
+m2_rh_climate <- lm(sqrt(Rh_annual) ~ mat_hadcrut4 + tmp_anom + map_hadcrut4 + pre_anom + pet_norm + pet_anom + Stage * Leaf_habit, 
                     data = srdb)
 m2_rh_climate <- stepAIC(m2_rh_climate, direction = "both")
-print(summary(m2_rh_climate))
+print(anova(m2_rh_climate))
+m2_rh_climate_map_signif <- anova(m2_rh_climate)["map_hadcrut4", "Pr(>F)"]
+m2_rh_climate_pet_signif <- anova(m2_rh_climate)["pet_norm", "Pr(>F)"]
+m2_rh_climate_stage_signif <- anova(m2_rh_climate)["Stage", "Pr(>F)"]
+m2_rh_climate_tanom_signif <- anova(m2_rh_climate)["tmp_anom", "Pr(>F)"]
 save_model_diagnostics(m2_rh_climate)
 
 
@@ -225,7 +243,8 @@ printlog(SEPARATOR)
 printlog("Remote sensing analysis")
 
 srdb %>%
-  dplyr::select(Study_midyear, Biome, Leaf_habit, mat_hadcrut4, map_hadcrut4,
+  dplyr::select(Study_midyear, Biome, Leaf_habit, Partition_method,
+                mat_hadcrut4, map_hadcrut4,
                 gpp_beer, gpp_modis, Rs_annual, Rh_annual) %>%
   rename(`Beer` = gpp_beer,
          MODIS = gpp_modis) %>%
@@ -235,8 +254,8 @@ srdb %>%
   s_gpp
 
 # Make pretty facet labels
-s_gpp$Flux[s_gpp$Flux == "Rs_annual"] <- "R[S]"
-s_gpp$Flux[s_gpp$Flux == "Rh_annual"] <- "R[H]"
+s_gpp$Prettyflux <- "R[H]"
+s_gpp$Prettyflux[s_gpp$Flux == "Rs_annual"] <- "R[S]"
 
 s_gpp %>%
   filter(fluxvalue / gppvalue >= MAX_FLUX_TO_GPP) ->
@@ -248,7 +267,7 @@ s_gpp %>%
 p_gpp_remotesensing <- ggplot(s_gpp_included, aes(Study_midyear, fluxvalue / gppvalue, color = Leaf_habit)) +
   geom_point() +
   geom_smooth(data = subset(s_gpp_included, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE) +
-  facet_grid(Flux ~ GPP, scales = "free", labeller = label_parsed) +
+  facet_grid(Prettyflux ~ GPP, scales = "free", labeller = label_parsed) +
   scale_color_discrete("Leaf habit") +
   xlab("Year") +
   ylab("Respiration:GPP") +
@@ -262,10 +281,13 @@ s_gpp_modis_rs <- subset(s_gpp, GPP == "MODIS" & Flux == "Rs_annual")
 mk_gpp_modis_rs <- MannKendall(s_gpp_modis_rs$fluxvalue / s_gpp_modis_rs$gppvalue)
 print(mk_gpp_modis_rs)
 
-m_gpp_modis_rs <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_midyear * Leaf_habit, 
+m_gpp_modis_rs <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + 
+                       Study_midyear * Leaf_habit + Study_midyear * Partition_method, 
                      data = s_gpp_modis_rs)
 m_gpp_modis_rs <- stepAIC(m_gpp_modis_rs, direction = "both")
 print(summary(m_gpp_modis_rs))
+m_gpp_modis_rs_signif <- anova(m_gpp_modis_rs)["Study_midyear", "Pr(>F)"]
+m_gpp_modis_rs_leaf_signif <- anova(m_gpp_modis_rs)["Leaf_habit", "Pr(>F)"]
 save_model_diagnostics(m_gpp_modis_rs)
 
 printlog("Rh:MODIS GPP trend tests")
@@ -281,15 +303,18 @@ s_gpp_modis_rh_enf <- subset(s_gpp_modis_rh, Leaf_habit == "Evergreen")
 mk_gpp_modis_rh_enf <- MannKendall(s_gpp_modis_rh_enf$fluxvalue / s_gpp_modis_rh_enf$gppvalue)
 print(mk_gpp_modis_rh_enf)
 
-m_gpp_modis_rh <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_midyear * Leaf_habit, 
+m_gpp_modis_rh <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + 
+                       Study_midyear * Leaf_habit + Study_midyear * Partition_method,
                      data = s_gpp_modis_rh)
 m_gpp_modis_rh <- stepAIC(m_gpp_modis_rh, direction = "both")
 print(summary(m_gpp_modis_rh))
+m_gpp_modis_rh_signif <- anova(m_gpp_modis_rh)["Study_midyear", "Pr(>F)"]
+m_gpp_modis_rh_leaf_signif <- anova(m_gpp_modis_rh)["Leaf_habit", "Pr(>F)"]
 save_model_diagnostics(m_gpp_modis_rh)
 
 
 printlog("Rs:Beer GPP trend tests")
-s_gpp_beer_rs <- subset(s_gpp, GPP == "Beer et al." & Flux == "Rs_annual")
+s_gpp_beer_rs <- subset(s_gpp, GPP == "Beer" & Flux == "Rs_annual")
 mk_gpp_beer_rs <- MannKendall(s_gpp_beer_rs$fluxvalue / s_gpp_beer_rs$gppvalue)
 print(mk_gpp_beer_rs)
 
@@ -297,11 +322,13 @@ m_gpp_beer_rs <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_m
                     data = s_gpp_beer_rs)
 m_gpp_beer_rs <- stepAIC(m_gpp_beer_rs, direction = "both")
 print(summary(m_gpp_beer_rs))
+m_gpp_beer_rs_signif <- anova(m_gpp_beer_rs)["Study_midyear", "Pr(>F)"]
+m_gpp_beer_rs_leaf_signif <- anova(m_gpp_beer_rs)["Leaf_habit", "Pr(>F)"]
 save_model_diagnostics(m_gpp_beer_rs)
 
 
 printlog("Rh:Beer GPP trend tests")
-s_gpp_beer_rh <- subset(s_gpp, GPP == "Beer et al." & Flux == "Rh_annual")
+s_gpp_beer_rh <- subset(s_gpp, GPP == "Beer" & Flux == "Rh_annual")
 mk_gpp_beer_rh <- MannKendall(s_gpp_beer_rh$fluxvalue / s_gpp_beer_rh$gppvalue)
 print(mk_gpp_beer_rh)
 printlog("Rh:Beer GPP trend tests (dbf)")
@@ -317,6 +344,8 @@ m_gpp_beer_rh <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_m
                     data = s_gpp_beer_rh)
 m_gpp_beer_rh <- stepAIC(m_gpp_beer_rh, direction = "both")
 print(summary(m_gpp_beer_rh))
+m_gpp_beer_rh_signif <- anova(m_gpp_beer_rh)["Study_midyear", "Pr(>F)"]
+m_gpp_beer_rh_leaf_signif <- anova(m_gpp_beer_rh)["Leaf_habit", "Pr(>F)"]
 save_model_diagnostics(m_gpp_beer_rh)
 
 

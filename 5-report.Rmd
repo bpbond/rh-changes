@@ -3,8 +3,8 @@ title: "5-report"
 author: "Ben Bond-Lamberty"
 date: "2/3/2017"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include = FALSE}
@@ -63,23 +63,28 @@ We used an open-access soil respiration database (Bond-Lamberty and Thomson 2010
 
 ### SRDB analysis
 
-The _R_~H~:_R_~S~ ratio is rising over time in the SRDB (total N = `r nrow(s_rh_rs)`; note for clarity this figure cuts off one extremely low-_R_~S~ point):
+The observed _R_~H~:_R_~S~ ratio is rising over time, from `r rh_rs_summary$rh_rs_mean[1]`±`r rh_rs_summary$rh_rs_sd[1]` in `r rh_rs_summary$yeargroup[1]` to `r rh_rs_summary$rh_rs_mean[nrow(rh_rs_summary)]`±`r rh_rs_summary$rh_rs_sd[nrow(rh_rs_summary)]` in `r rh_rs_summary$yeargroup[nrow(rh_rs_summary)]` (**Figure 1**).
+
+Note for clarity this figure cuts off one extremely low-_R_~S~ point):
 
 ```{r, echo = FALSE}
 print(p1_rh_rs)
 ```
 
-This rise is not significant using a basic Mann-Kendall trend test (`r pclean(mk1_rh_rs$sl)`) but is once we control for climate:
+This change is not significant using a Mann-Kendall trend test (`r pclean(mk1_rh_rs$sl)`, total N = `r nrow(s_rh_rs)`) but when ecosystem mean annual temperature (MAT) and mean annual precipitation (MAP) are controlled for in a linear model, a significant temporal trend exists (`r pclean(m1_rh_rs_signif)`; **Table 1**). This trend in the _R_~H~:_R_~S~ ratio was thus not induced by a site selection bias (as more productive sites typically exhibit higher _R_~H~:_R_~S~) over time. The regression also controls for researchers' sampling more disturbed sites, or sites with different leaf habit (deciduous/coniferous), or using different methods to partition _R_~H~ from _R_~S~ in recent years.
 
 ```{r, echo = FALSE}
-print(summary(m1_rh_rs))
+knitr::kable(anova(m1_rh_rs), digits = 3)
 ```
 
-This says that a temopral trend exists (`r pclean(m1_rh_rs_trend)`) independent of sites' MAT and MAP, i.e. this trend was not induced by a site selection bias (e.g. more productive sites that typically exhibit higher _R_~H~:_R_~S~) over time. The regression also tests for researchers sampling more disturbed sites, or sites with different leaf habit (deciduous/coniferous), in recent years; this factor is not significant.
+This makes sense.
+
+This is in a sense unsurprising, as from basic biokinetics (ref) we expect that the absolute value of observed annual _R_~H~ should respond to climate changes over the `r max(srdb$Study_midyear) - min(srdb$Study_midyear) + 1`-year record. This is true: in a linear regression mean annual precipitation (`r pclean(m2_rh_climate_map_signif)`) was the strongest driver, with potential evapotranspiration, stage (i.e. disturbance effect) and temperature anomaly (departure from the 1961-1990 mean) highly significant (all P < 0.001) as well.
+
 
 ### Remote sensing analyses
 
-Perhaps _R_~H~:_R_~S~ is rising over time, but this could be due to either an acceleration of the C cycle, or SOC loss and thus a climate feedback (cf. [Bond-Lamberty and Thomson 2010](http://www.nature.com/nature/journal/v464/n7288/full/nature08930.html)). One way to test for this difference would be to look at the ratio of soil respiration (either _R_~H~ and _R_~S~) to gross primary production (GPP), the ultimate source for both the autotrophic and heterotrophic soil surface CO~2~ fluxes. If increased SOC losses are feeding the soil respiration fluxes, we would expect them to rise _faster_ than GPP.
+A rising _R_~H~:_R_~S~ ratio could be due to SOC loss and thus a climate feedback, or conceivably simply an acceleration of the C cycle (B-L 2010), if increased gross primary production (GPP) were for some reason preferentially emerging as _R_~H~. To test for this difference, we examined the ratio of soil-derived respiration to GPP, the ultimate source for both the autotrophic and heterotrophic soil surface CO~2~ fluxes. If SOC losses are increasing _R_~H~, one would expect both _R_~H~ and the total surface flux _R_~S~ to rise _faster_ than GPP. This is in fact the case (**Figure 2**).
 
 ```{r, echo = FALSE}
 print(p_gpp_remotesensing)
@@ -87,16 +92,16 @@ print(p_gpp_remotesensing)
 
 (Note that for clarity, this graph does not show a number of high RS:GPP points. It also excludes (removes from the data set) `r nrow(s_gpp_excluded)` points with R:GPP > `r MAX_FLUX_TO_GPP`.)
 
-We both perform a rigorous Mann-Kendall trend test, that does not account for climate, and fit a linear model with leaf habit, mean annual temperature, mean annual precipitation, and time (the trend test) as interacting factors. Generally:
+We both perform a rigorous Mann-Kendall trend test, that does not account for climate, and fit a linear model with leaf habit, partition method, mean annual temperature, mean annual precipitation, and time (the trend test) as interacting factors:
 
 Resp. flux | GPP source  | M-K trend? | lm trend? | Higher deciduous trend?
 ---------------- | ----------- | ---------- | --------- | -----------------
-_R_~S~ | MODIS       | `r pclean(mk_gpp_modis_rs$sl)`   | Yes    | Yes
-_R_~H~ | MODIS       | `r pclean(mk_gpp_modis_rh$sl)`   | Yes    | Yes
-_R_~S~ | Beer et al. | `r pclean(mk_gpp_beer_rs$sl)`   | Yes    | Yes
-_R_~H~ | Beer et al. | `r pclean(mk_gpp_beer_rh$sl)`   | Yes    | No
+_R_~S~ | MODIS       | `r pclean(mk_gpp_modis_rs$sl)`   | `r pclean(m_gpp_modis_rs_signif)`    | `r pclean(m_gpp_modis_rs_leaf_signif)`
+_R_~H~ | MODIS       | `r pclean(mk_gpp_modis_rh$sl)`   | `r pclean(m_gpp_modis_rh_signif)`    | `r pclean(m_gpp_modis_rh_leaf_signif)`
+_R_~S~ | Beer et al. | `r pclean(mk_gpp_beer_rs$sl)`   | `r pclean(m_gpp_beer_rs_signif)`    | `r pclean(m_gpp_beer_rs_leaf_signif)`
+_R_~H~ | Beer et al. | `r pclean(mk_gpp_beer_rh$sl)`   | `r pclean(m_gpp_beer_rh_signif)`    | `r pclean(m_gpp_beer_rh_leaf_signif)`
 
-Both _R_~H~ (the variable of primary interest, but many fewer measurements) and _R_~S~ (which incorporates both _R_~H~ and belowground _R_~A~) seem to be rising relative to GPP with time, and doing so faster in deciduous ecosystems.
+Both _R_~H~ (the variable of primary interest, but many fewer measurements) and _R_~S~ (which incorporates both _R_~H~ and belowground autotrophic respiration) exhibit significant (P < 0.001 for all) trends over time relative to two different GPP data sources. The _R_~H~:GPP ratio is rising faster in deciduous ecosystems than in evergreen ecosystems (`r pclean(m_gpp_modis_rh_leaf_signif)` for MODIS, `r pclean(m_gpp_beer_rh_leaf_signif)` for Beer), as is _R_~S~:GPP (`r pclean(m_gpp_modis_rs_leaf_signif)` and `r pclean(m_gpp_beer_rs_leaf_signif)` respectively).
 
 #### SIF
 
@@ -144,7 +149,7 @@ R~H~ climate response | `r length(m2_rh_climate$residuals)` | ? | Yes
 
 **Measurement bias.** We use only IRGA has gas chromatography methods from 1989 onwards. These are standardized and modern techniques.
 
-**Partitioning method bias.** TODO - need to check this more rigorously.
+**Partitioning method bias.** We test for this effect.
 
 **Autocorrelation**. FLUXNET GPP uses _R_~S~ at least sometimes? And that feeds into Beer et al. upscaling product. Too bad; GPP, in particular FLUXNET GPP, is the gold standard we have to compare against.
 
