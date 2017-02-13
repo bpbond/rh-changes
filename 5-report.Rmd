@@ -122,7 +122,7 @@ print(summary(m_fluxnet_wet))
 hf_percnt <- round(length(m_fluxnet_wet_nohf$residuals) / length(m_fluxnet_wet$residuals) * 100, 0)
 ```
 
-One potential problem is that Harvard Forest has a enormous number of points - `r hf_percnt`% of the 'wetter' sites, and it exhibits a falling _R_~S~:GPP ratio over time. Excluding HF gives:
+One potential problem is that Harvard Forest has an enormous number of points - `r hf_percnt`% of the 'wetter' sites, and it exhibits a falling _R_~S~:GPP ratio over time. Excluding HF gives:
 
 ```{r, echo = FALSE}
 print(summary(m_fluxnet_wet_nohf))

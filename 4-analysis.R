@@ -131,6 +131,37 @@ save_model_diagnostics(m2_rh_climate)
 
 # --------------- 3. FLUXNET analysis --------------------- 
 
+printlog("Checking for ecosystem type match between FLUXNET and SRDB")
+fem <- rep(NA, nrow(srdb))  # 'fluxnet ecosystem match'
+for(i in seq_len(nrow(srdb))) {
+  igbp <- srdb$IGBP[i]
+  if(is.na(igbp)) next
+
+    et <- srdb$Ecosystem_type[i]
+  lh <- srdb$Leaf_habit[i]
+  
+  if(igbp == "CRO") { 
+    fem[i] <- et == "Agriculture"
+  } else if(igbp %in% c("CSH", "OSH")) {
+    fem[i] <- et == "Shrubland"
+  } else if(igbp %in% c("DBF", "DNF")) {
+    fem[i] <- et == "Forest" & lh %in% c("Deciduous", "Mixed")
+  } else if(igbp %in% c("EBF", "ENF")) {
+    fem[i] <- et == "Forest" & lh %in% c("Evergreen", "Mixed")
+  } else if(igbp == "GRA") {
+    fem[i] <- et == "Grassland"
+  } else if (igbp == "MF") {
+    fem[i] <- et == "Forest"
+  } else if (igbp %in% c("SAV", "WSA")) {
+    fem[i] <- et == "Savanna"
+  } else if (igbp %in% "WET") {
+    fem[i] <- et == "Wetland"
+  } else {
+    stop("Don't know ", igbp)
+  }
+}
+srdb$FLUXNET_ECOSYSTEM_MATCH <- fem
+
 printlog(SEPARATOR)
 printlog("FLUXNET data analysis")
 printlog("Filtering to MAX_FLUXNET_DIST =", MAX_FLUXNET_DIST)
@@ -154,6 +185,7 @@ save_plot("fluxnet_dist_n")
 # distance to FLUXNET tower, and NEE quality
 srdb %>%
   filter(!is.na(Rs_annual),
+         FLUXNET_ECOSYSTEM_MATCH,
          FLUXNET_DIST <= MAX_FLUXNET_DIST,
          NEE_VUT_REF_QC >= MIN_NEE_QC) %>%
   # We only allow one observation per site per year
