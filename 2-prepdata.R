@@ -233,7 +233,7 @@ openlog(file.path(outputdir(), paste0(SCRIPTNAME, ".log.txt")), sink = TRUE)
 printlog("Welcome to", SCRIPTNAME)
 all_data <- list()
 
-# 1. Get SRDB data and filter
+# -------------- 1. Get SRDB data and filter ------------------- 
 
 srdb <- read_csv("inputs/srdb-data.csv", col_types = "dcicicccccdddddccddccccccccddcdddddcddcddddididdddddddddddcccccddddddddcddddddcdcddddddddddddddddddddddc")
 print_dims(srdb)
@@ -271,7 +271,18 @@ if(!nrow(srdb)) {
   stop("No rows of data--nothing to do!")
 }
 
-# 2. FLUXNET
+
+# -------------- 2. SIF ------------------- 
+
+printlog("Joining with SIF data...")
+read_csv("inputs/SIF.csv", col_types = "iddidd") %>%
+  dplyr::select(Record_number, GOME2_SIF, SCIA_SIF) %>%
+  right_join(srdb, by = "Record_number") ->
+  srdb
+
+
+# -------------- 3. FLUXNET ------------------- 
+
 # Start by finding the nearest Fluxnet station, and its distance in km
 fluxnet <- read_csv("outputs/fluxnet.csv", col_types = "iddddddccdddcdi")
 srdb <- match_fluxnet(srdb, fluxnet)
@@ -297,9 +308,43 @@ srdb_expanded %>%
   right_join(srdb, by = c("Record_number", "FLUXNET_SITE_ID")) ->
   srdb
 
+printlog("Checking for ecosystem type match between FLUXNET and SRDB")
+fem <- rep(FALSE, nrow(srdb))  # 'fluxnet ecosystem match'
+for(i in seq_len(nrow(srdb))) {
+  igbp <- srdb$IGBP[i]
+  et <- srdb$Ecosystem_type[i]
+  lh <- srdb$Leaf_habit[i]
+  
+  if(is.na(igbp)) {
+    fem[i] <- FALSE
+  } else if(igbp == "CRO") { 
+    fem[i] <- et == "Agriculture"
+  } else if(igbp %in% c("CSH", "OSH")) {
+    fem[i] <- et == "Shrubland"
+  } else if(igbp %in% c("DBF", "DNF")) {
+    fem[i] <- et == "Forest" & lh %in% c("Deciduous", "Mixed")
+  } else if(igbp %in% c("EBF", "ENF")) {
+    fem[i] <- et == "Forest" & lh %in% c("Evergreen", "Mixed")
+  } else if(igbp == "GRA") {
+    fem[i] <- et == "Grassland"
+  } else if (igbp == "MF") {
+    fem[i] <- et == "Forest"
+  } else if (igbp %in% c("SAV", "WSA")) {
+    fem[i] <- et == "Savanna"
+  } else if (igbp %in% "WET") {
+    fem[i] <- et == "Wetland"
+  } else {
+    stop("Don't know ", igbp)
+  }
+}
+fem[is.na(fem)] <- FALSE
+srdb$FLUXNET_ECOSYSTEM_MATCH <- fem
+
 all_data[["srdb"]] <- srdb
 
-# 3. Match with CRU climate data
+
+# -------------- 3. Match with CRU climate data ------------------- 
+
 fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.tmp.dat.nc.gz"
 # Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/tmp/cru_ts3.24.1901.2015.tmp.dat.nc.gz
 all_data[["tmp"]] <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
@@ -312,7 +357,8 @@ fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.pet.dat.nc.gz"
 all_data[["pet"]] <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
 
 
-# 4. Match with Max Planck GPP data
+# -------------- 4. Match with Max Planck GPP data ------------------- 
+
 fn <- "/Users/d3x290/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc.gz"
 # Downloaded 5 Jan 2017 from https://www.bgc-jena.mpg.de/geodb/tmpdnld/201715151429EnsembleGPP_GL.nc
 # See https://www.bgc-jena.mpg.de/bgi/index.php/Services/Overview
@@ -320,7 +366,8 @@ gpp <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, 
 all_data[["gpp"]] <- gpp * 1000 * 60 * 60 * 24 * 365  # Convert from kgC/m2/s to gC/m2/yr
 
 
-# 5. Match with MODIS GPP data
+# -------------- 5. Match with MODIS GPP data ------------------- 
+
 dir <- "/Users/d3x290/Data/MODIS_GPP/"
 # Downloaded 6 Jan 2017 from http://www.ntsg.umt.edu/project/mod17
 modisgpp <- extract_geotiff_data(dir, "modisgpp", srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 2000)
@@ -331,7 +378,8 @@ modisgpp$modisgpp[modisgpp$modisgpp > 10000] <- NA
 all_data[["modisgpp"]] <- modisgpp
 
 
-# 6. Match with SoilGrids1km data
+# -------------- 6. Match with SoilGrids1km data ------------------- 
+
 # Downloaded 9 Jan 2017 from ftp://ftp.soilgrids.org/data/archive/12.Apr.2014/
 dir <- "/Users/d3x290/Data/soilgrids1km/BLD/"
 bd <- extract_geotiff_data(dir, "BD", srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = NULL)
@@ -342,7 +390,10 @@ all_data[["soc"]] <- tibble(SOC = bd$BD * orc$ORC / 1000)  # kg C in top 1 m
 
 modisgpp <- tibble(modisgpp = 1:nrow(srdb))
 
-# Done! Combine the various spatial data with the SRDB data and save
+
+# -------------- Done!  ------------------- 
+
+# Combine the various spatial data with the SRDB data and save
 bind_cols(all_data) %>%
   rename(gpp_modis = modisgpp, 
          gpp_beer = gpp, 

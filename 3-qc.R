@@ -51,12 +51,19 @@ save_plot("climate_space")
 # Check to see if GPP matches/makes sense
 
 srdb %>%
-  dplyr::select(Biome, gpp_fluxnet, gpp_beer, gpp_modis, gpp_srdb) %>%
+  dplyr::select(Biome, GOME2_SIF, SCIA_SIF, gpp_fluxnet, gpp_beer, gpp_modis, gpp_srdb) %>%
   gather(dataset, value, -Biome, -gpp_modis) %>%
   qplot(gpp_modis, value, color = Biome, data = ., na.rm = TRUE) + 
-  facet_grid(dataset ~ .) + geom_abline() + 
+  facet_grid(dataset ~ ., scales = "free") + geom_abline() + 
   geom_smooth(method = "lm", aes(group = 1), na.rm = TRUE)
 save_plot("gpp_comparison")
+
+srdb %>%
+  dplyr::select(Biome, Study_midyear, GOME2_SIF, SCIA_SIF, gpp_fluxnet, gpp_beer, gpp_modis, gpp_srdb) %>%
+  gather(dataset, value, -Study_midyear, -Biome) %>%
+  qplot(Study_midyear, value, color = Biome, data = ., na.rm = TRUE) + 
+  facet_grid(dataset ~ ., scales = "free")
+save_plot("gpp_time")
 
 qplot(FLUXNET_DIST, gpp_fluxnet - gpp_modis, data = srdb, log = "x", color = Biome, na.rm = TRUE)
 save_plot("gpp_distance")

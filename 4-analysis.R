@@ -131,39 +131,17 @@ save_model_diagnostics(m2_rh_climate)
 
 # --------------- 3. FLUXNET analysis --------------------- 
 
-printlog("Checking for ecosystem type match between FLUXNET and SRDB")
-fem <- rep(NA, nrow(srdb))  # 'fluxnet ecosystem match'
-for(i in seq_len(nrow(srdb))) {
-  igbp <- srdb$IGBP[i]
-  if(is.na(igbp)) next
-
-    et <- srdb$Ecosystem_type[i]
-  lh <- srdb$Leaf_habit[i]
-  
-  if(igbp == "CRO") { 
-    fem[i] <- et == "Agriculture"
-  } else if(igbp %in% c("CSH", "OSH")) {
-    fem[i] <- et == "Shrubland"
-  } else if(igbp %in% c("DBF", "DNF")) {
-    fem[i] <- et == "Forest" & lh %in% c("Deciduous", "Mixed")
-  } else if(igbp %in% c("EBF", "ENF")) {
-    fem[i] <- et == "Forest" & lh %in% c("Evergreen", "Mixed")
-  } else if(igbp == "GRA") {
-    fem[i] <- et == "Grassland"
-  } else if (igbp == "MF") {
-    fem[i] <- et == "Forest"
-  } else if (igbp %in% c("SAV", "WSA")) {
-    fem[i] <- et == "Savanna"
-  } else if (igbp %in% "WET") {
-    fem[i] <- et == "Wetland"
-  } else {
-    stop("Don't know ", igbp)
-  }
-}
-srdb$FLUXNET_ECOSYSTEM_MATCH <- fem
-
 printlog(SEPARATOR)
 printlog("FLUXNET data analysis")
+
+printlog("Non-NA IGBP =", sum(!is.na(srdb$IGBP)))
+s <- subset(srdb, !is.na(IGBP))
+printlog("... & ecosystem match =", sum(s$FLUXNET_ECOSYSTEM_MATCH))
+s <- subset(s, FLUXNET_ECOSYSTEM_MATCH)
+printlog("... & dist =", sum(s$FLUXNET_DIST <= MAX_FLUXNET_DIST))
+s <- subset(s, FLUXNET_DIST <= MAX_FLUXNET_DIST)
+printlog("... & QC =", sum(!is.na(s$NEE_VUT_REF_QC) & s$NEE_VUT_REF_QC >= MIN_NEE_QC))
+
 printlog("Filtering to MAX_FLUXNET_DIST =", MAX_FLUXNET_DIST)
 printlog("Filtering to MIN_NEE_QC =", MIN_NEE_QC)
 
@@ -190,8 +168,9 @@ srdb %>%
          NEE_VUT_REF_QC >= MIN_NEE_QC) %>%
   # We only allow one observation per site per year
   # Otherwise Harvard Forest swamps everything!
-  group_by(FLUXNET_SITE_ID, IGBP, tmp_trend, pre_trend, Stage, Year) %>%
+  group_by(FLUXNET_SITE_ID, IGBP, tmp_trend, pre_trend, Leaf_habit, Stage, Year) %>%
   summarise(Rs_annual = mean(Rs_annual),
+            Rh_annual = mean(Rh_annual),
             NEE_VUT_REF = mean(NEE_VUT_REF),
             RECO_NT_VUT_REF = mean(RECO_NT_VUT_REF),
             gpp_fluxnet = mean(gpp_fluxnet),
@@ -202,59 +181,44 @@ srdb %>%
          pre_trend_label = if_else(pre_trend > 0, "Wetter", "Drier")) ->
   s_fluxnet
 
-s_fluxnet_dry <- subset(s_fluxnet, pre_trend_label == "Drier")
-m_fluxnet_dry <- lm(Rs_annual/gpp_fluxnet ~ Year * Stage + mat_hadcrut4 * map_hadcrut4, 
-                    data = s_fluxnet_dry, weights = YearsOfData)
-m_fluxnet_dry <- MASS::stepAIC(m_fluxnet_dry, direction = "both")
-print(summary(m_fluxnet_dry))
+printlog("Mann-Kendall trend test:")
+mk3_fluxnet <- MannKendall(s_fluxnet$Rs_annual / s_fluxnet$gpp_fluxnet)
+print(mk3_fluxnet)
 
-s_fluxnet_wet <- subset(s_fluxnet, pre_trend_label == "Wetter")
-m_fluxnet_wet <- lm(Rs_annual/gpp_fluxnet ~ Year * Stage + mat_hadcrut4 * map_hadcrut4, 
-                    data = s_fluxnet_wet,
-                    weights = YearsOfData)
-m_fluxnet_wet <- MASS::stepAIC(m_fluxnet_wet, direction = "both")
-print(summary(m_fluxnet_wet))
+m_fluxnet <- lm(Rs_annual/gpp_fluxnet ~ Year * Stage + Year * Leaf_habit + mat_hadcrut4 * map_hadcrut4, 
+                data = s_fluxnet, weights = YearsOfData)
+m_fluxnet <- MASS::stepAIC(m_fluxnet, direction = "both")
+print(anova(m_fluxnet))
 
+s_fluxnet_nohf <- subset(s_fluxnet, FLUXNET_SITE_ID != "US-Ha1")
+m_fluxnet_nohf <- lm(Rs_annual/gpp_fluxnet ~ Year * Stage + Year * Leaf_habit + mat_hadcrut4 * map_hadcrut4, 
+                     data = s_fluxnet_nohf, weights = YearsOfData)
+m_fluxnetnohf <- MASS::stepAIC(m_fluxnet_nohf, direction = "both")
+print(anova(m_fluxnet_nohf))
 
-# Experimented with fitting a mixed-effects model (with site as random effect)
-# Doesn't seem to add/change much
-# s_fluxnet_wet <- subset(s_fluxnet, pre_trend_label == "Wetter")
-# m_fluxnet_wet <- lme(Rs_annual/gpp_fluxnet ~ Year * Stage + mat_hadcrut4 * map_hadcrut4, 
-#                     data = s_fluxnet_wet,
-#                     random = ~ 1 | FLUXNET_SITE_ID,
-#                     weights = YearsOfData)
-# m_fluxnet_wet <- MASS::stepAIC(m_fluxnet_wet, direction = "both")
-# print(summary(m_fluxnet_wet))
+s_fluxnet_decid <- subset(s_fluxnet, Leaf_habit == "Deciduous")
+m_fluxnet_decid <- lm(Rs_annual/gpp_fluxnet ~ Year * Stage + mat_hadcrut4 * map_hadcrut4, 
+                      data = s_fluxnet_decid, weights = YearsOfData)
+m_fluxnet_decid <- MASS::stepAIC(m_fluxnet_decid, direction = "both")
+print(anova(m_fluxnet_decid))
 
+s_fluxnet_everg <- subset(s_fluxnet, Leaf_habit == "Evergreen")
+m_fluxnet_everg <- lm(Rs_annual/gpp_fluxnet ~ Year * Stage + mat_hadcrut4 * map_hadcrut4, 
+                      data = s_fluxnet_everg, weights = YearsOfData)
+m_fluxnet_everg <- MASS::stepAIC(m_fluxnet_everg, direction = "both")
+print(anova(m_fluxnet_everg))
 
-s_fluxnet_wet_nohf <- subset(s_fluxnet_wet, FLUXNET_SITE_ID != "US-Ha1")
-m_fluxnet_wet_nohf <- lm(Rs_annual/gpp_fluxnet ~ Year * Stage + mat_hadcrut4 * map_hadcrut4, 
-                         data = s_fluxnet_wet_nohf, weights = YearsOfData)
-m_fluxnet_wet_nohf <- MASS::stepAIC(m_fluxnet_wet_nohf, direction = "both")
-print(summary(m_fluxnet_wet_nohf))
-
-
-printlog("Mann-Kendall trend test, drier-trend sites:")
-mk3_fluxnet_dry <- MannKendall(s_fluxnet_dry$Rs_annual / s_fluxnet_dry$gpp_fluxnet)
-print(mk3_fluxnet_dry)
-printlog("Mann-Kendall trend test, wetter-trend sites:")
-mk3_fluxnet_wet <- MannKendall(s_fluxnet_wet$Rs_annual / s_fluxnet_wet$gpp_fluxnet)
-print(mk3_fluxnet_wet)
-printlog("Mann-Kendall trend test, wetter-trend sites w/o HF:")
-mk3_fluxnet_wet_nohf <- MannKendall(s_fluxnet_wet_nohf$Rs_annual / s_fluxnet_wet_nohf$gpp_fluxnet)
-print(mk3_fluxnet_wet_nohf)
-
+# Make plot
 s_fluxnet %>%
-  group_by(FLUXNET_SITE_ID) %>%
+  group_by(FLUXNET_SITE_ID, IGBP) %>%
   summarise(Year = min(Year), 
             ratio = (Rs_annual / gpp_fluxnet)[which.min(Year)],
-            IGBP = unique(IGBP),
             pre_trend_label = unique(pre_trend_label)) ->
   s_fluxnet_labels
 
 p_fluxnet <- ggplot(s_fluxnet, aes(Year, Rs_annual / gpp_fluxnet, group = FLUXNET_SITE_ID)) + 
   geom_point(aes(color = IGBP), na.rm = TRUE) + 
-  facet_grid( ~ pre_trend_label, scales = "free") + 
+  #  geom_line(aes(color = IGBP), na.rm = TRUE) +
   geom_smooth(method = "lm", color = "grey", fill = NA, na.rm = TRUE) + 
   geom_smooth(method = "lm", group = 1, na.rm = TRUE) +
   ylab(expression(R[S]:GPP[fluxnet]))
@@ -267,6 +231,60 @@ p_fluxnet <- p_fluxnet + geom_text(data = s_fluxnet_labels,
 print(p_fluxnet)
 
 save_plot("gpp_fluxnet")
+
+
+
+# ----------- 4. SIF analysis -------------- 
+
+srdb %>%
+  dplyr::select(Study_midyear, Biome, Leaf_habit, Partition_method,
+                mat_hadcrut4, map_hadcrut4,
+                SCIA_SIF, GOME2_SIF, Rs_annual, Rh_annual) %>%
+  gather(Flux, fluxvalue, Rs_annual, Rh_annual) %>%
+  gather(SIF, sifvalue, SCIA_SIF, GOME2_SIF) %>%
+  filter(!is.na(Leaf_habit), !is.na(sifvalue), !is.na(Partition_method)) ->
+  s_sif
+
+# Make pretty facet labels
+s_sif$Prettyflux <- "R[H]"
+s_sif$Prettyflux[s_sif$Flux == "Rs_annual"] <- "R[S]"
+
+# since we're going to divide, can't have SIF crossing 1!
+# rescale to GPP range for convenience 
+rescale <- function(x, a, b) {
+  ((b - a) * (x - min(x, na.rm = TRUE))) / 
+    (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) + a
+}
+s_sif %>%
+  mutate(sifvalue = rescale(sifvalue, 0, 3500)) %>%
+  filter(fluxvalue / sifvalue < MAX_FLUX_TO_GPP) ->
+  s_sif_included
+
+p_sif <- ggplot(s_sif_included, aes(Study_midyear, fluxvalue / sifvalue, color = Leaf_habit)) +
+  geom_point() +
+  geom_smooth(data = subset(s_sif_included, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE) +
+  facet_grid(Prettyflux ~ SIF, scales = "free", labeller = label_parsed) +
+  scale_color_discrete("Leaf habit") +
+  xlab("Year") +
+  ylab("Respiration:SIF (rescaled)") +
+  coord_cartesian(ylim = c(0, 2))
+print(p_sif)
+save_plot("sif", ptype = ".png")
+
+
+printlog("Rs:GOME2 SIF trend tests")
+s_sif_gome2_rs <- subset(s_sif_included, SIF == "GOME2_SIF" & Flux == "Rs_annual")
+mk_sif_gome2_rs <- MannKendall(s_sif_gome2_rs$fluxvalue / s_sif_gome2_rs$sifvalue)
+print(mk_gpp_modis_rs)
+
+m_sif_gome2_rs <- lm(fluxvalue / sifvalue ~ mat_hadcrut4 + map_hadcrut4 + 
+                       Study_midyear * Leaf_habit + Study_midyear * Partition_method, 
+                     data = s_sif_gome2_rs)
+m_sif_gome2_rs <- stepAIC(m_sif_gome2_rs, direction = "both")
+print(summary(m_sif_gome2_rs))
+m_sif_gome2_rs_signif <- anova(m_sif_gome2_rs)["Study_midyear", "Pr(>F)"]
+m_sif_gome2_rs_leaf_signif <- anova(m_sif_gome2_rs)["Leaf_habit", "Pr(>F)"]
+save_model_diagnostics(m_gpp_modis_rs)
 
 
 # ----------- 4. Remotely sensed GPP analysis -------------- 

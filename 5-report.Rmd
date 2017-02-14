@@ -115,20 +115,20 @@ A reasonable objection to the above is that there's an enormous spatial mismatch
 print(p_fluxnet)
 ```
 
-Almost all FLUXNET sites experienced 1991-2010 warming trends, but  precipitation trends were more variable, and the graph above is segmented by whether the site became drier (left) or wetter (right). Grey trend lines correspond to repeated measurements at individual FLUXNET sites. The M-K overall trend for sites with precipitation increases, on the right, is not significant (Mann-Kendall `r pclean(mk3_fluxnet_wet$sl)`), but is in a linear model once we control for climate and, in particular, stage:
+The M-K overall trend is significant (Mann-Kendall `r pclean(mk3_fluxnet$sl)`).
 
 ```{r, echo = FALSE}
-print(summary(m_fluxnet_wet))
-hf_percnt <- round(length(m_fluxnet_wet_nohf$residuals) / length(m_fluxnet_wet$residuals) * 100, 0)
+print(anova(m_fluxnet))
+hf_percnt <- round(nrow(s_fluxnet_nohf) / nrow(s_fluxnet) * 100, 0)
 ```
 
-One potential problem is that Harvard Forest has an enormous number of points - `r hf_percnt`% of the 'wetter' sites, and it exhibits a falling _R_~S~:GPP ratio over time. Excluding HF gives:
+One potential problem is that Harvard Forest has an enormous number of points - `r hf_percnt`% - but it exhibits a falling _R_~S~:GPP ratio over time. Excluding HF gives:
 
 ```{r, echo = FALSE}
-print(summary(m_fluxnet_wet_nohf))
+print(anova(m_fluxnet_nohf))
 ```
 
-In this case, the Mann-Kendall trend test is significant (`r pclean(mk3_fluxnet_wet_nohf$sl)`). In both cases, there's a significant temporal trend in the _R_~S~ to GPP ratio after controlling for stage (aggrading/mature), leaf habit (deciduous/evergreen), mean annual temperature, and mean annual precipitation.
+In both cases, there's a significant temporal trend in the _R_~S~ to GPP ratio after controlling for stage (aggrading/mature), leaf habit (deciduous/evergreen), mean annual temperature, and mean annual precipitation.
 
 ## Summary
 
@@ -140,7 +140,7 @@ Test  | N | Deciduous stronger? | Consistent with R~H~ feedback?
 ↑ R~H~:MODIS GPP over time  | `r nrow(s_gpp_modis_rh)` | Yes	| Yes
 ↑ R~S~:MODIS GPP over time  | `r nrow(s_gpp_modis_rs)` | Yes | Yes
 ↑ R~S~:SIF over time  | ? | ? | ?
-↑ R~S~:FLUXNET GPP over time  | `r nrow(s_fluxnet_wet)` | Yes | Yes		
+↑ R~S~:FLUXNET GPP over time  | `r nrow(s_fluxnet)` | Yes | Yes		
 R~H~ climate response | `r length(m2_rh_climate$residuals)` | ? | Yes
 
 ### Potential source of error
