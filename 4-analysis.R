@@ -45,8 +45,17 @@ printlog(SEPARATOR)
 printlog("SRDB Rh:Rs analysis")
 
 srdb %>%
-  filter(!is.na(Stage), !is.na(Leaf_habit), !is.na(Rs_annual)) ->
+  filter(!is.na(Stage), !is.na(Leaf_habit), 
+         !is.na(Rs_annual), !is.na(Rh_annual), 
+         Year >= 1989) %>%
+  mutate(Year = as.integer(Year),
+         yeargroup = cut(Year, breaks = c(1989, 1994, 1999, 2004, 2009, 2014),
+                         labels = c("1990-1994", "1995-1999", "2000-2004", "2005-2009", "2010-2014"))) %>%
+  group_by(yeargroup) %>% 
+  mutate(group_midyear = mean(Year),
+         group = paste0(yeargroup, " (N = ", n(), ")")) -> 
   s_rh_rs
+
 m1_rh_rs <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + 
                  Study_midyear * Partition_method +
                  Study_midyear * Leaf_habit +
@@ -60,16 +69,6 @@ save_model_diagnostics(m1_rh_rs)
 printlog("Mann-Kendall trend test:")
 mk1_rh_rs <- MannKendall(s_rh_rs$Rh_annual / s_rh_rs$Rs_annual)
 print(mk1_rh_rs)
-
-srdb %>%
-  filter(Year >= 1989, !is.na(Rs_annual), !is.na(Rh_annual)) %>%
-  mutate(Year = as.integer(Year),
-         yeargroup = cut(Year, breaks = c(1989, 1994, 1999, 2004, 2009, 2014),
-                         labels = c("1990-1994", "1995-1999", "2000-2004", "2005-2009", "2010-2014"))) %>%
-  group_by(yeargroup) %>% 
-  mutate(group_midyear = mean(Year),
-         group = paste0(yeargroup, " (N = ", n(), ")")) -> 
-  s_rh_rs
 
 # Compute summary statistics
 s_rh_rs %>%
@@ -234,170 +233,114 @@ save_plot("gpp_fluxnet")
 
 
 
-# ----------- 4. SIF analysis -------------- 
-
-srdb %>%
-  dplyr::select(Study_midyear, Biome, Leaf_habit, Partition_method,
-                mat_hadcrut4, map_hadcrut4,
-                SCIA_SIF, GOME2_SIF, Rs_annual, Rh_annual) %>%
-  gather(Flux, fluxvalue, Rs_annual, Rh_annual) %>%
-  gather(SIF, sifvalue, SCIA_SIF, GOME2_SIF) %>%
-  filter(!is.na(Leaf_habit), !is.na(sifvalue), !is.na(Partition_method)) ->
-  s_sif
-
-# Make pretty facet labels
-s_sif$Prettyflux <- "R[H]"
-s_sif$Prettyflux[s_sif$Flux == "Rs_annual"] <- "R[S]"
-
-# since we're going to divide, can't have SIF crossing 1!
-# rescale to GPP range for convenience 
-rescale <- function(x, a, b) {
-  ((b - a) * (x - min(x, na.rm = TRUE))) / 
-    (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) + a
-}
-s_sif %>%
-  mutate(sifvalue = rescale(sifvalue, 0, 3500)) %>%
-  filter(fluxvalue / sifvalue < MAX_FLUX_TO_GPP) ->
-  s_sif_included
-
-p_sif <- ggplot(s_sif_included, aes(Study_midyear, fluxvalue / sifvalue, color = Leaf_habit)) +
-  geom_point() +
-  geom_smooth(data = subset(s_sif_included, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE) +
-  facet_grid(Prettyflux ~ SIF, scales = "free", labeller = label_parsed) +
-  scale_color_discrete("Leaf habit") +
-  xlab("Year") +
-  ylab("Respiration:SIF (rescaled)") +
-  coord_cartesian(ylim = c(0, 2))
-print(p_sif)
-save_plot("sif", ptype = ".png")
-
-
-printlog("Rs:GOME2 SIF trend tests")
-s_sif_gome2_rs <- subset(s_sif_included, SIF == "GOME2_SIF" & Flux == "Rs_annual")
-mk_sif_gome2_rs <- MannKendall(s_sif_gome2_rs$fluxvalue / s_sif_gome2_rs$sifvalue)
-print(mk_gpp_modis_rs)
-
-m_sif_gome2_rs <- lm(fluxvalue / sifvalue ~ mat_hadcrut4 + map_hadcrut4 + 
-                       Study_midyear * Leaf_habit + Study_midyear * Partition_method, 
-                     data = s_sif_gome2_rs)
-m_sif_gome2_rs <- stepAIC(m_sif_gome2_rs, direction = "both")
-print(summary(m_sif_gome2_rs))
-m_sif_gome2_rs_signif <- anova(m_sif_gome2_rs)["Study_midyear", "Pr(>F)"]
-m_sif_gome2_rs_leaf_signif <- anova(m_sif_gome2_rs)["Leaf_habit", "Pr(>F)"]
-save_model_diagnostics(m_gpp_modis_rs)
-
-
-# ----------- 4. Remotely sensed GPP analysis -------------- 
+# ----------- 4. GPP and SIF analysis -------------- 
 
 printlog(SEPARATOR)
 printlog("Remote sensing analysis")
 
+rescale <- function(x, a, b) {
+  ((b - a) * (x - min(x, na.rm = TRUE))) / 
+    (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) + a
+}
+
 srdb %>%
-  dplyr::select(Study_midyear, Biome, Leaf_habit, Partition_method,
+  dplyr::select(Study_midyear, Biome, Leaf_habit, Partition_method, Stage,
                 mat_hadcrut4, map_hadcrut4,
-                gpp_beer, gpp_modis, Rs_annual, Rh_annual) %>%
-  rename(`Beer` = gpp_beer,
-         MODIS = gpp_modis) %>%
+                gpp_beer, gpp_modis, 
+                SCIA_SIF, GOME2_SIF,
+                Rs_annual, Rh_annual) %>%
+  rename(`Beer~GPP` = gpp_beer,
+         `MODIS~GPP` = gpp_modis,
+         `SCIAMACHY~SIF` = SCIA_SIF,
+         `GOME2~SIF` = GOME2_SIF) %>%
+  # since we're going to divide, can't have SIF crossing 1!
+  # rescale to GPP range for convenience 
+  mutate(`SCIAMACHY~SIF` = rescale(`SCIAMACHY~SIF`, 0, 3500)) %>%
+  mutate(`GOME2~SIF` = rescale(`GOME2~SIF`, 0, 3500)) %>%
   gather(Flux, fluxvalue, Rs_annual, Rh_annual) %>%
-  gather(GPP, gppvalue, Beer, MODIS) %>%
-  filter(gppvalue > 0, !is.na(Leaf_habit), !is.na(fluxvalue)) -> 
-  s_gpp
+  mutate(Prettyflux = ifelse(Flux == "Rs_annual", "R[S]", "R[H]")) %>%
+  gather(GPPSIF, gppsifvalue, `Beer~GPP`, `MODIS~GPP`, `SCIAMACHY~SIF`, `GOME2~SIF`) %>%
+  mutate(GPPSIF = factor(GPPSIF, levels = c("Beer~GPP", "MODIS~GPP", "SCIAMACHY~SIF", "GOME2~SIF"))) %>%
+  filter(!is.na(Leaf_habit), !is.na(gppsifvalue), !is.na(Partition_method)) ->
+  s_gppsif
 
-# Make pretty facet labels
-s_gpp$Prettyflux <- "R[H]"
-s_gpp$Prettyflux[s_gpp$Flux == "Rs_annual"] <- "R[S]"
+s_gppsif %>%
+  filter(fluxvalue / gppsifvalue <= MAX_FLUX_TO_GPP) ->
+  s_gppsif_included
+s_gppsif %>%
+  filter(fluxvalue / gppsifvalue > MAX_FLUX_TO_GPP) ->
+  s_gppsif_excluded
 
-s_gpp %>%
-  filter(fluxvalue / gppvalue >= MAX_FLUX_TO_GPP) ->
-  s_gpp_excluded
-s_gpp %>%
-  filter(fluxvalue / gppvalue < MAX_FLUX_TO_GPP) ->
-  s_gpp_included
-
-p_gpp_remotesensing <- ggplot(s_gpp_included, aes(Study_midyear, fluxvalue / gppvalue, color = Leaf_habit)) +
+p_gppsif_base <- ggplot(s_gppsif_included, aes(Study_midyear, fluxvalue / gppsifvalue, color = Leaf_habit)) +
   geom_point() +
-  geom_smooth(data = subset(s_gpp_included, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE) +
-  facet_grid(Prettyflux ~ GPP, scales = "free", labeller = label_parsed) +
+  facet_grid(GPPSIF ~ Prettyflux, scales = "free", labeller = label_parsed) +
   scale_color_discrete("Leaf habit") +
   xlab("Year") +
-  ylab("Respiration:GPP") +
+  ylab("Respiration:(GPP or rescaled SIF)") +
   coord_cartesian(ylim = c(0, 2))
+p_gppsif <- p_gppsif_base + 
+  geom_smooth(data = subset(s_gppsif_included, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
+print(p_gppsif )
+save_plot("2-gppsif", ptype = ".png")
 
-print(p_gpp_remotesensing)
-save_plot("gpp_remotesensing", ptype = ".png")
+s_gpp <- subset(s_gppsif_included, GPPSIF %in% c("Beer~GPP", "MODIS~GPP"))
+p_gpp <- p_gppsif_base %+% s_gpp +
+  geom_smooth(data = subset(s_gpp, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
+print(p_gpp )
+save_plot("2-gpp", ptype = ".png")
 
-printlog("Rs:MODIS GPP trend tests")
-s_gpp_modis_rs <- subset(s_gpp, GPP == "MODIS" & Flux == "Rs_annual")
-mk_gpp_modis_rs <- MannKendall(s_gpp_modis_rs$fluxvalue / s_gpp_modis_rs$gppvalue)
-print(mk_gpp_modis_rs)
+s_sif <- subset(s_gppsif_included, GPPSIF %in% c("SCIAMACHY~SIF", "GOME2~SIF"))
+p_sif <- p_gppsif_base %+% s_sif +
+  geom_smooth(data = subset(s_sif, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
+print(p_sif)
+save_plot("2-sif", ptype = ".png")
 
-m_gpp_modis_rs <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + 
-                       Study_midyear * Leaf_habit + Study_midyear * Partition_method, 
-                     data = s_gpp_modis_rs)
-m_gpp_modis_rs <- stepAIC(m_gpp_modis_rs, direction = "both")
-print(summary(m_gpp_modis_rs))
-m_gpp_modis_rs_signif <- anova(m_gpp_modis_rs)["Study_midyear", "Pr(>F)"]
-m_gpp_modis_rs_leaf_signif <- anova(m_gpp_modis_rs)["Leaf_habit", "Pr(>F)"]
-save_model_diagnostics(m_gpp_modis_rs)
-
-printlog("Rh:MODIS GPP trend tests")
-s_gpp_modis_rh <- subset(s_gpp, GPP == "MODIS" & Flux == "Rh_annual")
-mk_gpp_modis_rh <- MannKendall(s_gpp_modis_rh$fluxvalue / s_gpp_modis_rh$gppvalue)
-print(mk_gpp_modis_rh)
-printlog("Rh:MODIS GPP trend tests (dbf)")
-s_gpp_modis_rh_dbf <- subset(s_gpp_modis_rh, Leaf_habit == "Deciduous")
-mk_gpp_modis_rh_dbf <- MannKendall(s_gpp_modis_rh_dbf$fluxvalue / s_gpp_modis_rh_dbf$gppvalue)
-print(mk_gpp_modis_rh_dbf)
-printlog("Rh:MODIS GPP trend tests (enf)")
-s_gpp_modis_rh_enf <- subset(s_gpp_modis_rh, Leaf_habit == "Evergreen")
-mk_gpp_modis_rh_enf <- MannKendall(s_gpp_modis_rh_enf$fluxvalue / s_gpp_modis_rh_enf$gppvalue)
-print(mk_gpp_modis_rh_enf)
-
-m_gpp_modis_rh <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + 
-                       Study_midyear * Leaf_habit + Study_midyear * Partition_method,
-                     data = s_gpp_modis_rh)
-m_gpp_modis_rh <- stepAIC(m_gpp_modis_rh, direction = "both")
-print(summary(m_gpp_modis_rh))
-m_gpp_modis_rh_signif <- anova(m_gpp_modis_rh)["Study_midyear", "Pr(>F)"]
-m_gpp_modis_rh_leaf_signif <- anova(m_gpp_modis_rh)["Leaf_habit", "Pr(>F)"]
-save_model_diagnostics(m_gpp_modis_rh)
+s_gppsif1 <- subset(s_gppsif_included, GPPSIF %in% c("Beer~GPP", "MODIS~GPP", "SCIAMACHY~SIF"))
+p_gppsif1 <- p_gppsif_base %+% s_gppsif1 +
+  geom_smooth(data = subset(s_gppsif1, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
+print(p_gppsif1 )
+save_plot("2-gppsif_scia", ptype = ".png")
 
 
-printlog("Rs:Beer GPP trend tests")
-s_gpp_beer_rs <- subset(s_gpp, GPP == "Beer" & Flux == "Rs_annual")
-mk_gpp_beer_rs <- MannKendall(s_gpp_beer_rs$fluxvalue / s_gpp_beer_rs$gppvalue)
-print(mk_gpp_beer_rs)
-
-m_gpp_beer_rs <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_midyear * Leaf_habit, 
-                    data = s_gpp_beer_rs)
-m_gpp_beer_rs <- stepAIC(m_gpp_beer_rs, direction = "both")
-print(summary(m_gpp_beer_rs))
-m_gpp_beer_rs_signif <- anova(m_gpp_beer_rs)["Study_midyear", "Pr(>F)"]
-m_gpp_beer_rs_leaf_signif <- anova(m_gpp_beer_rs)["Leaf_habit", "Pr(>F)"]
-save_model_diagnostics(m_gpp_beer_rs)
-
-
-printlog("Rh:Beer GPP trend tests")
-s_gpp_beer_rh <- subset(s_gpp, GPP == "Beer" & Flux == "Rh_annual")
-mk_gpp_beer_rh <- MannKendall(s_gpp_beer_rh$fluxvalue / s_gpp_beer_rh$gppvalue)
-print(mk_gpp_beer_rh)
-printlog("Rh:Beer GPP trend tests (dbf)")
-s_gpp_beer_rh_dbf <- subset(s_gpp_beer_rh, Leaf_habit == "Deciduous")
-mk_gpp_beer_rh_dbf <- MannKendall(s_gpp_beer_rh_dbf$fluxvalue / s_gpp_beer_rh_dbf$gppvalue)
-print(mk_gpp_beer_rh_dbf)
-printlog("Rh:Beer GPP trend tests (enf)")
-s_gpp_beer_rh_enf <- subset(s_gpp_beer_rh, Leaf_habit == "Evergreen")
-mk_gpp_beer_rh_enf <- MannKendall(s_gpp_beer_rh_enf$fluxvalue / s_gpp_beer_rh_enf$gppvalue)
-print(mk_gpp_beer_rh_enf)
-
-m_gpp_beer_rh <- lm(fluxvalue / gppvalue ~ mat_hadcrut4 + map_hadcrut4 + Study_midyear * Leaf_habit, 
-                    data = s_gpp_beer_rh)
-m_gpp_beer_rh <- stepAIC(m_gpp_beer_rh, direction = "both")
-print(summary(m_gpp_beer_rh))
-m_gpp_beer_rh_signif <- anova(m_gpp_beer_rh)["Study_midyear", "Pr(>F)"]
-m_gpp_beer_rh_leaf_signif <- anova(m_gpp_beer_rh)["Leaf_habit", "Pr(>F)"]
-save_model_diagnostics(m_gpp_beer_rh)
-
+printlog("Trend tests")
+results <- list()
+for(dataset in unique(s_gppsif_included$GPPSIF)) {
+  for(f in unique(s_gppsif_included$Flux)) {
+    d <- filter(s_gppsif_included, Flux == f, GPPSIF == dataset, !is.na(mat_hadcrut4), !is.na(map_hadcrut4))
+    assign(make.names(paste("s", dataset, f, sep = "_")), d)
+    printlog("Trend tests for", f, dataset)
+    
+    # Mann-Kendall
+    mk <- MannKendall(d$fluxvalue / d$gppsifvalue)
+    print(mk)
+    assign(make.names(paste("mk", dataset, f, sep = "_")), mk)
+    
+    # Linear model
+    m <- lm(fluxvalue / gppsifvalue ~ mat_hadcrut4 + map_hadcrut4 + 
+              Study_midyear * Leaf_habit + 
+              Study_midyear * Stage +
+              Study_midyear * Partition_method, 
+            data = d)
+    m <- stepAIC(m, direction = "both", trace = 0)
+    print(summary(m))
+    mn <- make.names(paste("m", dataset, f, sep = "_"))
+    printlog(mn)
+    save_model_diagnostics(m, modelname = mn)
+    assign(mn, m)
+    
+    signif <- anova(m)["Study_midyear", "Pr(>F)"]
+    assign(paste0(mn, "_signif"), signif)
+    leaf_signif <- anova(m)["Leaf_habit", "Pr(>F)"]
+    assign(paste0(mn, "_leaf_signif"), leaf_signif)
+    results[[paste(f, dataset)]] <- tibble(flux = f, 
+                                           dataset = make.names(dataset),
+                                           n = nrow(d),
+                                           mk = pclean(mk$sl),
+                                           time_signif = pclean(signif),
+                                           leaf_signif = pclean(leaf_signif))
+  }
+}
+rs_results <- bind_rows(results)
 
 # ----------------------- Clean up ------------------------- 
 

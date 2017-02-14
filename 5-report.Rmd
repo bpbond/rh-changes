@@ -19,6 +19,7 @@ Here we show that:
 * The _R_~H~:_R_~S~ ratio is rising over time, after controlling for climate, measurement method, and disturbance.
 * The ratios of both _R_~H~ and _R_~S~ to remotely-sensed (MODIS) GPP are rising over time. Both trends are steeper for deciduous ecosystems.
 * The ratios of both _R_~H~ and _R_~S~ to data synthesis (Beer et al.) GPP are rising over time. The _R_~S~ trend is steeper for deciduous ecosystems.
+* The ratios of both _R_~H~ and _R_~S~ to SCIA SIF are rising over time. The _R_~S~ trend is steeper for deciduous ecosystems. No temporal trend is seen for the (very short) GOME2 SIF data, however.
 * The ratio of _R_~S~ to FLUXNET GPP (in contrast to previous GPPs, a local measurement but smaller N) is rising in ecosystems that have experienced positive 1991-2010 precipitation trends.
 
 Implications:
@@ -87,25 +88,18 @@ This is in a sense unsurprising, as from basic biokinetics (ref) we expect that 
 A rising _R_~H~:_R_~S~ ratio could be due to SOC loss and thus a climate feedback, or conceivably simply an acceleration of the C cycle (B-L 2010), if increased gross primary production (GPP) were for some reason preferentially emerging as _R_~H~. To test for this difference, we examined the ratio of soil-derived respiration to GPP, the ultimate source for both the autotrophic and heterotrophic soil surface CO~2~ fluxes. If SOC losses are increasing _R_~H~, one would expect both _R_~H~ and the total surface flux _R_~S~ to rise _faster_ than GPP. This is in fact the case (**Figure 2**).
 
 ```{r, echo = FALSE}
-print(p_gpp_remotesensing)
+print(p_gppsif)
 ```
 
-(Note that for clarity, this graph does not show a number of high RS:GPP points. It also excludes (removes from the data set) `r nrow(s_gpp_excluded)` points with R:GPP > `r MAX_FLUX_TO_GPP`.)
+(Note that for clarity, this graph does not show a number of high RS:GPP and RS:SIF points. It also excludes (removes from the data set) `r nrow(s_gppsif_excluded)` points with R:GPP > `r MAX_FLUX_TO_GPP`.)
 
-We both perform a rigorous Mann-Kendall trend test, that does not account for climate, and fit a linear model with leaf habit, partition method, mean annual temperature, mean annual precipitation, and time (the trend test) as interacting factors:
+We perform a rigorous Mann-Kendall trend test, that does not account for climate, and fit a linear model with leaf habit, partition method, mean annual temperature, mean annual precipitation, and time (the trend test) as interacting factors:
 
-Resp. flux | GPP source  | M-K trend? | lm trend? | Higher deciduous trend?
----------------- | ----------- | ---------- | --------- | -----------------
-_R_~S~ | MODIS       | `r pclean(mk_gpp_modis_rs$sl)`   | `r pclean(m_gpp_modis_rs_signif)`    | `r pclean(m_gpp_modis_rs_leaf_signif)`
-_R_~H~ | MODIS       | `r pclean(mk_gpp_modis_rh$sl)`   | `r pclean(m_gpp_modis_rh_signif)`    | `r pclean(m_gpp_modis_rh_leaf_signif)`
-_R_~S~ | Beer et al. | `r pclean(mk_gpp_beer_rs$sl)`   | `r pclean(m_gpp_beer_rs_signif)`    | `r pclean(m_gpp_beer_rs_leaf_signif)`
-_R_~H~ | Beer et al. | `r pclean(mk_gpp_beer_rh$sl)`   | `r pclean(m_gpp_beer_rh_signif)`    | `r pclean(m_gpp_beer_rh_leaf_signif)`
+```{r, echo = FALSE}
+knitr::kable(rs_results)
+```
 
-Both _R_~H~ (the variable of primary interest, but many fewer measurements) and _R_~S~ (which incorporates both _R_~H~ and belowground autotrophic respiration) exhibit significant (P < 0.001 for all) trends over time relative to two different GPP data sources. The _R_~H~:GPP ratio is rising faster in deciduous ecosystems than in evergreen ecosystems (`r pclean(m_gpp_modis_rh_leaf_signif)` for MODIS, `r pclean(m_gpp_beer_rh_leaf_signif)` for Beer), as is _R_~S~:GPP (`r pclean(m_gpp_modis_rs_leaf_signif)` and `r pclean(m_gpp_beer_rs_leaf_signif)` respectively).
-
-#### SIF
-
-To do.
+Both _R_~H~ (the variable of primary interest, but many fewer measurements) and _R_~S~ (which incorporates both _R_~H~ and belowground autotrophic respiration) exhibit highly significant trends over time relative to three of the four different GPP and SIF data sources. The one exception is GOME2 SIF, the shortest (2004-2013) dataset.
 
 ### FLUXNET analysis
 
@@ -132,14 +126,17 @@ In both cases, there's a significant temporal trend in the _R_~S~ to GPP ratio a
 
 ## Summary
 
-Test  | N | Deciduous stronger? | Consistent with R~H~ feedback?		
+Test  | N | Leaf habit? | Precipitation?		
 ------| - | ------------------- | -------------		
 ↑ R~H~:R~S~ ratio over time  | `r nrow(s_rh_rs)` | ?	| Yes	
-↑ R~H~:Beer GPP over time  | `r nrow(s_gpp_beer_rh)` | Yes	| Yes
-↑ R~S~:Beer GPP over time  | `r nrow(s_gpp_beer_rs)` | Yes | Yes		
-↑ R~H~:MODIS GPP over time  | `r nrow(s_gpp_modis_rh)` | Yes	| Yes
-↑ R~S~:MODIS GPP over time  | `r nrow(s_gpp_modis_rs)` | Yes | Yes
-↑ R~S~:SIF over time  | ? | ? | ?
+↑ R~H~:Beer GPP over time  | `r nrow(s_Beer.GPP_Rh_annual)` | Yes	| Yes
+↑ R~S~:Beer GPP over time  | `r nrow(s_Beer.GPP_Rs_annual)` | Yes | Yes		
+↑ R~H~:MODIS GPP over time  | `r nrow(s_MODIS.GPP_Rh_annual)` | Yes	| Yes
+↑ R~S~:MODIS GPP over time  | `r nrow(s_MODIS.GPP_Rs_annual)` | Yes | Yes
+↑ R~H~:SCIA SIF over time  | `r nrow(s_SCIAMACHY.SIF_Rh_annual)` | Yes	| Yes
+↑ R~S~:SCIA SIF over time  | `r nrow(s_SCIAMACHY.SIF_Rs_annual)` | Yes | Yes		
+↑ R~H~:GOME2 SIF over time  | `r nrow(s_GOME2.SIF_Rh_annual)` | Yes	| Yes
+↑ R~S~:GOME2 SIF over time  | `r nrow(s_GOME2.SIF_Rs_annual)` | Yes | Yes
 ↑ R~S~:FLUXNET GPP over time  | `r nrow(s_fluxnet)` | Yes | Yes		
 R~H~ climate response | `r length(m2_rh_climate$residuals)` | ? | Yes
 

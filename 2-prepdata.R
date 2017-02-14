@@ -255,6 +255,7 @@ srdb %>%
   srdb
 print_dims(srdb)
 
+stopifnot(!any(duplicated(srdb$Record_number)))
 
 if(file.exists(SRDB_FILTERED_FILE)) {
   old_data <- read_csv(SRDB_FILTERED_FILE)
@@ -277,9 +278,12 @@ if(!nrow(srdb)) {
 printlog("Joining with SIF data...")
 read_csv("inputs/SIF.csv", col_types = "iddidd") %>%
   dplyr::select(Record_number, GOME2_SIF, SCIA_SIF) %>%
+  group_by(Record_number) %>%
+  summarise_all(mean, na.rm = TRUE) %>%
   right_join(srdb, by = "Record_number") ->
   srdb
 
+stopifnot(!any(duplicated(srdb$Record_number)))
 
 # -------------- 3. FLUXNET ------------------- 
 
