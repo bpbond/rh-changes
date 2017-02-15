@@ -4,22 +4,21 @@ The [2010 Nature paper](http://www.nature.com/nature/journal/v464/n7288/full/nat
 
 With eight (if I enter 2014-2016) more years' data, **can we test this**?
 
-Lines of evidence:
+Potential lines of evidence:
 - RH/RS temporal trend
 - RH response to climate anomalies
 - RS relationship to Fluxnet GPP
 - RS relationship to MODIS and Beer GPP
-- RS relationship to SIF (?)
+- RS relationship to SIF
 
 Next steps?
-- SIF analysis when available
 - update SRDB (below)
 - Check Hashimoto, Hursh papers for factors affecting Rs and Rh, include
 - Could we calculate a Q10 or flux from this? Hmm.
 
 SRDB updating priority:
 - ~~2013 and 2014 studies reporting RH and RS~~
-- 2015 studies reporting RS and/or RH
+- ~~2015 studies reporting RS and/or RH~~
 - missed Epule studies
 - At this point, we have more-or-less-final rh-changes dataset
 - other 2013-2015 studies (and then write Scientific Data paper)
