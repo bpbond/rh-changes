@@ -1,0 +1,18 @@
+Wednesday, February 15, 2017 8:30 AM
+
+
+Hi Ben
+
+FLUXNET2015 has not citation (see the data policy). You can use 
+Baldocchi 2008 (Australian Journal of Botany) as reference for FLUXNET 
+in general.
+
+For the sites what is important is to have the table in the paper and 
+use the FLUXNET official codes. For papers related to the stations we 
+are collecting them so a comprehensive list is not available yet. 
+However I attached a table and references from a paper published using 
+the LaThuile data where a lot of sites are the same. For the others you 
+could also contact the PIs...
+
+ciao
+dario

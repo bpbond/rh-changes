@@ -12,6 +12,16 @@ knitr::opts_chunk$set(echo = TRUE)
 source("4-analysis.R")
 ```
 
+
+Problems/thoughts:
+
+* The Rh:Rs rise is too steep I think - implies a huge C cycle perturbation & v. high Q10
+* Rs:MODIS and Rs:Beer GPP slopes are our best bet for a 'real' signal in this regard?
+* But also Rh:GPPs, too
+* If these are 'sensible' (???) then that strengthens things
+* Look at this predicting for ...?
+
+
 ## Abstract
 
 Here we show that:
@@ -29,13 +39,12 @@ Implications:
 
 To-do list:
 
-* Update SRDB through 2015
-* Incorporate a SIF analysis
-* FLUXNET matching should depend on DBF, ENF, etc.
+* Check UMBS and Willow Creek soil respiration data - go to studies.
+* The FLUXNET analysis is _so small N_. Plus, dominated by Harvard Forest.
 * Look at SOC, given its importance (cf. Crowther 2016)
 * Check bias due to partitioning method
 * Read about regression with a ratio - problem?
-* Make better use of anova()
+
 
 SRDB status:
 
@@ -99,11 +108,14 @@ We perform a rigorous Mann-Kendall trend test, that does not account for climate
 knitr::kable(rs_results)
 ```
 
-Both _R_~H~ (the variable of primary interest, but many fewer measurements) and _R_~S~ (which incorporates both _R_~H~ and belowground autotrophic respiration) exhibit highly significant trends over time relative to three of the four different GPP and SIF data sources. The one exception is GOME2 SIF, the shortest (2004-2013) dataset.
+Both _R_~H~ (the variable of primary interest, but for which many fewer measurements are available) and _R_~S~ (which incorporates both _R_~H~ and belowground autotrophic respiration) exhibit significant trends over time (`r pclean(m_Beer.GPP_Rs_annual_signif)` for _R_~S~:Beer GPP, P < 0.001 for all others) relative to two different GPP data sources. The _R_~S~:MODIS GPP ratio may be rising faster in deciduous ecosystems than in evergreen ecosystems (`r pclean( m_MODIS.GPP_Rs_annual_leaf_trend_signif)`).
+
+We also examined the ratios of _R_~H~ and _R_~S~ to two sun-induced fluorescence (SIF) global data products, which are correlated with GPP but provide a completely independent test. Both _R_~H~:SIF and _R_~S~:SIF exhibited temporal trends against the SCIAMACHY (http://www.sciamachy.org) data after controlling for disturbance and measurement method (P < 0.001 for both; **Figure 2**). The _R_~H~ rise was significantly stronger in deciduous ecosystems (`r pclean(m_SCIAMACHY.SIF_Rh_annual_leaf_trend_signif)`). No _R_~H~:SIF or _R_~S~:SIF temporal trend was found using the GOME2 SIF data, but this is by far the shortest and most recent (2007-2014) of the datasets tested.
+
 
 ### FLUXNET analysis
 
-A reasonable objection to the above is that there's an enormous spatial mismatch between remotely-sensed data and the chamber measurements used to compute _R_~H~ and _R_~S~. To address this problem, we use FLUXNET Tier 1 data to identify GPP measurements made in the same location and year as _R_~S~ measurements. The advantage is this is a local (<= `r MAX_FLUXNET_DIST` km), empirical, and highly standardized GPP measurement. The tradeoff, as compared to a global GPP product, is that it drastically reduces the number of available data points; a FLUXNET-_R_~H~ comparison is not possible.
+One potential objection to the above analysis is that there's an enormous spatial mismatch between remotely-sensed data and the chamber measurements used to compute _R_~H~ and _R_~S~. To address this problem, we use FLUXNET Tier 1 data to identify GPP measurements made in the same location and year as _R_~S~ measurements. The advantage is this is a local (<= `r MAX_FLUXNET_DIST` km), empirical, and highly standardized GPP measurement. The tradeoff, as compared to a global GPP product, is that it drastically reduces the number of available data points; a FLUXNET-_R_~H~ comparison is not possible.
 
 ```{r, echo = FALSE}
 print(p_fluxnet)

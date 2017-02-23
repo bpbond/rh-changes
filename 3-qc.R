@@ -73,6 +73,24 @@ qplot(RECO_NT_VUT_REF, ER, data = srdb, color = Biome, na.rm = TRUE) +
 save_plot("reco_comparison")
 
 
+
+# How choice of max fluxnet distance affect our N?
+
+test <- seq(0.1, 10, by = 0.1)  # km
+result <- rep(NA, length(test))
+for(i in seq_along(test)) {
+  filter(srdb, !is.na(Rs_annual), 
+         FLUXNET_DIST <= test[i], 
+         NEE_VUT_REF_QC >= 0.5) -> x
+  result[i] <- nrow(x)
+}
+df <- tibble(x = test, y = result)
+p <- qplot(x, y, data = df, geom = "line", na.rm = TRUE) + 
+  xlab("MAX_FLUXNET_DIST") + ylab("N")
+print(p)
+save_plot("fluxnet_dist_n")
+
+
 # ----------------------- Clean up ------------------------- 
 
 printlog("All done with", SCRIPTNAME)

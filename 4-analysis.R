@@ -144,29 +144,14 @@ printlog("... & QC =", sum(!is.na(s$NEE_VUT_REF_QC) & s$NEE_VUT_REF_QC >= MIN_NE
 printlog("Filtering to MAX_FLUXNET_DIST =", MAX_FLUXNET_DIST)
 printlog("Filtering to MIN_NEE_QC =", MIN_NEE_QC)
 
-# Side analysis: check how choice of MAX_FLUXNET_DIST affects our N
-test <- seq(0.1, 10, by = 0.1)
-result <- rep(NA, length(test))
-for(i in seq_along(test)) {
-  filter(srdb, !is.na(Rs_annual), 
-         FLUXNET_DIST <= test[i], 
-         NEE_VUT_REF_QC >= MIN_NEE_QC) -> x
-  result[i] <- nrow(x)
-}
-df <- tibble(x = test, y = result)
-p <- qplot(x, y, data = df, geom="line") + xlab("MAX_FLUXNET_DIST") + ylab("N")
-print(p)
-save_plot("fluxnet_dist_n")
-
-# OK now for real, here we go: filter SRDB for available data,
-# distance to FLUXNET tower, and NEE quality
+# Filter SRDB for available data, distance to FLUXNET tower, and NEE quality
 srdb %>%
   filter(!is.na(Rs_annual),
          FLUXNET_ECOSYSTEM_MATCH,
          FLUXNET_DIST <= MAX_FLUXNET_DIST,
-         NEE_VUT_REF_QC >= MIN_NEE_QC) %>%
+         NEE_VUT_REF_QC >= MIN_NEE_QC,
+         Stage == "Mature") %>%
   # We only allow one observation per site per year
-  # Otherwise Harvard Forest swamps everything!
   group_by(FLUXNET_SITE_ID, IGBP, tmp_trend, pre_trend, Leaf_habit, Stage, Year) %>%
   summarise(Rs_annual = mean(Rs_annual),
             Rh_annual = mean(Rh_annual),
@@ -180,32 +165,48 @@ srdb %>%
          pre_trend_label = if_else(pre_trend > 0, "Wetter", "Drier")) ->
   s_fluxnet
 
+s_fluxnet %>%
+  gather(flux, fluxvalue, gpp_fluxnet, Rs_annual) %>%
+  ggplot(aes(Year, fluxvalue, color = flux)) + 
+  geom_line() +
+  facet_wrap(~FLUXNET_SITE_ID, scales = "free")
+save_plot("fluxnet_site_diagnostic")
+
 printlog("Mann-Kendall trend test:")
 mk3_fluxnet <- MannKendall(s_fluxnet$Rs_annual / s_fluxnet$gpp_fluxnet)
 print(mk3_fluxnet)
 
-m_fluxnet <- lm(Rs_annual/gpp_fluxnet ~ Year * Stage + Year * Leaf_habit + mat_hadcrut4 * map_hadcrut4, 
+m_fluxnet <- lm(Rs_annual/gpp_fluxnet ~ Year * Leaf_habit + mat_hadcrut4 * map_hadcrut4, 
                 data = s_fluxnet, weights = YearsOfData)
 m_fluxnet <- MASS::stepAIC(m_fluxnet, direction = "both")
 print(anova(m_fluxnet))
+p <- qplot(Year, Rs_annual/gpp_fluxnet, color=pre_trend_label, data=s_fluxnet) + geom_smooth(method="lm")
+print(p)
+save_plot("fluxnet_basic")
 
 s_fluxnet_nohf <- subset(s_fluxnet, FLUXNET_SITE_ID != "US-Ha1")
-m_fluxnet_nohf <- lm(Rs_annual/gpp_fluxnet ~ Year * Stage + Year * Leaf_habit + mat_hadcrut4 * map_hadcrut4, 
+m_fluxnet_nohf <- lm(Rs_annual/gpp_fluxnet ~ Year * Leaf_habit + mat_hadcrut4 * map_hadcrut4, 
                      data = s_fluxnet_nohf, weights = YearsOfData)
-m_fluxnetnohf <- MASS::stepAIC(m_fluxnet_nohf, direction = "both")
+m_fluxnet_nohf <- MASS::stepAIC(m_fluxnet_nohf, direction = "both")
 print(anova(m_fluxnet_nohf))
+print(p %+% s_fluxnet_nohf)
+save_plot("fluxnet_nohf_basic")
 
 s_fluxnet_decid <- subset(s_fluxnet, Leaf_habit == "Deciduous")
-m_fluxnet_decid <- lm(Rs_annual/gpp_fluxnet ~ Year * Stage + mat_hadcrut4 * map_hadcrut4, 
+m_fluxnet_decid <- lm(Rs_annual/gpp_fluxnet ~ Year + mat_hadcrut4 * map_hadcrut4, 
                       data = s_fluxnet_decid, weights = YearsOfData)
 m_fluxnet_decid <- MASS::stepAIC(m_fluxnet_decid, direction = "both")
 print(anova(m_fluxnet_decid))
+print(p %+% s_fluxnet_decid)
+save_plot("fluxnet_decid_basic")
 
 s_fluxnet_everg <- subset(s_fluxnet, Leaf_habit == "Evergreen")
-m_fluxnet_everg <- lm(Rs_annual/gpp_fluxnet ~ Year * Stage + mat_hadcrut4 * map_hadcrut4, 
+m_fluxnet_everg <- lm(Rs_annual/gpp_fluxnet ~ Year + mat_hadcrut4 * map_hadcrut4, 
                       data = s_fluxnet_everg, weights = YearsOfData)
 m_fluxnet_everg <- MASS::stepAIC(m_fluxnet_everg, direction = "both")
 print(anova(m_fluxnet_everg))
+print(p %+% s_fluxnet_everg)
+save_plot("fluxnet_everg_basic")
 
 # Make plot
 s_fluxnet %>%
@@ -226,11 +227,9 @@ p_fluxnet <- p_fluxnet + geom_text(data = s_fluxnet_labels,
                                    aes(y = ratio, label = FLUXNET_SITE_ID, color = IGBP), 
                                    size = 2, nudge_y = 0.05,
                                    alpha = 0.75)
-
 print(p_fluxnet)
 
 save_plot("gpp_fluxnet")
-
 
 
 # ----------- 4. GPP and SIF analysis -------------- 
@@ -250,18 +249,16 @@ srdb %>%
                 SCIA_SIF, GOME2_SIF,
                 Rs_annual, Rh_annual) %>%
   rename(`Beer~GPP` = gpp_beer,
-         `MODIS~GPP` = gpp_modis,
-         `SCIAMACHY~SIF` = SCIA_SIF,
-         `GOME2~SIF` = GOME2_SIF) %>%
+         `MODIS~GPP` = gpp_modis) %>%
   # since we're going to divide, can't have SIF crossing 1!
   # rescale to GPP range for convenience 
-  mutate(`SCIAMACHY~SIF` = rescale(`SCIAMACHY~SIF`, 0, 3500)) %>%
-  mutate(`GOME2~SIF` = rescale(`GOME2~SIF`, 0, 3500)) %>%
+  mutate(`SCIAMACHY~SIF` = rescale(SCIA_SIF, 0, 3500)) %>%
+  mutate(`GOME2~SIF` = rescale(GOME2_SIF, 0, 3500)) %>%
   gather(Flux, fluxvalue, Rs_annual, Rh_annual) %>%
-  mutate(Prettyflux = ifelse(Flux == "Rs_annual", "R[S]", "R[H]")) %>%
+  mutate(Prettyflux = if_else(Flux == "Rs_annual", "R[S]", "R[H]")) %>%
   gather(GPPSIF, gppsifvalue, `Beer~GPP`, `MODIS~GPP`, `SCIAMACHY~SIF`, `GOME2~SIF`) %>%
   mutate(GPPSIF = factor(GPPSIF, levels = c("Beer~GPP", "MODIS~GPP", "SCIAMACHY~SIF", "GOME2~SIF"))) %>%
-  filter(!is.na(Leaf_habit), !is.na(gppsifvalue), !is.na(Partition_method)) ->
+  filter(!is.na(Leaf_habit), !is.na(gppsifvalue)) ->
   s_gppsif
 
 s_gppsif %>%
@@ -318,8 +315,7 @@ for(dataset in unique(s_gppsif_included$GPPSIF)) {
     # Linear model
     m <- lm(fluxvalue / gppsifvalue ~ mat_hadcrut4 + map_hadcrut4 + 
               Study_midyear * Leaf_habit + 
-              Study_midyear * Stage +
-              Study_midyear * Partition_method, 
+              Study_midyear * Stage, 
             data = d)
     m <- stepAIC(m, direction = "both", trace = 0)
     print(summary(m))
@@ -332,12 +328,14 @@ for(dataset in unique(s_gppsif_included$GPPSIF)) {
     assign(paste0(mn, "_signif"), signif)
     leaf_signif <- anova(m)["Leaf_habit", "Pr(>F)"]
     assign(paste0(mn, "_leaf_signif"), leaf_signif)
+    leaf_trend_signif <- anova(m)["Study_midyear:Leaf_habit", "Pr(>F)"]
+    assign(paste0(mn, "_leaf_trend_signif"), leaf_trend_signif)
     results[[paste(f, dataset)]] <- tibble(flux = f, 
                                            dataset = make.names(dataset),
                                            n = nrow(d),
-                                           mk = pclean(mk$sl),
+                                           `m-k` = pclean(mk$sl),
                                            time_signif = pclean(signif),
-                                           leaf_signif = pclean(leaf_signif))
+                                           leaf_signif = pclean(leaf_trend_signif))
   }
 }
 rs_results <- bind_rows(results)
