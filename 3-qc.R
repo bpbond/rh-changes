@@ -91,6 +91,65 @@ print(p)
 save_plot("fluxnet_dist_n")
 
 
+# Latitude/geographic biases over time
+srdb %>% 
+  qplot(Study_midyear, Latitude, data = ., color = Biome) + 
+  xlim(c(1989, 2015)) + 
+  geom_smooth(method="lm", color = "blue", group = 1)
+save_plot("latitude")
+
+srdb %>% 
+  qplot(Study_midyear, Longitude, data = ., color = Biome) + 
+  xlim(c(1989, 2015)) + 
+  geom_smooth(method="lm", color = "blue", group = 1)
+save_plot("longitude")
+
+if(require(maps) & require(mapdata)) {
+  world <- map_data("world")
+  srdb$long <- srdb$Longitude
+  srdb$lat <- srdb$Latitude
+  p_base <- ggplot(subset(srdb, Study_midyear >= 1989), aes(x = long, y = lat)) + 
+    geom_path(data = world, aes(group = group)) +
+    scale_y_continuous(breaks = (-2:2) * 30) +
+    scale_x_continuous(breaks = (-4:4) * 45) +
+    coord_fixed(xlim = c(-180, 180), ylim = c(-90, 90)) 
+  
+  print(p_base + geom_point(aes(color = Study_midyear)))
+  save_plot("worldmap")
+  print(p_base + geom_point(aes(alpha = Study_midyear)) + scale_alpha_continuous(range = c(1, 0)))
+  save_plot("worldmap-alpha")
+  
+}
+
+# Vanessa's request:
+# histogram of biome, ecosystem type, and stage, by decade 
+# (the combination of all 3, biome + type, and each separately). 
+# BUT…I’d like to see the histograms by decade, but then duplicate
+# the plots to shift the decadal start point by 5 years.
+srdb %>%
+  filter(Study_midyear >= 1989) %>%
+  select(Study_midyear, Biome, Ecosystem_type, Stage, map_hadcrut4, mat_hadcrut4) %>%
+  gather(thing, value, -Study_midyear, -Biome, -map_hadcrut4, -mat_hadcrut4) ->
+  srdb1
+srdb1$yearbin <- as.character(cut(srdb1$Study_midyear, breaks = 3))
+srdb2 <- srdb1
+srdb2$yearbin <- "All"
+srdb_combined <- bind_rows(srdb1, srdb2)
+srdb_combined %>%
+  qplot(value, data = .) + facet_grid(yearbin ~ thing, scales="free") +
+  theme(axis.text.x = element_text(angle = 90))
+save_plot("distributions")
+
+srdb_combined %>% 
+  qplot(mat_hadcrut4, map_hadcrut4, color=Biome, data=.) + facet_grid(yearbin~.)
+save_plot("climate_space_time")
+
+srdb1$yearbin <- as.character(cut(srdb1$Study_midyear, breaks = 4))
+srdb_combined <- bind_rows(srdb1, srdb2)
+print(last_plot() %+% srdb_combined)
+save_plot("distributions-alt")
+
+
 # ----------------------- Clean up ------------------------- 
 
 printlog("All done with", SCRIPTNAME)

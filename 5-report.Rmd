@@ -15,7 +15,7 @@ source("4-analysis.R")
 
 Problems/thoughts:
 
-* The Rh:Rs rise is too steep I think - implies a huge C cycle perturbation & v. high Q10
+* The raw Rh:Rs rise is 'too' steep - implies a huge C cycle perturbation & v. high Q10 - what about controlled for everything? Still big, ~.1 rise over 20 years!
 * Rs:MODIS and Rs:Beer GPP slopes are our best bet for a 'real' signal in this regard?
 * But also Rh:GPPs, too
 * If these are 'sensible' (???) then that strengthens things
