@@ -159,11 +159,14 @@ srdb %>%
             RECO_NT_VUT_REF = mean(RECO_NT_VUT_REF),
             gpp_fluxnet = mean(gpp_fluxnet),
             YearsOfData = mean(YearsOfData),
+            pre_hadcrut4 = mean(pre_hadcrut4),
             mat_hadcrut4 = mean(mat_hadcrut4),
             map_hadcrut4 = mean(map_hadcrut4)) %>%
   mutate(tmp_trend_label = if_else(tmp_trend > 0, "Warming", "Cooling"),
          pre_trend_label = if_else(pre_trend > 0, "Wetter", "Drier")) ->
   s_fluxnet
+
+save_data(s_fluxnet, scriptfolder = FALSE)
 
 s_fluxnet %>%
   gather(flux, fluxvalue, gpp_fluxnet, Rs_annual) %>%
@@ -304,7 +307,10 @@ results <- list()
 for(dataset in unique(s_gppsif_included$GPPSIF)) {
   for(f in unique(s_gppsif_included$Flux)) {
     d <- filter(s_gppsif_included, Flux == f, GPPSIF == dataset, !is.na(mat_hadcrut4), !is.na(map_hadcrut4))
-    assign(make.names(paste("s", dataset, f, sep = "_")), d)
+    dname <- make.names(paste("s", dataset, f, sep = "_"))
+    assign(dname, d)
+    save_data(d, fname = dname, scriptfolder = FALSE)
+
     printlog("Trend tests for", f, dataset)
     
     # Mann-Kendall

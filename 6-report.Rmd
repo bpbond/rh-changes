@@ -21,6 +21,13 @@ Problems/thoughts:
 * If these are 'sensible' (???) then that strengthens things
 * Look at this predicting for ...?
 
+Rodrigo ideas!!
+
+* FLUXNET analysis shows positive trend in __% of sites
+* Do a bootstrap analysis with e.g. Rs-MODIS GPP dataset. Take 90% real data (randomly drawn), 10% no-change fake data; compute slope. Do this 1000 times to get a PDF. Then do 80%, 20% fake, etc., down to 10%, 90% fake. Is FLUXNET __% consistent?
+* Do a bootstrap and sample progresively smaller subsets of the Rs-MODIS GPP dataset. When does significance drop away?
+* (Hardest.) Look at daily FLUXNET data and compute nighttime Reco (based on PAR or something). Look at the ratio of that to GPP over time.
+
 
 ## Abstract
 
