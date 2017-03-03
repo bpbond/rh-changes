@@ -35,7 +35,7 @@ expand_datayears <- function(fd) {
 # For every SRDB record, find distance and ID of nearest FLUXNET tower 
 match_fluxnet <- function(d, fluxnet) {
   library(fossil)  # 0.3.7
-  
+
   printlog("Starting FLUXNET nearest-neighbor matching...")
   x <- d[c("Longitude", "Latitude")]
   y <- fluxnet[c("LOCATION_LONG", "LOCATION_LAT")]
@@ -288,7 +288,9 @@ stopifnot(!any(duplicated(srdb$Record_number)))
 # -------------- 3. FLUXNET ------------------- 
 
 # Start by finding the nearest Fluxnet station, and its distance in km
-fluxnet <- read_csv("outputs/fluxnet.csv", col_types = "iddddddccdddcdi")
+read_csv("outputs/fluxnet.csv", col_types = "iddddddccdddcdi") %>%
+  filter(!is.na(LOCATION_LONG), !is.na(LOCATION_LAT)) ->
+  fluxnet
 srdb <- match_fluxnet(srdb, fluxnet)
 
 # Expand the srdb data so that we have an entry for every integer year;
