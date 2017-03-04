@@ -36,7 +36,7 @@ expand_datayears <- function(fd) {
 # For every SRDB record, find distance and ID of nearest FLUXNET tower 
 match_fluxnet <- function(d, fluxnet) {
   library(fossil)  # 0.3.7
-
+  
   printlog("Starting FLUXNET nearest-neighbor matching...")
   x <- d[c("Longitude", "Latitude")]
   y <- fluxnet[c("LOCATION_LONG", "LOCATION_LAT")]
@@ -258,14 +258,11 @@ print_dims(srdb)
 
 stopifnot(!any(duplicated(srdb$Record_number)))
 
-if(file.exists(SRDB_FILTERED_FILE)) {
+old_data <- tibble()
+if(APPEND_ONLY & file.exists(SRDB_FILTERED_FILE)) {
   old_data <- read_csv(SRDB_FILTERED_FILE)
-  if(APPEND_ONLY) {
-    printlog("Filtering pre-calculated data...")
-    srdb <- subset(srdb, !(Record_number %in% old_data$Record_number))
-  }
-} else {
-  old_data <- tibble()
+  printlog("Filtering pre-calculated data...")
+  srdb <- subset(srdb, !(Record_number %in% old_data$Record_number))
 }
 
 if(!nrow(srdb)) {
@@ -401,6 +398,7 @@ modisgpp <- tibble(modisgpp = 1:nrow(srdb))
 # -------------- Done!  ------------------- 
 
 # Combine the various spatial data with the SRDB data and save
+printlog("Rows of all data:", paste(unlist(lapply(all_data, nrow)), collapse = ","))
 bind_cols(all_data) %>%
   rename(gpp_modis = modisgpp, 
          gpp_beer = gpp, 
