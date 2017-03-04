@@ -1,7 +1,7 @@
 ---
-title: "5-report"
+title: "6-report"
 author: "Ben Bond-Lamberty"
-date: "2/3/2017"
+date: "3/4/2017"
 output:
   html_document: default
   pdf_document: default
@@ -12,22 +12,12 @@ knitr::opts_chunk$set(echo = TRUE)
 source("4-analysis.R")
 ```
 
+To do/problems/thoughts:
 
-Problems/thoughts:
-
-* The raw Rh:Rs rise is 'too' steep - implies a huge C cycle perturbation & v. high Q10 - what about controlled for everything? Still big, ~.1 rise over 20 years!
-* Rs:MODIS and Rs:Beer GPP slopes are our best bet for a 'real' signal in this regard?
-* But also Rh:GPPs, too
-* If these are 'sensible' (???) then that strengthens things
-* Look at this predicting for ...?
-
-Rodrigo ideas!!
-
-* FLUXNET analysis shows positive trend in __% of sites
-* Do a bootstrap analysis with e.g. Rs-MODIS GPP dataset. Take 90% real data (randomly drawn), 10% no-change fake data; compute slope. Do this 1000 times to get a PDF. Then do 80%, 20% fake, etc., down to 10%, 90% fake. Is FLUXNET __% consistent?
-* Do a bootstrap and sample progresively smaller subsets of the Rs-MODIS GPP dataset. When does significance drop away?
-* (Hardest.) Look at daily FLUXNET data and compute nighttime Reco (based on PAR or something). Look at the ratio of that to GPP over time.
-
+* The raw Rh:Rs rise is 'too' steep - implies a huge C cycle perturbation & v. high Q10 - what about controlled for everything? Still big, ~.1 rise over 20 years! Just need to note that this can't be representative globally.
+* Look at SOC, given its importance (cf. Crowther 2016)?
+* Do we _really_ have 652 Rh_annual numbers? Triple-check that.
+* When finalized have Min re-run SIF lookup.
 
 ## Abstract
 
@@ -35,45 +25,37 @@ Here we show that:
 
 * The _R_~H~:_R_~S~ ratio is rising over time, after controlling for climate, measurement method, and disturbance.
 * The ratios of both _R_~H~ and _R_~S~ to remotely-sensed (MODIS) GPP are rising over time. Both trends are steeper for deciduous ecosystems.
-* The ratios of both _R_~H~ and _R_~S~ to data synthesis (Beer et al.) GPP are rising over time. The _R_~S~ trend is steeper for deciduous ecosystems.
-* The ratios of both _R_~H~ and _R_~S~ to SCIA SIF are rising over time. The _R_~S~ trend is steeper for deciduous ecosystems. No temporal trend is seen for the (very short) GOME2 SIF data, however.
-* The ratio of _R_~S~ to FLUXNET GPP (in contrast to previous GPPs, a local measurement but smaller N) is rising in ecosystems that have experienced positive 1991-2010 precipitation trends.
+* The ratios of both _R_~H~ and _R_~S~ to data synthesis (Beer et al.) GPP are rising over time. The trend is steeper for deciduous ecosystems.
+* The ratios of both _R_~H~ and _R_~S~ to SCIA and GOME2 SIF are rising over time. The trend is steeper for deciduous ecosystems and (for _R_~S~) influenced by precipitation. No temporal trend is seen for the (very short) GOME2 SIF data, however.
+* The ratio of _R_~S~ to FLUXNET GPP (a local measurement but much smaller N) is negative in the single site that dominates these data, and is otherwise not significant.
+* The ratio of NEE~night~ to FLUXNET is rising over time.
 
 Implications:
 
 * This shows a consistent picture of rising _R_~H~, both in absolute terms and relative to _R_~S~ and GPP.
 * This in turn implies a SOC feedback to the atmosphere driven by climate change.
 
-To-do list:
-
-* Check UMBS and Willow Creek soil respiration data - go to studies.
-* The FLUXNET analysis is _so small N_. Plus, dominated by Harvard Forest.
-* Look at SOC, given its importance (cf. Crowther 2016)
-* Check bias due to partitioning method
-* Read about regression with a ratio - problem?
-
-
 SRDB status:
 
-* `r nrow(srdb)` records used here, `r min(srdb$Study_midyear)` - `r max(srdb$Study_midyear)`
+* `r nrow(srdb)` records used here, `r min(srdb$Study_midyear)` - `r max(srdb$Study_midyear)` observations
 * `r sum(!is.na(srdb$Rs_annual))` annual _R_~S~ observations
 * `r sum(!is.na(srdb$Rh_annual))` annual _R_~H~ observations
 
 ## Introduction
 
-Perhaps the most urgent open question in terrestrial biogeochemistry and carbon cycling research, at least with respect to climate change, is the degree to which long-stored soil organic carbon (SOC) will be mineralized to the atmosphere.
+Perhaps the most urgent open question in terrestrial biogeochemistry and carbon cycling research, at least with respect to climate change, is the degree to which long-stored soil organic carbon (SOC) may be mineralized to the atmosphere as anthropogenic-driven climate change progresses.
 
-Our [2010 Nature paper](http://www.nature.com/nature/journal/v464/n7288/full/nature08930.html) concluded by saying yeah, soil respiration (R~S~) is increasing globally, based on an analysis of a soil respiration database (SRDB), **but** we can't distinguish whether this is an acceleration of the C cycle, or a feedback:
+Our [2010 Nature paper](http://www.nature.com/nature/journal/v464/n7288/full/nature08930.html) concluded by saying yeah, soil respiration (_R_~S~) is increasing globally, based on an analysis of a soil respiration database (SRDB), **but** we can't distinguish whether this is an acceleration of the C cycle, or a feedback:
 
->This positive global R~S~ response does not necessarily constitute a positive feedback loop between soil and the atmosphere; it could be driven by higher carbon inputs to soil rather than by mobilization of stored older carbon, as the temperature sensitivity and priming potential of recalcitrant carbon are uncertain.
+>This positive global _R_~S~ response does not necessarily constitute a positive feedback loop between soil and the atmosphere; it could be driven by higher carbon inputs to soil rather than by mobilization of stored older carbon, as the temperature sensitivity and priming potential of recalcitrant carbon are uncertain.
 
-Seven years later, we have a _lot_ more data, both within the SRDB and from other sources. How can we test whether heterotrophic respiration (R~H~) is in fact increasing?
+Seven years later, we have a _lot_ more data, both within the SRDB and from other sources. How can we test whether heterotrophic respiration (_R_~H~) is in fact increasing?
 
-R~H~ generally varies in a predictable way with R~S~ ([B-L 2004](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2004.00816.x/abstract), [Subke 2006](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2006.01117.x/abstract)). Everything else being equal, we would expect this ratio to change (increase) if soil C is being increasingly mineralized into R~H~. In addition, we would expect ecosystems' overall C balance to be affected (even though production might be itself increasing due to climate change).
+_R_~H~ generally varies in a predictable way with R~S~ ([B-L 2004](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2004.00816.x/abstract), [Subke 2006](http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2486.2006.01117.x/abstract)). Everything else being equal, we would expect this ratio to change (increase) if soil C is being increasingly mineralized into _R_~H~. In addition, we would expect ecosystems' overall C balance to be affected (even though production might be itself increasing due to climate change).
 
 ## Methods Summary
 
-We used an open-access soil respiration database (Bond-Lamberty and Thomson 2010), expanded and updated to include studies published through 2015. The database was filtered for studies that reported annual RH and/or RS; included explicit spatial and temporal data; took place in unmanaged or natural ecosystems without experimental manipulation; and used modern, standardized techniques to measure CO2. The result was a dataset (N = `r nrow(srdb)`, `r sum(!is.na(srdb$Rs_annual))` of _R_~S~ and `r sum(!is.na(srdb$Rh_annual))` of _R_~H~) of field-measured respiration fluxes between 1989 and 2014.
+We used an open-access soil respiration database (Bond-Lamberty and Thomson 2010), expanded and updated to include studies published through 2015. The database was filtered for studies that reported annual _R_~H~ and/or _R_~S~; included explicit spatial and temporal data; took place in unmanaged or natural ecosystems without experimental manipulation; and used modern, standardized techniques to measure CO~2~. The result was a dataset (N = `r nrow(srdb)`, `r sum(!is.na(srdb$Rs_annual))` of _R_~S~ and `r sum(!is.na(srdb$Rh_annual))` of _R_~H~) of field-measured respiration fluxes between 1989 and 2014.
 
 
 ## Results
@@ -94,9 +76,7 @@ This change is not significant using a Mann-Kendall trend test (`r pclean(mk1_rh
 knitr::kable(anova(m1_rh_rs), digits = 3)
 ```
 
-This makes sense.
-
-This is in a sense unsurprising, as from basic biokinetics (ref) we expect that the absolute value of observed annual _R_~H~ should respond to climate changes over the `r max(srdb$Study_midyear) - min(srdb$Study_midyear) + 1`-year record. This is true: in a linear regression mean annual precipitation (`r pclean(m2_rh_climate_map_signif)`) was the strongest driver, with potential evapotranspiration, stage (i.e. disturbance effect) and temperature anomaly (departure from the 1961-1990 mean) highly significant (all P < 0.001) as well.
+This makes sense. From basic biokinetics we expect that the absolute value of observed annual _R_~H~ should respond to climate changes over the `r max(srdb$Study_midyear) - min(srdb$Study_midyear) + 1`-year record. This is true: in a linear regression mean annual precipitation (`r pclean(m2_rh_climate_map_signif)`) was the strongest driver, with potential evapotranspiration, stage (i.e. disturbance effect) and temperature anomaly (departure from the 1961-1990 mean) highly significant (all P < 0.001) as well.
 
 
 ### Remote sensing analyses
@@ -107,7 +87,7 @@ A rising _R_~H~:_R_~S~ ratio could be due to SOC loss and thus a climate feedbac
 print(p_gppsif)
 ```
 
-(Note that for clarity, this graph does not show a number of high RS:GPP and RS:SIF points. It also excludes (removes from the data set) `r nrow(s_gppsif_excluded)` points with R:GPP > `r MAX_FLUX_TO_GPP`.)
+(Note that for clarity, this graph does not show a number of high _R_~S~:GPP and _R_~S~:SIF points. It also excludes (removes from the data set) `r nrow(s_gppsif_excluded)` points with R:GPP > `r MAX_FLUX_TO_GPP`.)
 
 We perform a rigorous Mann-Kendall trend test, that does not account for climate, and fit a linear model with leaf habit, partition method, mean annual temperature, mean annual precipitation, and time (the trend test) as interacting factors:
 
@@ -117,58 +97,71 @@ knitr::kable(rs_results)
 
 Both _R_~H~ (the variable of primary interest, but for which many fewer measurements are available) and _R_~S~ (which incorporates both _R_~H~ and belowground autotrophic respiration) exhibit significant trends over time (`r pclean(m_Beer.GPP_Rs_annual_signif)` for _R_~S~:Beer GPP, P < 0.001 for all others) relative to two different GPP data sources. The _R_~S~:MODIS GPP ratio may be rising faster in deciduous ecosystems than in evergreen ecosystems (`r pclean( m_MODIS.GPP_Rs_annual_leaf_trend_signif)`).
 
-We also examined the ratios of _R_~H~ and _R_~S~ to two sun-induced fluorescence (SIF) global data products, which are correlated with GPP but provide a completely independent test. Both _R_~H~:SIF and _R_~S~:SIF exhibited temporal trends against the SCIAMACHY (http://www.sciamachy.org) data after controlling for disturbance and measurement method (P < 0.001 for both; **Figure 2**). The _R_~H~ rise was significantly stronger in deciduous ecosystems (`r pclean(m_SCIAMACHY.SIF_Rh_annual_leaf_trend_signif)`). No _R_~H~:SIF or _R_~S~:SIF temporal trend was found using the GOME2 SIF data, but this is by far the shortest and most recent (2007-2014) of the datasets tested.
+We also examined the ratios of _R_~H~ and _R_~S~ to two sun-induced fluorescence (SIF) global data products, which are correlated with GPP but provide a completely independent test. Both _R_~H~:SIF and _R_~S~:SIF exhibited temporal trends against the SCIAMACHY (http://www.sciamachy.org) data after controlling for disturbance and measurement method (P < 0.001 for both; **Figure 2**). The _R_~H~ rise was significantly stronger in deciduous ecosystems (`r pclean(m_SCIAMACHY.SIF_Rh_annual_leaf_trend_signif)`). The GOME2 SIF data showed similar trends for _R_~S~:SIF; the _R_~H~:SIF did not exhibit a significant rise over the short timespan (2004-2014) of these data.
 
 
 ### FLUXNET analysis
 
-One potential objection to the above analysis is that there's an enormous spatial mismatch between remotely-sensed data and the chamber measurements used to compute _R_~H~ and _R_~S~. To address this problem, we use FLUXNET Tier 1 data to identify GPP measurements made in the same location and year as _R_~S~ measurements. The advantage is this is a local (<= `r MAX_FLUXNET_DIST` km), empirical, and highly standardized GPP measurement. The tradeoff, as compared to a global GPP product, is that it drastically reduces the number of available data points; a FLUXNET-_R_~H~ comparison is not possible.
+One potential objection to the above analysis is that there's an enormous spatial mismatch between remotely-sensed data and the chamber measurements used to compute _R_~H~ and _R_~S~. To try to address this problem, we use FLUXNET Tier 1 data to identify GPP measurements made in the same location and year as _R_~S~ measurements. The advantage is this is a local (<= `r MAX_FLUXNET_DIST` km), empirical, and highly standardized GPP measurement. The tradeoff, as compared to a global GPP product, is that it drastically reduces the number of available data points; a FLUXNET-_R_~H~ comparison is not possible.
 
 ```{r, echo = FALSE}
 print(p_fluxnet)
 ```
 
-The M-K overall trend is significant (Mann-Kendall `r pclean(mk3_fluxnet$sl)`).
+The M-K overall trend is significantly _negative_ (Mann-Kendall `r pclean(mk3_fluxnet$sl)`).
 
 ```{r, echo = FALSE}
 print(anova(m_fluxnet))
 hf_percnt <- round(nrow(s_fluxnet_nohf) / nrow(s_fluxnet) * 100, 0)
 ```
 
-One potential problem is that Harvard Forest has an enormous number of points - `r hf_percnt`% - but it exhibits a falling _R_~S~:GPP ratio over time. Excluding HF gives:
+One big problem is that Harvard Forest has an enormous fraction of the available data - `r hf_percnt`% - and it exhibits a falling _R_~S~:GPP~fluxnet~ ratio over time. Removing Harvard Forest leaves no temporal trend at all, although at the site level, `r fluxnet_Rs_GPP_sitetrends["Rising"]` of `r sum(fluxnet_Rs_GPP_sitetrends)` sites show numerically rising _R_~S~:GPP trends. 
 
 ```{r, echo = FALSE}
 print(anova(m_fluxnet_nohf))
 ```
 
-In both cases, there's a significant temporal trend in the _R_~S~ to GPP ratio after controlling for stage (aggrading/mature), leaf habit (deciduous/evergreen), mean annual temperature, and mean annual precipitation.
+A bootstrap analysis using the _R_~S~:GPP~MODIS~ data, in which we randomly drew progressively smaller samples, or replaced progressively larger amounts of the data with fake no-trend data, suggests that we'd be unlikely (<30%) to see an effect with only `r nrow(s_fluxnet)` observations, the size of the _R_~S~:GPP~fluxnet~ dataset. (In image below, the vertical dashed line shows where this size falls, ~5%, while the horizontal line is P = 0.05).
+
+![](outputs/5-bootstrap/bootstrap2.png)
+
+The FLUXNET data allow one further test. _Nighttime_ NEE is likely to be dominated by _R_~S~, and following the logic above, would likely increase relative to GPP over time, if _R_~H~ and thus _R_~S~ are in fact rising. This is not a perfect comparison (as nighttime NEE != _R_~S~ != _R_~H~) but allows us to use the full, much larger, Tier 1 FLUXNET2015 dataset.
+
+```{r, echo=FALSE}
+print(anova(m_fluxnet_only))
+```
+
+For these data (N = `r nrow(s_fluxnet_only)`), the NEE~night~:GPP ratio is in fact rising with time, interacting with precipitation trends (`r pclean(m_MODIS.GPP_Rs_annual_precip_trend_signif)`).
 
 ## Summary
 
-Test  | N | Leaf habit? | Precipitation?		
-------| - | ------------------- | -------------		
-↑ R~H~:R~S~ ratio over time  | `r nrow(s_rh_rs)` | ?	| Yes	
-↑ R~H~:Beer GPP over time  | `r nrow(s_Beer.GPP_Rh_annual)` | Yes	| Yes
-↑ R~S~:Beer GPP over time  | `r nrow(s_Beer.GPP_Rs_annual)` | Yes | Yes		
-↑ R~H~:MODIS GPP over time  | `r nrow(s_MODIS.GPP_Rh_annual)` | Yes	| Yes
-↑ R~S~:MODIS GPP over time  | `r nrow(s_MODIS.GPP_Rs_annual)` | Yes | Yes
-↑ R~H~:SCIA SIF over time  | `r nrow(s_SCIAMACHY.SIF_Rh_annual)` | Yes	| Yes
-↑ R~S~:SCIA SIF over time  | `r nrow(s_SCIAMACHY.SIF_Rs_annual)` | Yes | Yes		
-↑ R~H~:GOME2 SIF over time  | `r nrow(s_GOME2.SIF_Rh_annual)` | Yes	| Yes
-↑ R~S~:GOME2 SIF over time  | `r nrow(s_GOME2.SIF_Rs_annual)` | Yes | Yes
-↑ R~S~:FLUXNET GPP over time  | `r nrow(s_fluxnet)` | Yes | Yes		
-R~H~ climate response | `r length(m2_rh_climate$residuals)` | ? | Yes
+In summary, almost all observed trends support the hypothesis that _R_~H~ (and thus _R_~S~) is increasing due to climate-driven perturbations of ecosystem carbon cycles.
+
+Test  | N | Trend? | Leaf habit? | Precipitation?		
+------| - | ------- | ----------- | -------------		
+↑ R~H~:R~S~ ratio over time  | `r nrow(s_rh_rs)` | Yes | Yes	| Yes	
+↑ R~H~:Beer GPP over time  | `r nrow(s_Beer.GPP_Rh_annual)` | Yes | Yes	| Yes
+↑ R~S~:Beer GPP over time  | `r nrow(s_Beer.GPP_Rs_annual)` | Yes | Yes | Yes		
+↑ R~H~:MODIS GPP over time  | `r nrow(s_MODIS.GPP_Rh_annual)` | Yes | Yes	| No
+↑ R~S~:MODIS GPP over time  | `r nrow(s_MODIS.GPP_Rs_annual)` | Yes | Yes | Yes
+↑ R~H~:SCIA SIF over time  | `r nrow(s_SCIAMACHY.SIF_Rh_annual)` | Yes | Yes	| No
+↑ R~S~:SCIA SIF over time  | `r nrow(s_SCIAMACHY.SIF_Rs_annual)` | Yes | Yes | Yes		
+↑ R~H~:GOME2 SIF over time  | `r nrow(s_GOME2.SIF_Rh_annual)` | No | Yes	| No
+↑ R~S~:GOME2 SIF over time  | `r nrow(s_GOME2.SIF_Rs_annual)` | Yes | Yes | Yes
+↑ R~S~:FLUXNET GPP over time  | `r nrow(s_fluxnet)` | No | Yes | Yes
+↑ NEE~night~:FLUXNET GPP over time  | `r nrow(s_fluxnet_only)` | Yes | Yes? | Yes		
+R~H~ climate response | `r length(m2_rh_climate$residuals)` | - | Yes | No
 
 ### Potential source of error
 
 **Site selection bias.** Researchers might be sampling more recently-disturbed sites over time; we control this by testing for the interaction of `Year` and `Stage`, a field in the SRDB that records "Aggrading" or "Mature". Another possibility is preferential sampling of more-productive sites over time, with higher _R_~H~:_R_~S~, and we control for this by testing the _R_~H~:_R_~S~ trend against MAT and MAP.
 
-**Measurement bias.** We use only IRGA has gas chromatography methods from 1989 onwards. These are standardized and modern techniques.
+**CO~2~ measurement bias.** We use only IRGA has gas chromatography methods from 1989 onwards. These are standardized and modern techniques.
 
 **Partitioning method bias.** We test for this effect.
 
 **Autocorrelation**. FLUXNET GPP uses _R_~S~ at least sometimes? And that feeds into Beer et al. upscaling product. Too bad; GPP, in particular FLUXNET GPP, is the gold standard we have to compare against.
 
-**Site correlation**. The FLUXNET analysis should probably include site as a random effect to control for this. TODO.
+**Site correlation**. The FLUXNET analysis should probably include site as a random effect to control for this. Tried this, and it didn't change anything.
 
 **Random error.** We always test for influential outliers. But this is a correlative, observational study, and the possibility of a Type I error can never be completely excluded. There's a lot of variability.
