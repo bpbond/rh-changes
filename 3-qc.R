@@ -130,7 +130,7 @@ if(require(maps) & require(mapdata)) {
 # the plots to shift the decadal start point by 5 years.
 srdb %>%
   filter(Study_midyear >= 1989) %>%
-  select(Study_midyear, Biome, Ecosystem_type, Stage, map_hadcrut4, mat_hadcrut4) %>%
+  dplyr::select(Study_midyear, Biome, Ecosystem_type, Stage, map_hadcrut4, mat_hadcrut4) %>%
   gather(thing, value, -Study_midyear, -Biome, -map_hadcrut4, -mat_hadcrut4) ->
   srdb1
 srdb1$yearbin <- as.character(cut(srdb1$Study_midyear, breaks = 3))

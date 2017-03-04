@@ -18,6 +18,7 @@ To do/problems/thoughts:
 * Look at SOC, given its importance (cf. Crowther 2016)?
 * Do we _really_ have 652 Rh_annual numbers? Triple-check that.
 * When finalized have Min re-run SIF lookup.
+* Check Harvard Forest numbers in particular - especially Rs being used
 
 ## Abstract
 

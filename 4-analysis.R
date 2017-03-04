@@ -125,8 +125,15 @@ srdb$tmp_anom <- srdb$tmp_hadcrut4 - srdb$mat_hadcrut4
 srdb$pre_anom <- srdb$pre_hadcrut4 - srdb$map_hadcrut4
 srdb$pet_anom <- srdb$pet - srdb$pet_norm
 
-m2_rh_climate <- lm(sqrt(Rh_annual) ~ mat_hadcrut4 + tmp_anom + map_hadcrut4 + pre_anom + pet_norm + pet_anom + Stage * Leaf_habit, 
-                    data = srdb)
+srdb %>%
+  filter(!is.na(mat_hadcrut4), !is.na(tmp_anom), 
+         !is.na(mat_hadcrut4), !is.na(pre_anom),
+         !is.na(pet_norm), !is.na(pet_anom),
+         !is.na(Rh_annual), !is.na(Leaf_habit), !is.na(Stage)) ->
+  s_rh_climate
+m2_rh_climate <- lm(sqrt(Rh_annual) ~ mat_hadcrut4 + tmp_anom + map_hadcrut4 + pre_anom + pet_norm + pet_anom + pet_anom + Stage * Leaf_habit, 
+     data = s_rh_climate)
+   
 m2_rh_climate <- stepAIC(m2_rh_climate, direction = "both")
 print(anova(m2_rh_climate))
 m2_rh_climate_map_signif <- anova(m2_rh_climate)["map_hadcrut4", "Pr(>F)"]
@@ -163,7 +170,6 @@ srdb %>%
   group_by(FLUXNET_SITE_ID, IGBP, tmp_trend, pre_trend, Leaf_habit, Stage, Year) %>%
   summarise(Rs_annual = mean(Rs_annual),
             Rh_annual = mean(Rh_annual),
-            NEE_VUT_REF = mean(NEE_VUT_REF),
             RECO_NT_VUT_REF = mean(RECO_NT_VUT_REF),
             gpp_fluxnet = mean(gpp_fluxnet),
             YearsOfData = mean(YearsOfData),
@@ -191,7 +197,8 @@ m_fluxnet <- lm(Rs_annual/gpp_fluxnet ~ Year * Leaf_habit + mat_hadcrut4 * map_h
                 data = s_fluxnet, weights = YearsOfData)
 m_fluxnet <- MASS::stepAIC(m_fluxnet, direction = "both")
 print(anova(m_fluxnet))
-p <- qplot(Year, Rs_annual/gpp_fluxnet, color=pre_trend_label, data=s_fluxnet) + geom_smooth(method="lm")
+p <- qplot(Year, Rs_annual/gpp_fluxnet, color=pre_trend_label, data=s_fluxnet) + 
+  geom_smooth(method = "lm", na.rm = TRUE)
 print(p)
 save_plot("fluxnet_basic")
 
