@@ -1,6 +1,13 @@
 # Heterotrophic respiration - bootstrap analysis script
-#
 # Ben Bond-Lamberty March 2017
+#
+# Fundamentally, we're interested in how likely it is that the FLUXNET
+# Rs:GPP analysis is NOT significant even if (as we hypothesize) there
+# is actually a large-scale signal. We run two bootstraped sensitivity
+# analyses: progressively change Rs:MODIS GPP to no-change, and look at 
+# how robust that finding is; and progressively remove Rs:GPP data entirely,
+# asking how likely it was to find a null result in the FLUXNET analysis
+# which is ~5% of the Rs:MODIS dataset).
 
 source("0-functions.R")
 
@@ -80,7 +87,7 @@ p1 <- ggplot(bs1_results, aes(fdf, p.value, group = fdf)) +
   ggtitle(paste(basename(RS_DATASET), "N =", BOOTSTRAP_N))
 
 print(p1)
-save_plot("bootstrap1")
+save_plot("bootstrap1", ptype = ".png")
 
 # --------------------- Remote sensing bootstrap 2 (data size) --------------------------- 
 
@@ -117,8 +124,17 @@ p2 <- ggplot(bs2_results, aes(dfrac, p.value, group = dfrac)) +
   ylab("Significance of Rs:GPP trend over time") +
   ggtitle(paste(basename(RS_DATASET), "N =", BOOTSTRAP_N))
 
+printlog("What's the chance of getting a significant trend at 5%?")
+bs2_results %>% 
+  filter(dfrac == 0.05) %>% 
+  mutate(signif = if_else(p.value < 0.05, "Significant", "Not significant")) %>%
+  group_by(signif) %>%
+  summarise(n=n()) %>% 
+  mutate(percent = n / sum(n) * 100) %>%
+  print
+
 print(p2)
-save_plot("bootstrap2")
+save_plot("bootstrap2", ptype = ".png")
 
 # ----------------------- Clean up ------------------------- 
 

@@ -1,6 +1,9 @@
 # Prep the FLUXNET data
-#
 # Ben Bond-Lamberty January 2017
+#
+# Two tasks here: extract the annual GPP (along with QC, temp/precip,
+# NEE, etc) from zipped FLUXNET TIER1 files; and extract the hourly
+# NEE, filter for nighttime only, and compute an annual nighttime NEE.
 
 source("0-functions.R")
 
@@ -50,7 +53,8 @@ for(f in files) {
                   # convert from µmol/m2/s to gC/m2/yr. Here n() is number of half-hours
                   12 / 10^6 * 60 * 30 * n()) %>%
       left_join(d_annual, by = c("YEAR_START" = "TIMESTAMP")) %>%
-      rename(TIMESTAMP = YEAR_START) ->
+      select(-TIMESTAMP) %>%
+      rename(Year = YEAR_START) ->
       d[[f]]
     file.remove(hourly_file)
   } else {
@@ -72,11 +76,12 @@ bind_rows(d) %>%
 
 save_data(fluxnet, scriptfolder = FALSE)
 
+# Sanity checks - a couple diagnostics
 p <- qplot(RECO_DT_VUT_REF, NEE_VUT_REF_NIGHT, data = fluxnet, na.rm = TRUE) + geom_abline()
 print(p)
 save_plot("Reco_night")
 
-print(lm(NEE_VUT_REF_NIGHT ~ RECO_DT_VUT_REF, data=fluxnet))
+print(lm(NEE_VUT_REF_NIGHT ~ RECO_DT_VUT_REF, data = fluxnet))
 
 printlog("All done with", SCRIPTNAME)
 closelog()

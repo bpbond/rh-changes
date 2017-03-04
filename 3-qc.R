@@ -1,7 +1,9 @@
 # Heterotrophic respiration - quality control
-# Make a bunch of plots so we can check whether the various datasets
-# (Fluxnet, Beer GPP, MODIS GPP, SRDB) agree with each other
 # Ben Bond-Lamberty February 2017
+#
+# Make a bunch of plots so we can check whether the various datasets
+# (Fluxnet, Beer GPP, MODIS GPP, SRDB) agree with each other, or whether
+# I've screwed up something up.
 
 source("0-functions.R")
 

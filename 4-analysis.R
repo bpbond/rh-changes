@@ -1,6 +1,14 @@
 # Heterotrophic respiration - main analysis script
-#
 # Ben Bond-Lamberty February 2017
+#
+# A lot goes on here, but there are four main sections below:
+# 1. The Rh:Rs analysis: is the ratio changing over time?
+# 2. Is Rh responding to climate anomalies? (Minor; parallels 2010 paper)
+# 3. Is Rs:FLUXNET GPP rising over time?
+# 4. For FLUXNET only, is nighttime NEE:GPP rising?
+# 5. Remote sensing: are Rh:GPP, Rs:GPP, Rh:SIF, and Rs:SIF changing over time?
+# This script saves plots, but also leaves a bunch of stuff in-memory
+# for the RMarkdown script to access.
 
 source("0-functions.R")
 
@@ -195,22 +203,6 @@ print(anova(m_fluxnet_nohf))
 print(p %+% s_fluxnet_nohf)
 save_plot("fluxnet_nohf_basic")
 
-s_fluxnet_decid <- subset(s_fluxnet, Leaf_habit == "Deciduous")
-m_fluxnet_decid <- lm(Rs_annual/gpp_fluxnet ~ Year + mat_hadcrut4 * map_hadcrut4, 
-                      data = s_fluxnet_decid, weights = YearsOfData)
-m_fluxnet_decid <- MASS::stepAIC(m_fluxnet_decid, direction = "both")
-print(anova(m_fluxnet_decid))
-print(p %+% s_fluxnet_decid)
-save_plot("fluxnet_decid_basic")
-
-s_fluxnet_everg <- subset(s_fluxnet, Leaf_habit == "Evergreen")
-m_fluxnet_everg <- lm(Rs_annual/gpp_fluxnet ~ Year + mat_hadcrut4 * map_hadcrut4, 
-                      data = s_fluxnet_everg, weights = YearsOfData)
-m_fluxnet_everg <- MASS::stepAIC(m_fluxnet_everg, direction = "both")
-print(anova(m_fluxnet_everg))
-print(p %+% s_fluxnet_everg)
-save_plot("fluxnet_everg_basic")
-
 # Make plot
 s_fluxnet %>%
   group_by(FLUXNET_SITE_ID, IGBP) %>%
@@ -234,8 +226,84 @@ print(p_fluxnet)
 
 save_plot("gpp_fluxnet")
 
+# How many _sites_ have positive trends, versus not?
+s_fluxnet %>%
+  group_by(FLUXNET_SITE_ID) %>%
+  do(sitemod = lm(Rs_annual / gpp_fluxnet ~ Year, data = .)) %>%
+  tidy(sitemod) %>%
+  filter(term == "Year") %>%
+  mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not rising")) %>%
+  group_by(trend) %>%
+  summarise(n = n()) ->
+  x
+fluxnet_Rs_GPP_sitetrends = x$n
+names(fluxnet_Rs_GPP_sitetrends) <- x$trend
 
-# ----------- 4. GPP and SIF analysis -------------- 
+
+
+# --------------- 4. FLUXNET-only analysis --------------------- 
+
+# Rodrigo's suggestion: look at ratio of annual nighttime NEE to
+# annual GPP in the FLUXNET data. Because nighttime NEE is presumably
+# dominated by soil respiration, we would expect, if Rh is increasing
+# relative to GPP, that NEEnight would also increase relative to GPP.
+printlog(SEPARATOR)
+readr::read_csv("outputs/fluxnet.csv") %>%
+  filter(NEE_VUT_REF_NIGHT > 0, GPP_DT_VUT_REF > 0,
+         NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF < 1,
+         !is.na(TA_F), !is.na(P_F), !is.na(GPP_DT_VUT_REF)) ->
+  s_fluxnet_only
+
+printlog("Computing warming/cooling/drying/wetting trends from tower data")
+s_fluxnet_only %>%
+  group_by(SITE_ID) %>% 
+  summarise(nyears = n()) %>%
+  filter(nyears > 2) %>%
+  left_join(s_fluxnet_only, by = "SITE_ID") ->
+  s_fluxnet_only
+
+s_fluxnet_only %>%
+  group_by(SITE_ID) %>%
+  do(modt = lm(TA_F ~ Year, data = .),
+     modp = lm(P_F ~ Year, data = .)) ->
+  fluxnet_only_mods
+
+fluxnet_only_mods %>%
+  tidy(modt) %>%
+  filter(term == "Year") %>%
+  mutate(t_trend = if_else(sign(estimate) > 0, "Warmer", "Cooler")) %>%
+  dplyr::select(SITE_ID, t_trend) ->
+  t_trends
+fluxnet_only_mods %>%
+  tidy(modp) %>%
+  filter(term == "Year") %>%
+  mutate(p_trend = if_else(sign(estimate) > 0, "Wetter", "Drier")) %>%
+  dplyr::select(SITE_ID, p_trend) %>%
+  right_join(s_fluxnet_only, by = "SITE_ID") %>%
+  left_join(t_trends, by = "SITE_ID") %>%
+  filter(!is.na(t_trend), !is.na(p_trend)) ->
+  s_fluxnet_only
+
+p_fluxnet_only <- ggplot(s_fluxnet_only, aes(Year, NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF, group = SITE_ID)) + 
+  geom_point(aes(color = IGBP), na.rm = TRUE) + 
+  geom_smooth(method = "lm", color = "grey", fill = NA, na.rm = TRUE) + 
+  geom_smooth(method = "lm", group = 1, na.rm = TRUE) +
+  ylab(expression(NEE[night]:GPP[fluxnet])) +
+  facet_grid(t_trend ~ p_trend) +
+  ylim(c(0, 1))
+
+print(p_fluxnet_only)
+save_plot("fluxnet_only")
+
+printlog("Fitting temporal model...")
+m_fluxnet_only <- lm(NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF ~ Year * t_trend * p_trend, data = s_fluxnet_only)
+m_fluxnet_only <- MASS::stepAIC(m_fluxnet_only, direction = "both")
+print(anova(m_fluxnet_only))
+m_MODIS.GPP_Rs_annual_precip_trend_signif <- anova(m_fluxnet_only)["Year:p_trend", "Pr(>F)"]
+save_model_diagnostics(m_fluxnet_only)
+
+
+# ----------- 5. GPP and SIF analysis -------------- 
 
 printlog(SEPARATOR)
 printlog("Remote sensing analysis")
@@ -276,7 +344,7 @@ p_gppsif_base <- ggplot(s_gppsif_included, aes(Study_midyear, fluxvalue / gppsif
   facet_grid(GPPSIF ~ Prettyflux, scales = "free", labeller = label_parsed) +
   scale_color_discrete("Leaf habit") +
   xlab("Year") +
-  ylab("Respiration:(GPP or rescaled SIF)") +
+  ylab("Respiration:(GPP or SIF)") +
   coord_cartesian(ylim = c(0, 2))
 p_gppsif <- p_gppsif_base + 
   geom_smooth(data = subset(s_gppsif_included, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
@@ -310,7 +378,7 @@ for(dataset in unique(s_gppsif_included$GPPSIF)) {
     dname <- make.names(paste("s", dataset, f, sep = "_"))
     assign(dname, d)
     save_data(d, fname = dname, scriptfolder = FALSE)
-
+    
     printlog("Trend tests for", f, dataset)
     
     # Mann-Kendall

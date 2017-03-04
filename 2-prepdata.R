@@ -1,9 +1,10 @@
 # Prep data for heterotrophic respiration analysis
+# Ben Bond-Lamberty January 2017
 #
 # Load SRDB; filter for 'good' data (unmanipulated ecosystems, IRGA/GC only, etc);
-# spatially match with CRU climate, Max Planck GPP, MODIS GPP, FLUXNET, and SoilGrids1km datasets
-#
-# Ben Bond-Lamberty January 2017
+# spatially match with CRU climate, Max Planck GPP, MODIS GPP (slow), FLUXNET,
+# and SoilGrids1km datasets. This is fairly time-intensive, takes 1-2 hours,
+# so there is a `APPEND_ONLY` option below.
 
 source("0-functions.R")
 
@@ -288,7 +289,7 @@ stopifnot(!any(duplicated(srdb$Record_number)))
 # -------------- 3. FLUXNET ------------------- 
 
 # Start by finding the nearest Fluxnet station, and its distance in km
-read_csv("outputs/fluxnet.csv", col_types = "iddddddccdddcdi") %>%
+read_csv("outputs/fluxnet.csv", col_types = "dddddddddccdddcdd") %>%
   filter(!is.na(LOCATION_LONG), !is.na(LOCATION_LAT)) ->
   fluxnet
 srdb <- match_fluxnet(srdb, fluxnet)
@@ -306,7 +307,7 @@ save_data(srdb_expanded)
 printlog("Computing FLUXNET means as necessary and merging back in...")
 srdb_expanded %>%
   dplyr::select(-Longitude, -Latitude) %>%
-  left_join(fluxnet, by = c("FLUXNET_SITE_ID" = "SITE_ID", "Year" = "TIMESTAMP")) %>%
+  left_join(fluxnet, by = c("FLUXNET_SITE_ID" = "SITE_ID", "Year" = "Year")) %>%
   dplyr::select(-SITE_NAME) %>%
   rename(mat_fluxnet = MAT, map_fluxnet = MAP) %>%
   group_by(FLUXNET_SITE_ID, Record_number, IGBP) %>%
