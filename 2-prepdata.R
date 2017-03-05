@@ -16,7 +16,7 @@ CRU_TMP <- "~/Data/CRU/cru_ts3.24.1901.2015.tmp.dat.nc.gz"
 # Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pre/cru_ts3.24.1901.2015.pre.dat.nc.gz
 CRU_PRE <- "~/Data/CRU/cru_ts3.24.1901.2015.pre.dat.nc.gz"
 # Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pet/cru_ts3.24.1901.2015.pet.dat.nc.gz
-CRU_PRE <- "~/Data/CRU/cru_ts3.24.1901.2015.pet.dat.nc.gz"
+CRU_PET <- "~/Data/CRU/cru_ts3.24.1901.2015.pet.dat.nc.gz"
 
 APPEND_ONLY <- FALSE
 
@@ -375,6 +375,8 @@ all_data[["gpp"]] <- gpp * 1000 * 60 * 60 * 24 * 365  # Convert from kgC/m2/s to
 
 # -------------- 5. Match with MODIS GPP data ------------------- 
 
+# This is the slow step...
+
 dir <- "/Users/d3x290/Data/MODIS_GPP/"
 # Downloaded 6 Jan 2017 from http://www.ntsg.umt.edu/project/mod17
 modisgpp <- extract_geotiff_data(dir, "modisgpp", srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 2000)
@@ -395,7 +397,7 @@ orc <- extract_geotiff_data(dir, "ORC", srdb$Longitude, srdb$Latitude, srdb$Stud
 
 all_data[["soc"]] <- tibble(SOC = bd$BD * orc$ORC / 1000)  # kg C in top 1 m
 
-modisgpp <- tibble(modisgpp = 1:nrow(srdb))
+#modisgpp <- tibble(modisgpp = 1:nrow(srdb))
 
 
 # -------------- Done!  ------------------- 
