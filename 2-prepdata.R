@@ -11,7 +11,16 @@ source("0-functions.R")
 SCRIPTNAME  	<- "2-prepdata.R"
 PROBLEM       <- FALSE
 
+# Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/tmp/cru_ts3.24.1901.2015.tmp.dat.nc.gz
+CRU_TMP <- "~/Data/CRU/cru_ts3.24.1901.2015.tmp.dat.nc.gz"
+# Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pre/cru_ts3.24.1901.2015.pre.dat.nc.gz
+CRU_PRE <- "~/Data/CRU/cru_ts3.24.1901.2015.pre.dat.nc.gz"
+# Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pet/cru_ts3.24.1901.2015.pet.dat.nc.gz
+CRU_PRE <- "~/Data/CRU/cru_ts3.24.1901.2015.pet.dat.nc.gz"
+
 APPEND_ONLY <- FALSE
+
+DEFAULT_TRENDLINE <- c(1991, 2010)
 
 library(raster) # 2.5.8
 
@@ -62,7 +71,7 @@ match_fluxnet <- function(d, fluxnet) {
 extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears, 
                          file_startyear, file_layers,
                          baseline = c(1961, 1990), 
-                         trendline = c(1991, 2010),
+                         trendline = DEFAULT_TRENDLINE,
                          print_every = 100) {
   
   printlog(SEPARATOR)
@@ -196,7 +205,7 @@ extract_geotiff_data <- function(directory, varname, lon, lat, midyear, nyears, 
 # Extract CRU and Max Planck data given vectors of lon/lat/time info
 extract_ncdf_data <- function(filename, lon, lat, midyear, nyears, file_startyear,
                               baseline = c(1961, 1990),
-                              trendline = c(1991, 2010),
+                              trendline = DEFAULT_TRENDLINE,
                               print_every = 100) {
   
   assert_that(length(lon) == length(lat))
@@ -349,17 +358,11 @@ all_data[["srdb"]] <- srdb
 
 # -------------- 3. Match with CRU climate data ------------------- 
 
-fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.tmp.dat.nc.gz"
-# Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/tmp/cru_ts3.24.1901.2015.tmp.dat.nc.gz
-all_data[["tmp"]] <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
-fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.pre.dat.nc.gz"
-# Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pre/cru_ts3.24.1901.2015.pre.dat.nc.gz
-pre <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
-all_data[["pre"]] <- pre * 10 # to mm
-fn <- "/Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.pet.dat.nc.gz"
-# Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pet/cru_ts3.24.1901.2015.pet.dat.nc.gz
-all_data[["pet"]] <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
-
+all_data[["tmp"]] <- extract_ncdf_data(CRU_TMP, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
+pre <- extract_ncdf_data(CRU_PRE, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
+all_data[["pre"]] <- pre * 12 # mm/month to mm/yr
+pet <- extract_ncdf_data(CRU_PET, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
+all_data[["pet"]] <- pet * 365 # mm/day to mm/yr
 
 # -------------- 4. Match with Max Planck GPP data ------------------- 
 
@@ -415,6 +418,68 @@ bind_cols(all_data) %>%
 
 
 save_data(srdb_filtered, scriptfolder = FALSE, fname = basename(SRDB_FILTERED_FILE))
+
+
+# -------------- 7. Prep global grids ------------------- 
+
+printlog(SEPARATOR)
+printlog("Prep global grids for coverage plot, global flux predictions")
+read_csv("inputs/cell_areas/cell_areas.txt", skip = 12, col_names = c("lon", "lat", "area_km2"), col_types = "ddd") %>% 
+  filter(area_km2 != -9999) ->
+  gridcells
+
+# For each year, extract climate data for each cell
+sp <- SpatialPoints(gridcells[c("lon", "lat")])
+sl <- (DEFAULT_TRENDLINE[1] - 1901) * 12 + 1
+nyears <- DEFAULT_TRENDLINE[2] - DEFAULT_TRENDLINE[1] + 1
+nlayers <- nyears * 12
+
+printlog("Reading data from CRU TMP file...")
+ncfile <- R.utils::gunzip(CRU_TMP, remove = FALSE, overwrite = TRUE)
+nc <- brick(ncfile)
+tmp <- raster::extract(nc, sp, layer = sl, nl = nlayers)
+file.remove(ncfile)
+printlog("Reading data from CRU PRE file...")
+ncfile <- R.utils::gunzip(CRU_PRE, remove = FALSE, overwrite = TRUE)
+nc <- brick(ncfile)
+pre <- raster::extract(nc, sp, layer = sl, nl = nlayers)
+file.remove(ncfile)
+printlog("Reading data from CRU PET file...")
+ncfile <- R.utils::gunzip(CRU_PET, remove = FALSE, overwrite = TRUE)
+nc <- brick(ncfile)
+pet <- raster::extract(nc, sp, layer = sl, nl = nlayers)
+file.remove(ncfile)
+
+printlog("Creating monthly data structure...")
+months <- rep(rep(1:12, each = length(sp)), nyears)
+years <- rep(DEFAULT_TRENDLINE[1]:DEFAULT_TRENDLINE[2], each = length(sp) * 12)
+crudata_monthly <- tibble(lon = rep(gridcells$lon, 12 * nyears),
+                  lat = rep(gridcells$lat, 12 * nyears),
+                  area_km2 = rep(gridcells$area_km2, 12 * nyears),
+                  month = months,
+                  year = years,
+                  tmp = as.vector(tmp),
+                  pre = as.vector(pre),
+                  pet = as.vector(pet))
+save_data(crudata_monthly, scriptfolder = FALSE, gzip = TRUE)
+
+printlog("Computing annual data...")
+crudata_monthly %>%
+  dplyr::select(-month) %>%
+  group_by(lon, lat, year) %>%
+  summarise_all(mean) %>%
+  mutate(pre = pre * 12,  # sum, not mean
+         pet = pet * 365) ->   # sum, not mean
+  crudata_annual
+save_data(crudata_annual, scriptfolder = FALSE, gzip = TRUE)
+
+printlog("Computing period data...")
+crudata_annual %>%
+  dplyr::select(-year) %>%
+  group_by(lon, lat) %>%
+  summarise_all(mean) ->
+  crudata_period
+save_data(crudata_period, scriptfolder = FALSE, gzip = TRUE)
 
 
 printlog("All done with", SCRIPTNAME)

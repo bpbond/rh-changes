@@ -1,0 +1,84 @@
+This File:
+cellarea_global0.5_aux.txt
+
+This readme file applies to:
+This readme file describes the algorithm for calculating 0.5 x 0.5 degree 
+latitude x longitude grid-cell area for the globe.  
+Grid-cells are centered on 0.25 degrees.
+
+Data Policy:
+These data products are being distributed free of charge. 
+Recipients have a responsibility to: 
+
+    1. Acknowledge the University of New Hampshire, 
+       EOS-WEBSTER Earth Science Information Partner (ESIP) 
+       as the data distributor for this dataset.
+
+Description:
+Many research efforts address the changes in biogeochemical cycles from 
+environmental variability in climate and other drivers in both space and 
+time. One method of inquiry is through development and use of ecosystem 
+simulation models that use spatially referenced information on climate, 
+elevation, soils, vegetation, and water availability to make estimates 
+of important fluxes of carbon, water, and nitrogen. 
+The Global Model Reference Data collection contains a set of reference data
+ that have been used and continue to be used in many published climate change 
+studies. These reference data include elevation, vegetation classification, 
+soil texture, wetland soil types, grid-cell area, and grid-cell 
+classification by continent.
+
+Spatial Extent:
+Global
+
+Data Range:
+Data are 32 bit float.  
+Data Range: 363.00 - 3090.00
+Data Units: sq km
+Fill Value: -9999.0
+
+Projection: These data are gridded in the geographic projection with 
+0.5 degree by 0.5 degree cell sizes.  There are 720 cells in the x dimension 
+(longitude) and 292 cells in the y dimension (latitude) in the original 
+data set, although this will vary if you ordered an area less than the 
+full spatial extent.
+
+Center points of the bounding corners of original data set:
+N 89.75
+S -55.75
+E 179.75
+W -179.75
+ 
+
+Equations used in calculating the area of 0.5 degree latitude x longitude 
+grid-cells. Area is calculated using the latitude at the upper bound 
+of the grid-cell.
+
+
+    Convert to radians:
+     radians = (90.0 - (lat+0.25))*3.141593/180.0
+    Calculate cosines:
+     cosines = cosine(radians)-cosine(radians + (0.5*3.141593)/180.0))
+    Calculate area in 
+    square kilometers:
+     area = (6371221.3*6371221.3*3.141593*cosines/360.0)*1.0e-6
+    hectares:
+     area = (6371221.3*6371221.3*3.141593*cosines/360.0)*0.0001
+    acres:
+     area = (6371221.3*6371221.3*3.141593*cosines/360.0)**0.00024710538
+
+
+Data Source/Author:
+Dr. Annette Schloss
+Complex Systems Research Center
+Institute for the Study of Earth, Oceans and Space
+Morse Hall
+University of New Hampshire
+Durham, NH 03824
+Phone (User Support Line): 1-877-589-4909 (toll free)
+Fax: 1-603-8623-0188
+email (User Support): support@eos-webster.sr.unh.edu
+
+Reference:
+Melillo, J.M., McGuire, A.D., Kicklighter, D.W., Moore, B., 
+       Vörösmarty, C.J. and Schloss, A.L., 1993. Global climate change 
+       and terrestrial net primary production. Nature, 363:234-40.

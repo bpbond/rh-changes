@@ -47,9 +47,6 @@ srdb %>%
   geom_smooth(method = "lm", aes(group = 1), na.rm = TRUE)
 save_plot("map_comparison")
 
-qplot(mat_hadcrut4, map_hadcrut4, data = srdb, color = Biome)
-save_plot("climate_space")
-
 # Check to see if GPP matches/makes sense
 
 srdb %>%
@@ -74,6 +71,23 @@ qplot(RECO_NT_VUT_REF, ER, data = srdb, color = Biome, na.rm = TRUE) +
   geom_abline() + geom_smooth(method = "lm", aes(group = 1), na.rm = TRUE)
 save_plot("reco_comparison")
 
+# Climate space distibution
+
+read_csv("outputs/crudata_period.csv.gz") %>%
+  print_dims() %>%
+  mutate(tmp_round = round(tmp / 2, 0) * 2, 
+         pre_round = round(pre / 300, 0) * 300) %>%
+  group_by(tmp_round, pre_round) %>%
+  summarise(area_km2 = sum(area_km2)) ->
+  crudata_period
+
+p <- ggplot(crudata_period, aes(tmp_round, pre_round)) + 
+  geom_tile(aes(fill = area_km2)) + 
+  scale_fill_continuous(low = "lightgrey", high = "black", guide = FALSE) +
+  geom_point(data = srdb, aes(mat_hadcrut4, map_hadcrut4, color = Study_midyear), alpha = I(0.5)) + 
+  scale_color_continuous(guide = FALSE)
+print(p)
+save_plot("climate_space", ptype = ".png")
 
 
 # How choice of max fluxnet distance affect our N?
@@ -94,6 +108,7 @@ save_plot("fluxnet_dist_n")
 
 
 # Latitude/geographic biases over time
+
 srdb %>% 
   qplot(Study_midyear, Latitude, data = ., color = Biome) + 
   xlim(c(1989, 2015)) + 
