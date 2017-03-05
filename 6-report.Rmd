@@ -12,14 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 source("4-analysis.R")
 ```
 
-To do/problems/thoughts:
-
-* The raw Rh:Rs rise is 'too' steep - implies a huge C cycle perturbation & v. high Q10 - what about controlled for everything? Still big, ~.1 rise over 20 years! Just need to note that this can't be representative globally.
-* Look at SOC, given its importance (cf. Crowther 2016)?
-* Do we _really_ have 652 Rh_annual numbers? Triple-check that.
-* When finalized have Min re-run SIF lookup.
-* Check Harvard Forest numbers in particular - especially Rs being used
-
 ## Abstract
 
 Here we show that:
