@@ -201,8 +201,7 @@ srdb %>%
   filter(!is.na(Rs_annual),
          FLUXNET_ECOSYSTEM_MATCH,
          FLUXNET_DIST <= MAX_FLUXNET_DIST,
-         NEE_VUT_REF_QC >= MIN_NEE_QC,
-         Stage == "Mature") %>%
+         NEE_VUT_REF_QC >= MIN_NEE_QC) %>%
   # We only allow one observation per site per year
   group_by(FLUXNET_SITE_ID, IGBP, tmp_trend, pre_trend, Leaf_habit, Stage, Year) %>%
   summarise(Rs_annual = mean(Rs_annual),
@@ -395,24 +394,11 @@ p_gppsif <- p_gppsif_base +
 print(p_gppsif )
 save_plot("2-gppsif", ptype = ".png")
 
-s_gpp <- subset(s_gppsif_included, GPPSIF %in% c("Beer~GPP", "MODIS~GPP"))
-p_gpp <- p_gppsif_base %+% s_gpp +
-  geom_smooth(data = subset(s_gpp, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
-print(p_gpp )
-save_plot("2-gpp", ptype = ".png")
-
-s_sif <- subset(s_gppsif_included, GPPSIF %in% c("SCIAMACHY~SIF", "GOME2~SIF"))
-p_sif <- p_gppsif_base %+% s_sif +
-  geom_smooth(data = subset(s_sif, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
-print(p_sif)
-save_plot("2-sif", ptype = ".png")
-
 s_gppsif1 <- subset(s_gppsif_included, GPPSIF %in% c("Beer~GPP", "MODIS~GPP", "SCIAMACHY~SIF"))
 p_gppsif1 <- p_gppsif_base %+% s_gppsif1 +
   geom_smooth(data = subset(s_gppsif1, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
 print(p_gppsif1 )
 save_plot("2-gppsif_scia", ptype = ".png")
-
 
 printlog("Trend tests")
 results <- list()

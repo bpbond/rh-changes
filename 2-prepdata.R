@@ -257,11 +257,11 @@ srdb %>%
          Ecosystem_state != "Managed", 
          Manipulation == "None",
          Meas_method %in% c("IRGA", "Gas chromatography")) %>%
-  dplyr::select(Record_number, Quality_flag, Study_midyear, 
+  dplyr::select(Record_number, Study_midyear, #Quality_flag, 
                 YearsOfData, Longitude, Latitude, 
-                Biome, Ecosystem_type, Leaf_habit, Stage, Soil_drainage,
+                Biome, Ecosystem_type, Leaf_habit, Stage, #Soil_drainage,
                 MAT, MAP, Study_temp, Study_precip, Partition_method,
-                Rs_annual, Rh_annual, Ra_annual, RC_annual, GPP, ER) ->
+                Rs_annual, Rh_annual, Ra_annual, GPP, ER) ->
   srdb
 print_dims(srdb)
 
@@ -425,6 +425,8 @@ save_data(srdb_filtered, scriptfolder = FALSE, fname = basename(SRDB_FILTERED_FI
 
 # -------------- 7. Prep global grids ------------------- 
 
+GG_PERIOD <- c(1990, 2014)
+
 printlog(SEPARATOR)
 printlog("Prep global grids for coverage plot, global flux predictions")
 read_csv("inputs/cell_areas/cell_areas.txt", skip = 12, col_names = c("lon", "lat", "area_km2"), col_types = "ddd") %>% 
@@ -433,8 +435,8 @@ read_csv("inputs/cell_areas/cell_areas.txt", skip = 12, col_names = c("lon", "la
 
 # For each year, extract climate data for each cell
 sp <- SpatialPoints(gridcells[c("lon", "lat")])
-sl <- (DEFAULT_TRENDLINE[1] - 1901) * 12 + 1
-nyears <- DEFAULT_TRENDLINE[2] - DEFAULT_TRENDLINE[1] + 1
+sl <- (GG_PERIOD[1] - 1901) * 12 + 1
+nyears <- GG_PERIOD[2] - GG_PERIOD[1] + 1
 nlayers <- nyears * 12
 
 printlog("Reading data from CRU TMP file...")
@@ -455,7 +457,7 @@ file.remove(ncfile)
 
 printlog("Creating monthly data structure...")
 months <- rep(rep(1:12, each = length(sp)), nyears)
-years <- rep(DEFAULT_TRENDLINE[1]:DEFAULT_TRENDLINE[2], each = length(sp) * 12)
+years <- rep(GG_PERIOD[1]:GG_PERIOD[2], each = length(sp) * 12)
 crudata_monthly <- tibble(lon = rep(gridcells$lon, 12 * nyears),
                   lat = rep(gridcells$lat, 12 * nyears),
                   area_km2 = rep(gridcells$area_km2, 12 * nyears),
