@@ -3,8 +3,8 @@
 #
 # Load SRDB; filter for 'good' data (unmanipulated ecosystems, IRGA/GC only, etc);
 # spatially match with CRU climate, Max Planck GPP, MODIS GPP (slow), FLUXNET,
-# and SoilGrids1km datasets. This is fairly time-intensive, takes 1-2 hours,
-# so there is a `APPEND_ONLY` option below.
+# and SoilGrids1km datasets. This is fairly time-intensive, so there is an
+# `APPEND_ONLY` option below.
 
 source("0-functions.R")
 
@@ -403,6 +403,7 @@ all_data[["soc"]] <- tibble(SOC = bd$BD * orc$ORC / 1000)  # kg C in top 1 m
 # -------------- Done!  ------------------- 
 
 # Combine the various spatial data with the SRDB data and save
+printlog(SEPARATOR)
 printlog("Rows of all data:", paste(unlist(lapply(all_data, nrow)), collapse = ","))
 bind_cols(all_data) %>%
   rename(gpp_modis = modisgpp, 

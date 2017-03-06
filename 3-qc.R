@@ -75,6 +75,7 @@ save_plot("reco_comparison")
 
 read_csv("outputs/crudata_period.csv.gz") %>%
   print_dims() %>%
+  # bin by temp and precip
   mutate(tmp_round = round(tmp / 2, 0) * 2, 
          pre_round = round(pre / 300, 0) * 300) %>%
   group_by(tmp_round, pre_round) %>%
@@ -85,12 +86,13 @@ p <- ggplot(crudata_period, aes(tmp_round, pre_round)) +
   geom_tile(aes(fill = area_km2)) + 
   scale_fill_continuous(low = "lightgrey", high = "black", guide = FALSE) +
   geom_point(data = srdb, aes(mat_hadcrut4, map_hadcrut4, color = Study_midyear), alpha = I(0.5)) + 
-  scale_color_continuous(guide = FALSE)
+  scale_color_continuous(guide = FALSE) +
+  xlab(expression(MAT~(degree*C))) + ylab("MAP (mm)")
 print(p)
 save_plot("climate_space", ptype = ".png")
 
 
-# How choice of max fluxnet distance affect our N?
+# How does choice of max fluxnet distance affect our N?
 
 test <- seq(0.1, 10, by = 0.1)  # km
 result <- rep(NA, length(test))

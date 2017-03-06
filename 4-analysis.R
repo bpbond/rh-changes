@@ -131,17 +131,54 @@ srdb %>%
          !is.na(pet_norm), !is.na(pet_anom),
          !is.na(Rh_annual), !is.na(Leaf_habit), !is.na(Stage)) ->
   s_rh_climate
-m2_rh_climate <- lm(sqrt(Rh_annual) ~ mat_hadcrut4 + tmp_anom + map_hadcrut4 + pre_anom + pet_norm + pet_anom + pet_anom + Stage * Leaf_habit, 
+m2_rh_climate <- lm(sqrt(Rh_annual) ~ tmp_hadcrut4 * pre_hadcrut4 * pet + Stage * Leaf_habit, 
      data = s_rh_climate)
-   
 m2_rh_climate <- stepAIC(m2_rh_climate, direction = "both")
 print(anova(m2_rh_climate))
-m2_rh_climate_map_signif <- anova(m2_rh_climate)["map_hadcrut4", "Pr(>F)"]
-m2_rh_climate_pet_signif <- anova(m2_rh_climate)["pet_norm", "Pr(>F)"]
+
+m2_rh_climate_pre_signif <- anova(m2_rh_climate)["pre_hadcrut4", "Pr(>F)"]
+m2_rh_climate_pet_signif <- anova(m2_rh_climate)["pet", "Pr(>F)"]
 m2_rh_climate_stage_signif <- anova(m2_rh_climate)["Stage", "Pr(>F)"]
-m2_rh_climate_tanom_signif <- anova(m2_rh_climate)["tmp_anom", "Pr(>F)"]
 save_model_diagnostics(m2_rh_climate)
 
+# Global flux computation
+
+read_csv("outputs/crudata_annual.csv.gz") %>%
+  rename(pre_hadcrut4 = pre, tmp_hadcrut4 = tmp) %>%
+  mutate(Leaf_habit = "Deciduous", Stage = "Mature") ->
+  globalclim
+
+globalclim$predict1 <- predict(m2_rh_climate, globalclim)
+globalclim$Leaf_habit = "Evergreen"
+globalclim$predict2 <- predict(m2_rh_climate, globalclim)
+globalclim$Stage = "Aggrading"
+globalclim$predict3 <- predict(m2_rh_climate, globalclim)
+globalclim$Leaf_habit = "Deciduous"
+globalclim$predict4 <- predict(m2_rh_climate, globalclim)
+globalclim %>%
+  dplyr::select(-lon, -lat, -Leaf_habit, -Stage) %>%
+  gather(case, sqrt_rh_gCm2, predict1, predict2, predict3, predict4) %>%
+  mutate(rh_PgC = sqrt_rh_gCm2 ^ 2 * area_km2 * 1000 * 1000 / 1e15) %>%
+  group_by(year, case) %>%
+  summarise(rh_PgC = sum(rh_PgC, na.rm = TRUE),
+            tmp_hadcrut4 = weighted.mean(tmp_hadcrut4, area_km2, na.rm = TRUE)) %>%
+  summarise(rh_PgC_sd = sd(rh_PgC), 
+            rh_PgC = mean(rh_PgC), 
+            tmp_hadcrut4 = mean(tmp_hadcrut4)) ->
+  gp
+
+p_prediction <- qplot(year, rh_PgC, data = gp, geom = "line") + 
+  geom_ribbon(aes(ymin=rh_PgC - rh_PgC_sd, ymax = rh_PgC + rh_PgC_sd), alpha = 0.25) +
+  geom_smooth(method = "lm")
+print(p_prediction)
+save_plot("global_rh_prediction")
+
+slope_model <- lm(rh_PgC ~ year, data = gp)
+gp$predict <- predict(slope_model)
+global_rh_begin <- gp$rh_PgC[1]
+global_rh_end <- gp$rh_PgC[nrow(gp)]
+global_rh_end_sd <- gp$rh_PgC_sd[nrow(gp)]
+global_q10 <- (global_rh_end / global_rh_begin) ^ (10 / (gp$tmp_hadcrut4[nrow(gp)] - gp$tmp_hadcrut4[1]))
 
 # --------------- 3. FLUXNET analysis --------------------- 
 

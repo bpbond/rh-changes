@@ -55,7 +55,7 @@ We used an open-access soil respiration database (Bond-Lamberty and Thomson 2010
 
 ### SRDB analysis
 
-The observed _R_~H~:_R_~S~ ratio is rising over time, from `r rh_rs_summary$rh_rs_mean[1]`±`r rh_rs_summary$rh_rs_sd[1]` in `r rh_rs_summary$yeargroup[1]` to `r rh_rs_summary$rh_rs_mean[nrow(rh_rs_summary)]`±`r rh_rs_summary$rh_rs_sd[nrow(rh_rs_summary)]` in `r rh_rs_summary$yeargroup[nrow(rh_rs_summary)]` (**Figure 1**).
+The mean observed _R_~H~:_R_~S~ ratio has risen over time, from `r rh_rs_summary$rh_rs_mean[1]`±`r rh_rs_summary$rh_rs_sd[1]` in `r rh_rs_summary$yeargroup[1]` to `r rh_rs_summary$rh_rs_mean[nrow(rh_rs_summary)]`±`r rh_rs_summary$rh_rs_sd[nrow(rh_rs_summary)]` in `r rh_rs_summary$yeargroup[nrow(rh_rs_summary)]` (**Figure 1**).
 
 Note for clarity this figure cuts off one extremely low-_R_~S~ point):
 
@@ -63,14 +63,13 @@ Note for clarity this figure cuts off one extremely low-_R_~S~ point):
 print(p1_rh_rs)
 ```
 
-This change is not significant using a Mann-Kendall trend test (`r pclean(mk1_rh_rs$sl)`, total N = `r nrow(s_rh_rs)`) but when ecosystem mean annual temperature (MAT) and mean annual precipitation (MAP) are controlled for in a linear model, a significant temporal trend exists (`r pclean(m1_rh_rs_signif)`; **Table 1**). This trend in the _R_~H~:_R_~S~ ratio was thus not induced by a site selection bias (as more productive sites typically exhibit higher _R_~H~:_R_~S~) over time. The regression also controls for researchers' sampling more disturbed sites, or sites with different leaf habit (deciduous/coniferous), or using different methods to partition _R_~H~ from _R_~S~ in recent years.
+This change is not significant using a Mann-Kendall trend test (`r pclean(mk1_rh_rs$sl)`, N = `r nrow(s_rh_rs)`) but when ecosystem mean annual temperature (MAT) and mean annual precipitation (MAP) are controlled for in a linear model, a significant temporal trend exists (`r pclean(m1_rh_rs_signif)`; **Table 1**). The regression also controls for researchers' sampling more disturbed sites, sites with different leaf habit (deciduous/coniferous), or using different methods to partition _R_~H~ from _R_~S~ in recent years. This trend in the _R_~H~:_R_~S~ ratio was thus not induced by a site selection bias (as more productive sites typically exhibit higher _R_~H~:_R_~S~) over time. 
 
 ```{r, echo = FALSE}
 knitr::kable(anova(m1_rh_rs), digits = 3)
 ```
 
-This makes sense. From basic biokinetics we expect that the absolute value of observed annual _R_~H~ should respond to climate changes over the `r max(srdb$Study_midyear) - min(srdb$Study_midyear) + 1`-year record. This is true: in a linear regression mean annual precipitation (`r pclean(m2_rh_climate_map_signif)`) was the strongest driver, with potential evapotranspiration, stage (i.e. disturbance effect) and temperature anomaly (departure from the 1961-1990 mean) highly significant (all P < 0.001) as well.
-
+We also examined the effect of climate on _R_~H~ directly, following e.g. Hashimoto & Bond-Lamberty; in a basic linear regression annual precipitation and potential evapotranspiration (both `r pclean(m2_rh_climate_pet_signif)`) were the strongest drivers of annual _R_~H~, with disturbance and leaf habit exerting weak interactive effects. Using this model for a global prediction suggests that the current global flux is `r pn(global_rh_end, 1)` ± `r pn(global_rh_end_sd, 1)` Pg C yr^-1^, with a global temperature response (Q~10~) of `r pn(global_q10, 1)`.
 
 ### Remote sensing analyses
 
