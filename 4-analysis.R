@@ -67,7 +67,9 @@ srdb %>%
 m1_rh_rs <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + 
                  Study_midyear * Partition_method +
                  Study_midyear * Leaf_habit +
-                 mat_hadcrut4 * map_hadcrut4, data = s_rh_rs)
+                 mat_hadcrut4 * map_hadcrut4 ^ 2 + 
+                 Study_midyear * SOC, 
+               data = s_rh_rs)
 m1_rh_rs <- MASS::stepAIC(m1_rh_rs, direction = "both")
 print(anova(m1_rh_rs))
 
@@ -89,30 +91,45 @@ s_rh_rs %>%
 # Make Figure 1
 p1_rh_rs <- ggplot(s_rh_rs, aes(Rs_annual, Rh_annual, color = group)) +
   scale_x_log10() + scale_y_log10() +
-  scale_color_grey("Year", start = 0.8, end = 0.2) +
   annotation_logticks() +
   xlab(expression(R[S]~(g~C~m^-2~yr^-1))) +
   ylab(expression(R[H]~(g~C~m^-2~yr^-1))) + 
   coord_cartesian(xlim=c(80, 3300), ylim=c(70, 2000))
+p1_rh_rs_bw <- p1_rh_rs + scale_color_grey("Year", start = 0.8, end = 0.2)
+p1_rh_rs_clr <- p1_rh_rs + scale_color_discrete("Year")
+p1_rh_rs_clr2 <- p1_rh_rs + scale_color_brewer("Year")
 
 p_inset <- ggplot(s_rh_rs, aes(Rh_annual / Rs_annual, color = yeargroup, fill = yeargroup)) + 
   geom_density(alpha = 0.5) + 
   xlab(expression(R[H]:R[S])) + ylab("") +
-  scale_fill_grey(start = 0.8, end = 0.2, guide = FALSE) +
-  scale_color_grey(start = 0.8, end = 0.2, guide = FALSE) +
   theme(axis.ticks.y = element_blank(), axis.text.y  = element_blank(),
         axis.text.x = element_text(size = 6), axis.title.x = element_text(size = 8))
+p_inset_bw <- p_inset +  scale_fill_grey(start = 0.8, end = 0.2, guide = FALSE) +
+  scale_color_grey(start = 0.8, end = 0.2, guide = FALSE)
+p_inset_clr <- p_inset +  scale_fill_discrete(guide = FALSE) +
+  scale_color_discrete(guide = FALSE)
+p_inset_clr2 <- p_inset +  scale_fill_brewer(guide = FALSE) +
+  scale_color_brewer(guide = FALSE)
 
-p1_rh_rs <- p1_rh_rs + 
-  annotation_custom(grob = ggplotGrob(p_inset), xmin = log10(60), xmax = log10(800), ymin = log10(600), ymax = log10(2300)) 
-
-p1_rh_rs <- p1_rh_rs + geom_point() + geom_smooth(method = "lm", se = FALSE)
+p1_rh_rs_bw <- p1_rh_rs_bw + 
+  annotation_custom(grob = ggplotGrob(p_inset_bw), xmin = log10(60), xmax = log10(800), ymin = log10(600), ymax = log10(2300)) +
+  geom_point() + geom_smooth(method = "lm", se = FALSE)
+p1_rh_rs_clr <- p1_rh_rs_clr + 
+  annotation_custom(grob = ggplotGrob(p_inset_clr), xmin = log10(60), xmax = log10(800), ymin = log10(600), ymax = log10(2300)) +
+  geom_point() + geom_smooth(method = "lm", se = FALSE)
+p1_rh_rs_clr2 <- p1_rh_rs_clr2 + 
+  annotation_custom(grob = ggplotGrob(p_inset_clr2), xmin = log10(60), xmax = log10(800), ymin = log10(600), ymax = log10(2300)) +
+  geom_point() + geom_smooth(method = "lm", se = FALSE)
 
 printlog("NOTE we are plotting this graph with one point cut off:")
 printlog(s_rh_rs[which.min(s_rh_rs$Rs_annual), c("Rs_annual", "Rh_annual")])
 
-print(p1_rh_rs)
-save_plot("1-srdb-rh-rs", ptype = ".png")
+print(p1_rh_rs_bw)
+save_plot("1-srdb-rh-rs-bw", ptype = ".png")
+print(p1_rh_rs_clr)
+save_plot("1-srdb-rh-rs-clr", ptype = ".png")
+print(p1_rh_rs_clr2)
+save_plot("1-srdb-rh-rs-clr2", ptype = ".png")
 
 
 # ------------- 2. SRDB Rh:climate analysis --------------- 
@@ -131,8 +148,10 @@ srdb %>%
          !is.na(pet_norm), !is.na(pet_anom),
          !is.na(Rh_annual), !is.na(Leaf_habit), !is.na(Stage)) ->
   s_rh_climate
-m2_rh_climate <- lm(sqrt(Rh_annual) ~ tmp_hadcrut4 * pre_hadcrut4 * pet + Stage * Leaf_habit, 
-     data = s_rh_climate)
+m2_rh_climate <- lm(sqrt(Rh_annual) ~ tmp_hadcrut4 * pre_hadcrut4 ^ 2 * pet + 
+                      tmp_hadcrut4 * Stage + pre_hadcrut4 * Stage + 
+                      tmp_hadcrut4 * Leaf_habit + pre_hadcrut4 * Leaf_habit, 
+                    data = s_rh_climate)
 m2_rh_climate <- stepAIC(m2_rh_climate, direction = "both")
 print(anova(m2_rh_climate))
 
@@ -143,6 +162,12 @@ save_model_diagnostics(m2_rh_climate)
 
 # Global flux computation
 
+printlog("Global flux computation...")
+# This is a very simple prediction, based on model above, and deriving
+# variance from treating the whole world as evergreen, deciduous, aggrading,
+# and mature
+
+# Global grid of climate data
 read_csv("outputs/crudata_annual.csv.gz") %>%
   rename(pre_hadcrut4 = pre, tmp_hadcrut4 = tmp) %>%
   mutate(Leaf_habit = "Deciduous", Stage = "Mature") ->
@@ -155,30 +180,41 @@ globalclim$Stage = "Aggrading"
 globalclim$predict3 <- predict(m2_rh_climate, globalclim)
 globalclim$Leaf_habit = "Deciduous"
 globalclim$predict4 <- predict(m2_rh_climate, globalclim)
+
+# Compute area-weighted fluxes
 globalclim %>%
   dplyr::select(-lon, -lat, -Leaf_habit, -Stage) %>%
   gather(case, sqrt_rh_gCm2, predict1, predict2, predict3, predict4) %>%
   mutate(rh_PgC = sqrt_rh_gCm2 ^ 2 * area_km2 * 1000 * 1000 / 1e15) %>%
-  group_by(year, case) %>%
+  group_by(case, year) %>%
   summarise(rh_PgC = sum(rh_PgC, na.rm = TRUE),
-            tmp_hadcrut4 = weighted.mean(tmp_hadcrut4, area_km2, na.rm = TRUE)) %>%
-  summarise(rh_PgC_sd = sd(rh_PgC), 
-            rh_PgC = mean(rh_PgC), 
-            tmp_hadcrut4 = mean(tmp_hadcrut4)) ->
+            tmp_hadcrut4 = weighted.mean(tmp_hadcrut4, area_km2, na.rm = TRUE)) ->
   gp
 
-p_prediction <- qplot(year, rh_PgC, data = gp, geom = "line") + 
-  geom_ribbon(aes(ymin=rh_PgC - rh_PgC_sd, ymax = rh_PgC + rh_PgC_sd), alpha = 0.25) +
-  geom_smooth(method = "lm")
+# Fit linear models to the predictions to get smoothed values for Q10, etc.
+gp %>%
+  group_by(case) %>% 
+  do(data.frame(year = .$year, 
+                rh_fit = predict(lm(rh_PgC ~ year, data = .)),
+                tmp_fit = predict(lm(tmp_hadcrut4 ~ year, data = .)))) %>%
+  right_join(gp, by = c("case", "year")) -> 
+  gp
+
+# Summarise: compute first and last values and Q10
+gp %>%
+  group_by(case) %>%
+  summarise(first_rh = first(rh_fit), last_rh = last(rh_fit),
+            first_tmp = first(tmp_fit), last_tmp = last(tmp_fit),
+            q10 = (last_rh / first_rh) ^ (10 / (last_tmp - first_tmp))) ->
+  gp_summary
+
+p_prediction <- qplot(year, rh_PgC, data = gp, geom = "line", group = case) + 
+  geom_smooth(method = "lm", group = 1)
 print(p_prediction)
 save_plot("global_rh_prediction")
 
-slope_model <- lm(rh_PgC ~ year, data = gp)
-gp$predict <- predict(slope_model)
-global_rh_begin <- gp$rh_PgC[1]
-global_rh_end <- gp$rh_PgC[nrow(gp)]
-global_rh_end_sd <- gp$rh_PgC_sd[nrow(gp)]
-global_q10 <- (global_rh_end / global_rh_begin) ^ (10 / (gp$tmp_hadcrut4[nrow(gp)] - gp$tmp_hadcrut4[1]))
+save_data(gp_summary, fname = "global_prediction")
+
 
 # --------------- 3. FLUXNET analysis --------------------- 
 
@@ -229,7 +265,7 @@ printlog("Mann-Kendall trend test:")
 mk3_fluxnet <- MannKendall(s_fluxnet$Rs_annual / s_fluxnet$gpp_fluxnet)
 print(mk3_fluxnet)
 
-m_fluxnet <- lm(Rs_annual/gpp_fluxnet ~ Year * Leaf_habit + mat_hadcrut4 * map_hadcrut4, 
+m_fluxnet <- lm(Rs_annual/gpp_fluxnet ~ Year * Leaf_habit + mat_hadcrut4 * map_hadcrut4 ^ 2, 
                 data = s_fluxnet, weights = YearsOfData)
 m_fluxnet <- MASS::stepAIC(m_fluxnet, direction = "both")
 print(anova(m_fluxnet))
@@ -283,7 +319,6 @@ fluxnet_Rs_GPP_sitetrends = x$n
 names(fluxnet_Rs_GPP_sitetrends) <- x$trend
 
 
-
 # --------------- 4. FLUXNET-only analysis --------------------- 
 
 # Rodrigo's suggestion: look at ratio of annual nighttime NEE to
@@ -297,51 +332,52 @@ readr::read_csv("outputs/fluxnet.csv") %>%
          !is.na(TA_F), !is.na(P_F), !is.na(GPP_DT_VUT_REF)) ->
   s_fluxnet_only
 
-printlog("Computing warming/cooling/drying/wetting trends from tower data")
+# Make table for acknowledging FLUXNET publications
 s_fluxnet_only %>%
-  group_by(SITE_ID) %>% 
-  summarise(nyears = n()) %>%
-  filter(nyears > 2) %>%
-  left_join(s_fluxnet_only, by = "SITE_ID") ->
-  s_fluxnet_only
+  group_by(SITE_ID) %>%
+  summarise(Years = paste0(min(Year), "-", max(Year)), Ref = "") %>%
+  save_data(fname = "SupplementaryTable1.csv")
 
 s_fluxnet_only %>%
   group_by(SITE_ID) %>%
-  do(modt = lm(TA_F ~ Year, data = .),
-     modp = lm(P_F ~ Year, data = .)) ->
-  fluxnet_only_mods
+  summarise(nyears = n()) %>%
+  filter(nyears > 2) %>%
+  left_join(s_fluxnet_only, by = "SITE_ID") %>%
+  group_by(SITE_ID) %>%
+  do(mod = lm(NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF ~ Year, data = .)) %>%
+  tidy(mod) %>%
+  filter(term == "Year") -> site_trends 
+printlog("Sites with positive NEE night/GPP trends =", sum(site_trends$estimate > 0), "of", nrow(site_trends))
+printlog("Sites with SIGNIFICANT positive NEE night/GPP trends =", sum(site_trends$p.value < 0.05 & site_trends$estimate > 0), "of", nrow(site_trends))
 
-fluxnet_only_mods %>%
-  tidy(modt) %>%
-  filter(term == "Year") %>%
-  mutate(t_trend = if_else(sign(estimate) > 0, "Warmer", "Cooler")) %>%
-  dplyr::select(SITE_ID, t_trend) ->
-  t_trends
-fluxnet_only_mods %>%
-  tidy(modp) %>%
-  filter(term == "Year") %>%
-  mutate(p_trend = if_else(sign(estimate) > 0, "Wetter", "Drier")) %>%
-  dplyr::select(SITE_ID, p_trend) %>%
-  right_join(s_fluxnet_only, by = "SITE_ID") %>%
-  left_join(t_trends, by = "SITE_ID") %>%
-  filter(!is.na(t_trend), !is.na(p_trend)) ->
-  s_fluxnet_only
+s_fluxnet_only %>%
+  group_by(IGBP) %>%
+  summarise(nyears = n()) %>%
+  filter(nyears > 2) %>%
+  left_join(s_fluxnet_only, by = "IGBP") %>%
+  group_by(IGBP) %>%
+  do(mod = lm(NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF ~ Year, data = .)) %>%
+  tidy(mod) %>%
+  filter(term == "Year") -> igbp_trends 
+printlog("IGBPs with positive NEE night/GPP trends =", sum(igbp_trends$estimate > 0), "of", nrow(igbp_trends))
+printlog("IGBPs with SIGNIFICANT positive NEE night/GPP trends =", sum(igbp_trends$p.value < 0.05 & igbp_trends$estimate > 0), "of", nrow(igbp_trends))
 
 p_fluxnet_only <- ggplot(s_fluxnet_only, aes(Year, NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF, group = SITE_ID)) + 
   geom_point(aes(color = IGBP), na.rm = TRUE) + 
-  geom_smooth(method = "lm", color = "grey", fill = NA, na.rm = TRUE) + 
+  geom_smooth(method = "lm", color = "grey", linetype = 2, size = 0.2, fill = NA, na.rm = TRUE) + 
   geom_smooth(method = "lm", group = 1, na.rm = TRUE) +
   ylab(expression(NEE[night]:GPP[fluxnet])) +
-  facet_grid(t_trend ~ p_trend) +
+  facet_wrap(~ IGBP) +
   ylim(c(0, 1))
 
 print(p_fluxnet_only)
 save_plot("fluxnet_only")
 
 printlog("Fitting temporal model...")
-m_fluxnet_only <- lm(NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF ~ Year * t_trend * p_trend, data = s_fluxnet_only)
+m_fluxnet_only <- lm(NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF ~ Year * TA_F + Year * P_F + Year * IGBP, data = s_fluxnet_only)
 m_fluxnet_only <- MASS::stepAIC(m_fluxnet_only, direction = "both")
 print(anova(m_fluxnet_only))
+m_MODIS.GPP_Rs_annual_trend_signif <- anova(m_fluxnet_only)["Year", "Pr(>F)"]
 m_MODIS.GPP_Rs_annual_precip_trend_signif <- anova(m_fluxnet_only)["Year:p_trend", "Pr(>F)"]
 save_model_diagnostics(m_fluxnet_only)
 
@@ -361,7 +397,7 @@ srdb %>%
                 mat_hadcrut4, map_hadcrut4,
                 gpp_beer, gpp_modis, 
                 SCIA_SIF, GOME2_SIF,
-                Rs_annual, Rh_annual) %>%
+                Rs_annual, Rh_annual, SOC) %>%
   rename(`Beer~GPP` = gpp_beer,
          `MODIS~GPP` = gpp_modis) %>%
   # since we're going to divide, can't have SIF crossing 1!
@@ -372,7 +408,7 @@ srdb %>%
   mutate(Prettyflux = if_else(Flux == "Rs_annual", "R[S]", "R[H]")) %>%
   gather(GPPSIF, gppsifvalue, `Beer~GPP`, `MODIS~GPP`, `SCIAMACHY~SIF`, `GOME2~SIF`) %>%
   mutate(GPPSIF = factor(GPPSIF, levels = c("Beer~GPP", "MODIS~GPP", "SCIAMACHY~SIF", "GOME2~SIF"))) %>%
-  filter(!is.na(Leaf_habit), !is.na(gppsifvalue)) ->
+  filter(!is.na(Leaf_habit), !is.na(gppsifvalue), !is.na(SOC)) ->
   s_gppsif
 
 s_gppsif %>%
@@ -417,9 +453,9 @@ for(dataset in unique(s_gppsif_included$GPPSIF)) {
     assign(make.names(paste("mk", dataset, f, sep = "_")), mk)
     
     # Linear model
-    m <- lm(fluxvalue / gppsifvalue ~ mat_hadcrut4 + map_hadcrut4 + 
+    m <- lm(fluxvalue / gppsifvalue ~ mat_hadcrut4 + map_hadcrut4 ^ 2 + 
               Study_midyear * Leaf_habit + 
-              Study_midyear * Stage, 
+              Study_midyear * Stage + SOC, 
             data = d)
     m <- stepAIC(m, direction = "both", trace = 0)
     print(summary(m))
