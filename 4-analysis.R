@@ -419,14 +419,17 @@ s_gppsif %>%
   s_gppsif_excluded
 
 p_gppsif_base <- ggplot(s_gppsif_included, aes(Study_midyear, fluxvalue / gppsifvalue, color = Leaf_habit)) +
-  geom_point() +
+  geom_point(alpha = I(0.75), size = 0.5) +
   facet_grid(GPPSIF ~ Prettyflux, scales = "free", labeller = label_parsed) +
   scale_color_discrete("Leaf habit") +
   xlab("Year") +
   ylab("Respiration:(GPP or SIF)") +
   coord_cartesian(ylim = c(0, 2))
 p_gppsif <- p_gppsif_base + 
-  geom_smooth(data = subset(s_gppsif_included, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
+  geom_smooth(data = filter(s_gppsif_included, 
+                            Leaf_habit %in% c("Deciduous", "Evergreen"), 
+                            GPPSIF != "GOME2~SIF"),
+              method = "lm", show.legend = FALSE)
 print(p_gppsif )
 save_plot("2-gppsif", ptype = ".png")
 
