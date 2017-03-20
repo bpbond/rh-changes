@@ -332,6 +332,13 @@ readr::read_csv("outputs/fluxnet.csv") %>%
          !is.na(TA_F), !is.na(P_F), !is.na(GPP_DT_VUT_REF)) ->
   s_fluxnet_only
 
+# Record lengths of FLUXNET sites
+s_fluxnet_only %>% 
+  group_by(SITE_ID) %>% 
+  summarise(nyears = n()) %>% 
+  summarise_each(funs(mean, median, sd, min, max), nyears) -> 
+  s_fluxnet_nyears
+
 # Make table for acknowledging FLUXNET publications
 s_fluxnet_only %>%
   group_by(SITE_ID) %>%
@@ -372,13 +379,14 @@ p_fluxnet_only <- ggplot(s_fluxnet_only, aes(Year, NEE_VUT_REF_NIGHT / GPP_DT_VU
 
 print(p_fluxnet_only)
 save_plot("fluxnet_only")
+save_plot("fluxnet_only", ptype = ".png")
 
 printlog("Fitting temporal model...")
 m_fluxnet_only <- lm(NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF ~ Year * TA_F + Year * P_F + Year * IGBP, data = s_fluxnet_only)
 m_fluxnet_only <- MASS::stepAIC(m_fluxnet_only, direction = "both")
 print(anova(m_fluxnet_only))
-m_MODIS.GPP_Rs_annual_trend_signif <- anova(m_fluxnet_only)["Year", "Pr(>F)"]
-m_MODIS.GPP_Rs_annual_precip_trend_signif <- anova(m_fluxnet_only)["Year:p_trend", "Pr(>F)"]
+m_fluxnet_only_trend_signif <- anova(m_fluxnet_only)["Year", "Pr(>F)"]
+m_fluxnet_only_precip_trend_signif <- anova(m_fluxnet_only)["Year:p_trend", "Pr(>F)"]
 save_model_diagnostics(m_fluxnet_only)
 
 
@@ -398,16 +406,16 @@ srdb %>%
                 gpp_beer, gpp_modis, 
                 SCIA_SIF, GOME2_SIF,
                 Rs_annual, Rh_annual, SOC) %>%
-  rename(`Beer~GPP` = gpp_beer,
-         `MODIS~GPP` = gpp_modis) %>%
+  rename(`GPP[MTE]` = gpp_beer,
+         `GPP[MODIS]` = gpp_modis) %>%
   # since we're going to divide, can't have SIF crossing 1!
   # rescale to GPP range for convenience 
-  mutate(`SCIAMACHY~SIF` = rescale(SCIA_SIF, 0, 3500)) %>%
-  mutate(`GOME2~SIF` = rescale(GOME2_SIF, 0, 3500)) %>%
+  mutate(`SIF[SCIAMACHY]` = rescale(SCIA_SIF, 0, 3500)) %>%
+  mutate(`SIF[GOME2]` = rescale(GOME2_SIF, 0, 3500)) %>%
   gather(Flux, fluxvalue, Rs_annual, Rh_annual) %>%
   mutate(Prettyflux = if_else(Flux == "Rs_annual", "R[S]", "R[H]")) %>%
-  gather(GPPSIF, gppsifvalue, `Beer~GPP`, `MODIS~GPP`, `SCIAMACHY~SIF`, `GOME2~SIF`) %>%
-  mutate(GPPSIF = factor(GPPSIF, levels = c("Beer~GPP", "MODIS~GPP", "SCIAMACHY~SIF", "GOME2~SIF"))) %>%
+  gather(GPPSIF, gppsifvalue, `GPP[MTE]`, `GPP[MODIS]`, `SIF[SCIAMACHY]`, `SIF[GOME2]`) %>%
+  mutate(GPPSIF = factor(GPPSIF, levels = c("GPP[MTE]", "GPP[MODIS]", "SIF[SCIAMACHY]", "SIF[GOME2]"))) %>%
   filter(!is.na(Leaf_habit), !is.na(gppsifvalue), !is.na(SOC)) ->
   s_gppsif
 
@@ -428,12 +436,12 @@ p_gppsif_base <- ggplot(s_gppsif_included, aes(Study_midyear, fluxvalue / gppsif
 p_gppsif <- p_gppsif_base + 
   geom_smooth(data = filter(s_gppsif_included, 
                             Leaf_habit %in% c("Deciduous", "Evergreen"), 
-                            GPPSIF != "GOME2~SIF"),
+                            GPPSIF != "SIF[GOME2]"),
               method = "lm", show.legend = FALSE)
 print(p_gppsif )
 save_plot("2-gppsif", ptype = ".png")
 
-s_gppsif1 <- subset(s_gppsif_included, GPPSIF %in% c("Beer~GPP", "MODIS~GPP", "SCIAMACHY~SIF"))
+s_gppsif1 <- subset(s_gppsif_included, GPPSIF %in% c("GPP[MTE]", "GPP[MODIS]", "SIF[SCIAMACHY]"))
 p_gppsif1 <- p_gppsif_base %+% s_gppsif1 +
   geom_smooth(data = subset(s_gppsif1, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
 print(p_gppsif1 )

@@ -40,3 +40,9 @@ outputs/
 
 # SRDB database - will be included eventually
 inputs/srdb-data.csv
+
+# Manuscript - will be included eventually
+manuscript-nature/
+
+# Misc
+ancillary/misc
