@@ -46,6 +46,8 @@ read_csv(SRDB_FILTERED_FILE) %>%
 
 printlog("Filtered for studies after", SRDB_MINYEAR)
 
+printlog("MAT range is", paste(round(range(srdb$mat_hadcrut4, na.rm = TRUE), 1), collapse = ", "))
+printlog("MAP range is", paste(round(range(srdb$map_hadcrut4, na.rm = TRUE), 0), collapse = ", "))
 
 # -------------- 1. SRDB Rh:Rs analysis ------------------- 
 
@@ -83,7 +85,9 @@ print(mk1_rh_rs)
 # Compute summary statistics
 s_rh_rs %>%
   group_by(yeargroup) %>%
-  summarise(rh_rs_mean = pn(mean(Rh_annual / Rs_annual), 2),
+  summarise(year_min = min(Study_midyear),
+            year_max = max(Study_midyear),
+            rh_rs_mean = pn(mean(Rh_annual / Rs_annual), 2),
             rh_rs_sd = pn(sd(Rh_annual / Rs_annual), 2), 
             n = n()) ->
   rh_rs_summary

@@ -87,7 +87,7 @@ We perform a rigorous Mann-Kendall trend test, that does not account for climate
 knitr::kable(rs_results)
 ```
 
-Both _R_~H~ (the variable of primary interest, but for which many fewer measurements are available) and _R_~S~ (which incorporates both _R_~H~ and belowground autotrophic respiration) exhibit significant trends over time (`r pclean(m_GPP.BGI._Rs_annual_signif)` for _R_~S~:Beer GPP, P < 0.001 for all others) relative to two different GPP data sources. The _R_~S~:MODIS GPP ratio may be rising faster in deciduous ecosystems than in evergreen ecosystems (`r pclean( m_GPP.MODIS._Rs_annual_leaf_trend_signif)`).
+Both _R_~H~ (the variable of primary interest, but for which many fewer measurements are available) and _R_~S~ (which incorporates both _R_~H~ and belowground autotrophic respiration) exhibit significant trends over time (`r pclean(m_GPP.MTE._Rs_annual_signif)` for _R_~S~:Beer GPP, P < 0.001 for all others) relative to two different GPP data sources. The _R_~S~:MODIS GPP ratio may be rising faster in deciduous ecosystems than in evergreen ecosystems (`r pclean( m_GPP.MODIS._Rs_annual_leaf_trend_signif)`).
 
 We also examined the ratios of _R_~H~ and _R_~S~ to two sun-induced fluorescence (SIF) global data products, which are correlated with GPP but provide a completely independent test. Both _R_~H~:SIF and _R_~S~:SIF exhibited temporal trends against the SCIAMACHY (http://www.sciamachy.org) data after controlling for disturbance and measurement method (P < 0.001 for both; **Figure 2**). The _R_~H~ rise was significantly stronger in deciduous ecosystems (`r pclean(m_SIF.SCIAMACHY._Rh_annual_leaf_trend_signif)`). The GOME2 SIF data showed similar trends for _R_~S~:SIF; the _R_~H~:SIF did not exhibit a significant rise over the short timespan (2004-2014) of these data.
 
@@ -134,8 +134,8 @@ In summary, almost all observed trends support the hypothesis that _R_~H~ (and t
 Test  | N | Trend? | Leaf habit? | Precipitation?		
 ------| - | ------- | ----------- | -------------		
 ↑ R~H~:R~S~ ratio over time  | `r nrow(s_rh_rs)` | Yes | Yes	| Yes	
-↑ R~H~:Beer GPP over time  | `r nrow(s_GPP.BGI._Rh_annual)` | Yes | Yes	| Yes
-↑ R~S~:Beer GPP over time  | `r nrow(s_GPP.BGI._Rs_annual)` | Yes | Yes | Yes		
+↑ R~H~:Beer GPP over time  | `r nrow(s_GPP.MTE._Rh_annual)` | Yes | Yes	| Yes
+↑ R~S~:Beer GPP over time  | `r nrow(s_GPP.MTE._Rs_annual)` | Yes | Yes | Yes		
 ↑ R~H~:MODIS GPP over time  | `r nrow(s_GPP.MODIS._Rh_annual)` | Yes | Yes	| No
 ↑ R~S~:MODIS GPP over time  | `r nrow(s_GPP.MODIS._Rs_annual)` | Yes | Yes | Yes
 ↑ R~H~:SCIA SIF over time  | `r nrow(s_SIF.SCIAMACHY._Rh_annual)` | Yes | Yes	| No
