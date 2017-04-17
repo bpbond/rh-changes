@@ -92,6 +92,13 @@ s_rh_rs %>%
             n = n()) ->
   rh_rs_summary
 
+# Rudimentary figure of Rh:Rs showing naive trend line
+p_rh_rs <- ggplot(s_rh_rs, aes(Study_midyear, Rh_annual / Rs_annual)) + 
+  geom_point(aes(color = Biome)) + geom_smooth(method = "lm") +
+  xlab("Year") + ylab(expression(R[H]:R[S]))
+print(p_rh_rs)
+save_plot("rh_rs", width = 7, height = 6)
+
 # Make Figure 1
 p1_rh_rs <- ggplot(s_rh_rs, aes(Rs_annual, Rh_annual, color = group)) +
   scale_x_log10() + scale_y_log10() +
@@ -448,8 +455,14 @@ save_plot("2-gppsif", ptype = ".png")
 s_gppsif1 <- subset(s_gppsif_included, GPPSIF %in% c("GPP[MTE]", "GPP[MODIS]", "SIF[SCIAMACHY]"))
 p_gppsif1 <- p_gppsif_base %+% s_gppsif1 +
   geom_smooth(data = subset(s_gppsif1, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
-print(p_gppsif1 )
+print(p_gppsif1)
 save_plot("2-gppsif_scia", ptype = ".png")
+
+s_gppsif2 <- subset(s_gppsif_included, GPPSIF %in% c("GPP[MTE]", "GPP[MODIS]"))
+p_gppsif2 <- p_gppsif_base %+% s_gppsif2 +
+  geom_smooth(data = subset(s_gppsif2, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
+print(p_gppsif2)
+save_plot("2-gppsif_gpp", ptype = ".png")
 
 printlog("Trend tests")
 results <- list()
