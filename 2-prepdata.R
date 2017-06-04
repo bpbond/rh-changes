@@ -76,7 +76,7 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
   
   printlog(SEPARATOR)
   printlog("Starting extraction for varname:", varname)
-  
+
   # Results vectors: variable, variable normal (1961-1990 by default),
   # trend (1991-2010) and trend significance
   x <- normx <- trend <- trend_p <- rep(NA_real_, length(lon))
@@ -364,6 +364,7 @@ all_data[["pre"]] <- pre * 12 # mm/month to mm/yr
 pet <- extract_ncdf_data(CRU_PET, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
 all_data[["pet"]] <- pet * 365 # mm/day to mm/yr
 
+
 # -------------- 4. Match with Max Planck GPP data ------------------- 
 
 fn <- "/Users/d3x290/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc.gz"
@@ -372,6 +373,10 @@ fn <- "/Users/d3x290/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc.gz"
 gpp <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, baseline = NULL, trendline = NULL, file_startyear = 1982)
 all_data[["gpp"]] <- gpp * 1000 * 60 * 60 * 24 * 365  # Convert from kgC/m2/s to gC/m2/yr
 
+# We also look up Max Planck (MTE) data for the Fluxnet towers
+fluxnet_mtegpp <- extract_ncdf_data(fn, fluxnet$LOCATION_LONG, fluxnet$LOCATION_LAT, fluxnet$Year + 0.5, rep(1, nrow(fluxnet)), baseline = NULL, trendline = NULL, file_startyear = 1982)
+fluxnet_mtegpp <- fluxnet_mtegpp * 1000 * 60 * 60 * 24 * 365  # Convert from kgC/m2/s to gC/m2/yr
+names(fluxnet_mtegpp) <- "gpp_mte"
 
 # -------------- 5. Match with MODIS GPP data ------------------- 
 
@@ -386,6 +391,17 @@ modisgpp <- modisgpp * 12 # from mean monthly value to annual sum
 modisgpp$modisgpp[modisgpp$modisgpp > 10000] <- NA
 all_data[["modisgpp"]] <- modisgpp
 
+# We also look up Max Planck (MTE) data for the Fluxnet towers
+fluxnet_modisgpp <- extract_geotiff_data(dir, "modisgpp", fluxnet$LOCATION_LONG, fluxnet$LOCATION_LAT, fluxnet$Year + 0.5, rep(1, nrow(fluxnet)), file_startyear = 2000)
+names(fluxnet_modisgpp) <- "gpp_modis"
+fluxnet_modisgpp <- fluxnet_modisgpp * 0.1 # scale factor, per README file; results in gC/m2
+fluxnet_modisgpp <- fluxnet_modisgpp * 12 # from mean monthly value to annual sum
+fluxnet_modisgpp$gpp_modis[fluxnet_modisgpp$gpp_modis > 10000] <- NA
+fluxnet %>%
+  bind_cols(fluxnet_modisgpp, fluxnet_mtegpp) %>%
+  dplyr::select(Year, GPP_DT_VUT_REF, GPP_NT_VUT_REF, SITE_ID, LOCATION_LAT, LOCATION_LONG, LOCATION_ELEV, IGBP, MAT, MAP, gpp_mte, gpp_modis) %>%
+  save_data("fluxnet_remotesensing_comparison.csv", scriptfolder = FALSE)
+
 
 # -------------- 6. Match with SoilGrids1km data ------------------- 
 
@@ -396,8 +412,6 @@ dir <- "/Users/d3x290/Data/soilgrids1km/ORCDRC/"
 orc <- extract_geotiff_data(dir, "ORC", srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = NULL)
 
 all_data[["soc"]] <- tibble(SOC = bd$BD * orc$ORC / 1000)  # kg C in top 1 m
-
-#modisgpp <- tibble(modisgpp = 1:nrow(srdb))
 
 
 # -------------- Done!  ------------------- 
@@ -459,13 +473,13 @@ printlog("Creating monthly data structure...")
 months <- rep(rep(1:12, each = length(sp)), nyears)
 years <- rep(GG_PERIOD[1]:GG_PERIOD[2], each = length(sp) * 12)
 crudata_monthly <- tibble(lon = rep(gridcells$lon, 12 * nyears),
-                  lat = rep(gridcells$lat, 12 * nyears),
-                  area_km2 = rep(gridcells$area_km2, 12 * nyears),
-                  month = months,
-                  year = years,
-                  tmp = as.vector(tmp),
-                  pre = as.vector(pre),
-                  pet = as.vector(pet))
+                          lat = rep(gridcells$lat, 12 * nyears),
+                          area_km2 = rep(gridcells$area_km2, 12 * nyears),
+                          month = months,
+                          year = years,
+                          tmp = as.vector(tmp),
+                          pre = as.vector(pre),
+                          pet = as.vector(pet))
 save_data(crudata_monthly, scriptfolder = FALSE, gzip = TRUE)
 
 printlog("Computing annual data...")

@@ -169,6 +169,53 @@ print(last_plot() %+% srdb_combined)
 save_plot("distributions-alt")
 
 
+# A figure for my talk at Stanford, showing growth in SRDB
+# between 2010 Nature paper and now
+srdb %>%
+  filter(Rs_annual < 4000) %>%
+  select(Study_midyear, Record_number, Rs_annual, Rh_annual, Biome) %>%
+  gather(respiration, value, Rs_annual, Rh_annual) ->
+  srdb_stan
+
+p_stan <- ggplot(srdb_stan, aes(Study_midyear, value)) +
+  geom_point(aes(color = Record_number > 3400), alpha = 0.5) +
+  facet_grid(respiration ~ ., scales = "free_y") +
+  scale_color_discrete(guide = FALSE) +
+  xlab("Year") + ylab(expression(R~(g~C~m^{-2}~yr^{-1})))
+print(p_stan)
+save_plot("database_growth")
+
+
+# Responding to Reviewer 1, see how well remote-sensing indices track tower GPP over time
+
+print(SEPARATOR)
+read_csv("outputs/fluxnet_remotesensing_comparison.csv") %>%
+  arrange(Year) %>%
+  print_dims ->
+  fluxnet
+
+library(Kendall)
+print(summary(lm(gpp_modis - GPP_DT_VUT_REF ~ Year, data = fluxnet)))
+printlog("Mann-Kendall trend test:")
+print(MannKendall(fluxnet$gpp_modis - fluxnet$GPP_DT_VUT_REF))
+print(summary(lm(gpp_mte - GPP_DT_VUT_REF ~ Year, data = fluxnet)))
+printlog("Mann-Kendall trend test:")
+print(MannKendall(fluxnet$gpp_mte - fluxnet$GPP_DT_VUT_REF))
+
+fluxnet %>%
+  mutate(gpp_modis_diff = gpp_modis - GPP_DT_VUT_REF,
+         gpp_mte_diff = gpp_mte - GPP_DT_VUT_REF) %>%
+  gather(diffvar, value, gpp_modis_diff, gpp_mte_diff) ->
+  fluxnet_plot
+
+p <- ggplot(fluxnet_plot, aes(Year, value)) + geom_jitter() + 
+  facet_grid(diffvar ~ ., scales = "free_y") + 
+  geom_smooth(method = "lm") +
+  ylab("Satellite - tower GPP difference (gC)")
+print(p)
+save_plot("fluxnet_comparison")
+
+
 # ----------------------- Clean up ------------------------- 
 
 printlog("All done with", SCRIPTNAME)
