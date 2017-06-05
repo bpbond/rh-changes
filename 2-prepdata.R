@@ -259,12 +259,14 @@ srdb %>%
          !is.na(Rs_annual) | !is.na(Rh_annual),
          !is.na(Study_midyear), !is.na(YearsOfData),
          is.na(Duplicate_record),
-         Ecosystem_state != "Managed", 
+         # June 4, 2017: going to include managed ecosystem for a response to Referee 1
+         # We'll exclude them for the main analysis in script #4
+         #         Ecosystem_state != "Managed", 
          Manipulation == "None",
          Meas_method %in% c("IRGA", "Gas chromatography")) %>%
-  dplyr::select(Record_number, Study_midyear, #Quality_flag, 
+  dplyr::select(Record_number, Study_midyear, Site_name, 
                 YearsOfData, Longitude, Latitude, 
-                Biome, Ecosystem_type, Leaf_habit, Stage, #Soil_drainage,
+                Biome, Ecosystem_type, Ecosystem_state, Leaf_habit, Stage, #Soil_drainage,
                 MAT, MAP, Study_temp, Study_precip, Partition_method,
                 Rs_annual, Rh_annual, Ra_annual, GPP, ER) ->
   srdb

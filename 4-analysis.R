@@ -39,12 +39,17 @@ save_model_diagnostics <- function(m, modelname = deparse(substitute(m))) {
 openlog(file.path(outputdir(), paste0(SCRIPTNAME, ".log.txt")), sink = TRUE)
 printlog("Welcome to", SCRIPTNAME)
 
-read_csv(SRDB_FILTERED_FILE) %>%
+read_csv(SRDB_FILTERED_FILE, guess_max = 1e6) %>%
   print_dims() ->
   srdb_complete
 
+# TEMPORARY TEMPORARY TEMPORARY - until I re-run script 2
+zz <- readr::read_csv("inputs/srdb-data.csv", guess_max = 1e6) %>% dplyr::select(Record_number, Site_name)
+srdb_complete %>% left_join(zz) -> srdb_complete
+
 srdb_complete %>%
-  filter(Study_midyear >= SRDB_MINYEAR) ->
+  filter(Study_midyear >= SRDB_MINYEAR,
+         Ecosystem_state != "Managed") ->
   srdb
 
 printlog("Filtered for studies after", SRDB_MINYEAR)
@@ -182,7 +187,7 @@ printlog("Global flux computation...")
 # and mature
 
 # Global grid of climate data
-read_csv("outputs/crudata_annual.csv.gz") %>%
+read_csv("outputs/crudata_annual.csv.gz", guess_max = 1e6) %>%
   rename(pre_hadcrut4 = pre, tmp_hadcrut4 = tmp) %>%
   mutate(Leaf_habit = "Deciduous", Stage = "Mature") ->
   globalclim
@@ -393,7 +398,7 @@ p_fluxnet_only <- ggplot(s_fluxnet_only, aes(Year, NEE_VUT_REF_NIGHT / GPP_DT_VU
 
 print(p_fluxnet_only)
 save_plot("fluxnet_only")
-save_plot("fluxnet_only", ptype = ".png")
+save_plot("fluxnet_only", ptype = ".png", height = 6, width = 8)
 
 printlog("Fitting temporal model...")
 m_fluxnet_only <- lm(NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF ~ Year * TA_F + Year * P_F + Year * IGBP, data = s_fluxnet_only)
@@ -453,7 +458,7 @@ p_gppsif <- p_gppsif_base +
                             GPPSIF != "SIF[GOME2]"),
               method = "lm", show.legend = FALSE)
 print(p_gppsif )
-save_plot("2-gppsif", ptype = ".png")
+save_plot("2-gppsif", ptype = ".png", height = 8, width = 7)
 
 s_gppsif1 <- subset(s_gppsif_included, GPPSIF %in% c("GPP[MTE]", "GPP[MODIS]", "SIF[SCIAMACHY]"))
 p_gppsif1 <- p_gppsif_base %+% s_gppsif1 +
@@ -519,11 +524,17 @@ printlog("Testing ratio of RH to ISIMIP GPP...")
 # Mann-Kendall
 print(MannKendall(srdb$Rh_annual / srdb$gpp_isimip))
 
+srdb %>%
+  dplyr::select(Rh_annual, mat_hadcrut4, map_hadcrut4, Study_midyear, gpp_isimip,
+         Leaf_habit, Stage, SOC) %>%
+  na.omit ->
+  srdb_isimip
+
 # Linear model
 m <- lm(Rh_annual / gpp_isimip ~ mat_hadcrut4 + map_hadcrut4 ^ 2 + 
           Study_midyear * Leaf_habit + 
           Study_midyear * Stage + SOC, 
-        data = srdb)
+        data = srdb_isimip)
 m <- stepAIC(m, direction = "both", trace = 0)
 print(summary(m))
 
@@ -544,7 +555,7 @@ for(minyr in min(srdb_complete$Study_midyear):(max(srdb_complete$Study_midyear) 
   print(minyr)
   # Repeatedly fit our basic Rh/Rs time model to shorter and shorter time periods
   d <- srdb_complete %>%
-    filter(Study_midyear >= minyr) %>%
+    filter(Study_midyear >= minyr, Ecosystem_state != "Managed") %>%
     dplyr::select(Rh_annual, Rs_annual, Study_midyear, Stage, Partition_method, Leaf_habit,
                   map_hadcrut4, mat_hadcrut4, SOC)
   d <- d[complete.cases(d),]
@@ -572,6 +583,82 @@ p_startdate <- ggplot(startdate_results, aes(min_year, p, color = (p <= 0.05))) 
   xlab("First year in dataset") + ylab("P-value of Rh:Rs trend")
 print(p_startdate)
 save_plot("startdate", width = 7, height = 4)
+
+
+# ----- 8. Site-specific trends, both managed and unmanaged (per Referee 1) -------------- 
+
+printlog(SEPARATOR)
+printlog("Doing Referee 1 site-level analysis...")
+
+R1_MIN_TIMESPAN <- 8
+R1_MIN_OBS <- 3
+srdb_complete %>% 
+  replace_na(list(Leaf_habit = "Mixed")) %>%
+  mutate(Longitude = round(Longitude, 1), Latitude = round(Latitude, 1)) ->
+  srdb_complete_rounded
+
+srdb_complete_rounded %>% 
+  group_by(Longitude, Latitude, Ecosystem_state, Ecosystem_type, Leaf_habit) %>% 
+  summarise(nyears = length(unique(Study_midyear)), 
+            year_range = round(max(Study_midyear) - min(Study_midyear), 0),
+            Site_name = substr(paste(unique(Site_name), collapse = " "), 1, 20)) %>% 
+  filter(year_range >= R1_MIN_TIMESPAN, nyears >= R1_MIN_OBS) %>%
+  arrange(desc(year_range)) -> 
+  longterm_sites_list
+
+printlog("There are", nrow(longterm_sites_list), "sites with at least", R1_MIN_OBS, "observations over at least", R1_MIN_TIMESPAN, "years")
+print(longterm_sites_list)
+save_data(longterm_sites_list)
+
+# Filter the complete database to these sites, run regressions
+srdb_complete_rounded %>%
+  dplyr::select(Study_midyear, Longitude, Latitude, Ecosystem_state, Ecosystem_type, Leaf_habit,
+                Rs_annual, Rh_annual) %>%
+  semi_join(longterm_sites_list, by = c("Longitude", "Latitude")) %>%
+  group_by(Longitude, Latitude, Ecosystem_state, Ecosystem_type, Leaf_habit) ->
+  srdb_complete_rounded
+
+srdb_complete_rounded %>%
+  filter(!is.na(Rs_annual)) %>%
+  do(rsmod = lm(Rs_annual ~ Study_midyear, data = .)) %>%
+  tidy(rsmod) %>%
+  filter(term == "Study_midyear") %>%
+  mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not rising")) %>%
+  group_by(Ecosystem_type, Leaf_habit, trend) %>% 
+  summarise(n = n()) %>%
+  complete(nesting(Ecosystem_type, trend), fill = list(n = 0)) ->
+  rs_site_summary
+
+printlog(rs_site_summary %>% spread(trend, n))
+
+p_rs_sites <- ggplot(rs_site_summary, aes(trend, n, fill=Leaf_habit)) + 
+  geom_bar(stat="identity") + 
+  facet_wrap(~Ecosystem_type) +
+  xlab(expression(R[S]~trend)) + ylab("Number of sites")
+print(p_rs_sites)
+save_plot("rs_all_sites")
+
+# ...and again for Rh
+srdb_complete_rounded %>%
+  filter(!is.na(Rh_annual)) %>%
+  do(rhmod = lm(Rh_annual ~ Study_midyear, data = .)) %>%
+  tidy(rhmod) %>%
+  filter(term == "Study_midyear") %>%
+  mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not rising")) %>%
+  group_by(Ecosystem_type, Leaf_habit, trend) %>% 
+  summarise(n = n()) %>%
+  # Put in an artifical row so the plot matches the Rs one
+  bind_rows(tibble(Ecosystem_type = "Wetland", Leaf_habit = "Mixed", trend = "Rising", n = 0)) ->
+  rh_site_summary
+
+printlog(rh_site_summary %>% spread(trend, n))
+
+p_rh_sites <- ggplot(rh_site_summary, aes(trend, n, fill=Leaf_habit)) + 
+  geom_bar(stat="identity") + 
+  facet_wrap(~Ecosystem_type) +
+  xlab(expression(R[H]~trend)) + ylab("Number of sites")
+print(p_rh_sites)
+save_plot("rh_all_sites")
 
 
 # ----------------------- Clean up ------------------------- 
