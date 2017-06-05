@@ -129,7 +129,7 @@ library(dplyr)
 library(tidyr)
 library(readr)
 library(ggplot2)
-theme_set(theme_bw())
+theme_set(theme_bw() + theme(panel.grid.minor = element_blank()))
 library(luzlogr)  # 0.2.0
 library(R.utils)
 library(assertthat)
