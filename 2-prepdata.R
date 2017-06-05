@@ -72,11 +72,12 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
                          file_startyear, file_layers,
                          baseline = c(1961, 1990), 
                          trendline = DEFAULT_TRENDLINE,
-                         print_every = 100) {
+                         print_every = 100,
+                         months_per_layer = 1) {
   
   printlog(SEPARATOR)
   printlog("Starting extraction for varname:", varname)
-
+  
   # Results vectors: variable, variable normal (1961-1990 by default),
   # trend (1991-2010) and trend significance
   x <- normx <- trend <- trend_p <- rep(NA_real_, length(lon))
@@ -88,9 +89,9 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
     if(is.null(file_startyear)) {
       start_layer <- nlayers <- 1  # no time dimension
     } else {
-      midyear_layer <- (midyear[i] - file_startyear) * 12
-      start_layer <- midyear_layer - nyears[i] / 2 * 12
-      nlayers <- nyears[i] * 12
+      midyear_layer <- (midyear[i] - file_startyear) * (12 / months_per_layer)
+      start_layer <- midyear_layer - nyears[i] / 2 * (12 / months_per_layer)
+      nlayers <- nyears[i] * (12 / months_per_layer)
     }
     
     printit <- print_every & i %% print_every == 0
@@ -118,8 +119,8 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
     
     # Calculate baseline (normal) data
     if(!is.null(baseline)) {
-      start_layer <- max(1, (baseline[1] - file_startyear) * 12 + 1)
-      nlayers <- (baseline[2] - baseline[1] + 1) * 12
+      start_layer <- max(1, (baseline[1] - file_startyear) * (12 / months_per_layer) + 1)
+      nlayers <- (baseline[2] - baseline[1] + 1) * (12 / months_per_layer)
       rasterstack %>%
         raster::extract(sp, layer = start_layer, nl = nlayers) %>%
         mean(na.rm = TRUE) ->
@@ -131,12 +132,12 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
     
     # Calculate trend
     if(!is.null(trendline)) {
-      start_layer <- max(1, (trendline[1] - file_startyear) * 12 + 1)
-      nlayers <- (trendline[2] - trendline[1] + 1) * 12
+      start_layer <- max(1, (trendline[1] - file_startyear) * (12 / months_per_layer) + 1)
+      nlayers <- (trendline[2] - trendline[1] + 1) * (12 / months_per_layer)
       rasterstack %>%
         raster::extract(sp, layer = start_layer, nl = nlayers) ->
         vals
-      tibble(year = rep(trendline[1]:trendline[2], each = 12), 
+      tibble(year = rep(trendline[1]:trendline[2], each = (12 / months_per_layer)), 
              x = as.numeric(vals)) %>%
         group_by(year) %>%
         summarise(x = mean(x, na.rm = TRUE)) ->
@@ -172,7 +173,8 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
 # -----------------------------------------------------------------------------
 # Extract MODIS NPP data given vectors of lon/lat/time info
 extract_geotiff_data <- function(directory, varname, lon, lat, midyear, nyears, file_startyear,
-                                 print_every = 100) {
+                                 print_every = 100,
+                                 months_per_layer = 1) {
   
   # Decompress if necessary
   zipfiles <- list.files(directory, pattern = "*.tif.gz$", full.names = TRUE)
@@ -189,8 +191,11 @@ extract_geotiff_data <- function(directory, varname, lon, lat, midyear, nyears, 
   nc <- stack(as.list(files))
   
   out <- extract_data(nc, varname, lon, lat, midyear, nyears, 
-                      file_startyear = file_startyear, file_layers = length(files), 
-                      baseline = NULL, trendline = NULL, print_every)
+                      file_startyear = file_startyear, 
+                      file_layers = length(nc@layers), #length(files), 
+                      baseline = NULL, trendline = NULL, 
+                      print_every = print_every, 
+                      months_per_layer = months_per_layer)
   
   # Clean up if we decompressed anything
   for(f in zipfiles) {
@@ -292,6 +297,7 @@ read_csv("inputs/SIF.csv", col_types = "iddidd") %>%
 
 stopifnot(!any(duplicated(srdb$Record_number)))
 
+
 # -------------- 3. FLUXNET ------------------- 
 
 # Start by finding the nearest Fluxnet station, and its distance in km
@@ -378,6 +384,7 @@ fluxnet_mtegpp <- extract_ncdf_data(fn, fluxnet$LOCATION_LONG, fluxnet$LOCATION_
 fluxnet_mtegpp <- fluxnet_mtegpp * 1000 * 60 * 60 * 24 * 365  # Convert from kgC/m2/s to gC/m2/yr
 names(fluxnet_mtegpp) <- "gpp_mte"
 
+
 # -------------- 5. Match with MODIS GPP data ------------------- 
 
 # This is the slow step...
@@ -412,6 +419,17 @@ dir <- "/Users/d3x290/Data/soilgrids1km/ORCDRC/"
 orc <- extract_geotiff_data(dir, "ORC", srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = NULL)
 
 all_data[["soc"]] <- tibble(SOC = bd$BD * orc$ORC / 1000)  # kg C in top 1 m
+
+
+# -------------- 7. ISIMIP GPP ------------------- 
+
+# Received 2 June 2017 from Min Chen
+# Dimensions are 360 x 720 x 40 (lat, lon, years 1971-2010)
+ISIMIP_GPP <- "ancillary/isimip-gpp/ISIMIP_ensemble_mean.tif"
+dir <- "ancillary/isimip-gpp/"
+all_data[["isimip"]]  <- extract_geotiff_data(dir, "gpp_isimip", srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, 
+                                              file_startyear = 1971,
+                                              months_per_layer = 12)
 
 
 # -------------- Done!  ------------------- 

@@ -40,7 +40,10 @@ openlog(file.path(outputdir(), paste0(SCRIPTNAME, ".log.txt")), sink = TRUE)
 printlog("Welcome to", SCRIPTNAME)
 
 read_csv(SRDB_FILTERED_FILE) %>%
-  print_dims() %>%
+  print_dims() ->
+  srdb_complete
+
+srdb_complete %>%
   filter(Study_midyear >= SRDB_MINYEAR) ->
   srdb
 
@@ -57,10 +60,10 @@ printlog("SRDB Rh:Rs analysis")
 srdb %>%
   filter(!is.na(Stage), !is.na(Leaf_habit), 
          !is.na(Rs_annual), !is.na(Rh_annual), 
-         Year >= 1989) %>%
+         Year >= SRDB_MINYEAR) %>%
   mutate(Year = as.integer(Year),
-         yeargroup = cut(Year, breaks = c(1989, 1994, 1999, 2004, 2009, 2014),
-                         labels = c("1990-1994", "1995-1999", "2000-2004", "2005-2009", "2010-2014"))) %>%
+         yeargroup = cut(Year, breaks = c(1989, 1998, 2006, 2014),
+                         labels = c("1990-1998", "1999-2006", "2007-2014"))) %>%
   group_by(yeargroup) %>% 
   mutate(group_midyear = mean(Year),
          group = paste0(yeargroup, " (N = ", n(), ")")) -> 
@@ -507,6 +510,69 @@ for(dataset in unique(s_gppsif_included$GPPSIF)) {
   }
 }
 rs_results <- bind_rows(results)
+
+
+# ----------- 6. ISIMIP analysis (per Referee 1) -------------- 
+
+printlog("Testing ratio of RH to ISIMIP GPP...")
+
+# Mann-Kendall
+print(MannKendall(srdb$Rh_annual / srdb$gpp_isimip))
+
+# Linear model
+m <- lm(Rh_annual / gpp_isimip ~ mat_hadcrut4 + map_hadcrut4 ^ 2 + 
+          Study_midyear * Leaf_habit + 
+          Study_midyear * Stage + SOC, 
+        data = srdb)
+m <- stepAIC(m, direction = "both", trace = 0)
+print(summary(m))
+
+# Plot
+p_isimip <- ggplot(srdb, aes(Study_midyear, Rh_annual / gpp_isimip)) + 
+  geom_point(aes(color = Biome)) + geom_smooth(method = "lm") +
+  xlab("Year") + ylab(expression(R[H]:GPP[isimip]))
+print(p_isimip)
+save_plot("isimip", width = 7, height = 4)
+
+
+# ----------- 7. Sensitivity to start date (per Referee 1) -------------- 
+
+printlog("Checking sensitivity of results to start date...")
+
+startdate_results <- list()
+for(minyr in min(srdb_complete$Study_midyear):(max(srdb_complete$Study_midyear) - 5)) {
+  print(minyr)
+  # Repeatedly fit our basic Rh/Rs time model to shorter and shorter time periods
+  d <- srdb_complete %>%
+    filter(Study_midyear >= minyr) %>%
+    dplyr::select(Rh_annual, Rs_annual, Study_midyear, Stage, Partition_method, Leaf_habit,
+                  map_hadcrut4, mat_hadcrut4, SOC)
+  d <- d[complete.cases(d),]
+  m <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + 
+            Study_midyear * Partition_method +
+            Study_midyear * Leaf_habit +
+            mat_hadcrut4 * map_hadcrut4 ^ 2 + 
+            Study_midyear * SOC, 
+          data = d)
+  m <- MASS::stepAIC(m, direction = "both", trace = 0)
+  startdate_results[[as.character(minyr)]] <- tibble(min_year = minyr, 
+                                                     p = round(anova(m)["Study_midyear", "Pr(>F)"], 3),
+                                                     n = length(m$residuals))
+  
+}
+startdate_results <- bind_rows(startdate_results)
+
+p_startdate <- ggplot(startdate_results, aes(min_year, p, color = (p <= 0.05))) + 
+  geom_point() +
+  geom_hline(yintercept = 0.05, linetype = 2) +
+  geom_hline(yintercept = 0.10, linetype = 2) +
+  geom_vline(xintercept = 1989, linetype = 2) +
+  guides(color = FALSE) +
+  geom_line(aes(y = n / max(n)), color = "black") +
+  xlab("First year in dataset") + ylab("P-value of Rh:Rs trend")
+print(p_startdate)
+save_plot("startdate", width = 7, height = 4)
+
 
 # ----------------------- Clean up ------------------------- 
 
