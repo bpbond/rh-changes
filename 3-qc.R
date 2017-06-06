@@ -188,32 +188,63 @@ save_plot("database_growth")
 
 # Responding to Reviewer 1, see how well remote-sensing indices track tower GPP over time
 
+rescale <- function(x, a, b) {
+  ((b - a) * (x - min(x, na.rm = TRUE))) / 
+    (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) + a
+}
+
 print(SEPARATOR)
 read_csv("outputs/fluxnet_remotesensing_comparison.csv") %>%
   arrange(Year) %>%
   print_dims ->
   fluxnet
 
+# Data from Min Chen, 5 June 2017
+read_csv("ancillary/fluxsite_SIF_annual-GOME2.csv") %>%
+  mutate(sensor = "GOME2") ->
+  gome2
+read_csv("ancillary/fluxsite_SIF_annual-SCIMACHY.csv") %>%
+  mutate(sensor = "SCIMACHY") %>%
+  bind_rows(gome2) %>%
+  gather(Year, sif_value, -Site, -sensor) %>%
+  mutate(sif_value = rescale(sif_value, 0, 3500)) %>%
+  spread(sensor, sif_value) %>%
+  mutate(Year = as.integer(Year)) ->
+  sif
+
+fluxnet <- left_join(fluxnet, sif, by = c("SITE_ID" = "Site", "Year"))
 library(Kendall)
 print(summary(lm(gpp_modis - GPP_DT_VUT_REF ~ Year, data = fluxnet)))
 printlog("Mann-Kendall trend test:")
 print(MannKendall(fluxnet$gpp_modis - fluxnet$GPP_DT_VUT_REF))
+
 print(summary(lm(gpp_mte - GPP_DT_VUT_REF ~ Year, data = fluxnet)))
 printlog("Mann-Kendall trend test:")
 print(MannKendall(fluxnet$gpp_mte - fluxnet$GPP_DT_VUT_REF))
 
+print(summary(lm(GOME2 - GPP_DT_VUT_REF ~ Year, data = fluxnet)))
+printlog("Mann-Kendall trend test:")
+print(MannKendall(fluxnet$GOME2 - fluxnet$GPP_DT_VUT_REF))
+
+print(summary(lm(SCIMACHY - GPP_DT_VUT_REF ~ Year, data = fluxnet)))
+printlog("Mann-Kendall trend test:")
+print(MannKendall(fluxnet$SCIMACHY - fluxnet$GPP_DT_VUT_REF))
+
 fluxnet %>%
   mutate(gpp_modis_diff = gpp_modis - GPP_DT_VUT_REF,
-         gpp_mte_diff = gpp_mte - GPP_DT_VUT_REF) %>%
-  gather(diffvar, value, gpp_modis_diff, gpp_mte_diff) ->
+         gpp_mte_diff = gpp_mte - GPP_DT_VUT_REF,
+         gome2_diff = GOME2 - GPP_DT_VUT_REF,
+         scimachy_diff = SCIMACHY - GPP_DT_VUT_REF) %>%
+  gather(diffvar, value, gpp_modis_diff, gpp_mte_diff, gome2_diff, scimachy_diff) ->
   fluxnet_plot
 
-p <- ggplot(fluxnet_plot, aes(Year, value)) + geom_jitter() + 
+p <- ggplot(fluxnet_plot, aes(Year, value, linetype = diffvar != "gpp_mte_diff")) + geom_jitter() + 
   facet_grid(diffvar ~ ., scales = "free_y") + 
   geom_smooth(method = "lm") +
+  guides(linetype = FALSE) +
   ylab("Satellite - tower GPP difference (gC)")
 print(p)
-save_plot("fluxnet_comparison")
+save_plot("fluxnet_comparison", height = 6, width = 6)
 
 
 # ----------------------- Clean up ------------------------- 

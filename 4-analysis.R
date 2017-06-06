@@ -43,10 +43,6 @@ read_csv(SRDB_FILTERED_FILE, guess_max = 1e6) %>%
   print_dims() ->
   srdb_complete
 
-# TEMPORARY TEMPORARY TEMPORARY - until I re-run script 2
-zz <- readr::read_csv("inputs/srdb-data.csv", guess_max = 1e6) %>% dplyr::select(Record_number, Site_name)
-srdb_complete %>% left_join(zz) -> srdb_complete
-
 srdb_complete %>%
   filter(Study_midyear >= SRDB_MINYEAR,
          Ecosystem_state != "Managed") ->
