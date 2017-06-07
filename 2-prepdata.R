@@ -17,6 +17,11 @@ CRU_TMP <- "~/Data/CRU/cru_ts3.24.1901.2015.tmp.dat.nc.gz"
 CRU_PRE <- "~/Data/CRU/cru_ts3.24.1901.2015.pre.dat.nc.gz"
 # Downloaded 5 Jan 2017 from https://crudata.uea.ac.uk/cru/data/hrg/cru_ts_3.24/cruts.1609301803.v3.24/pet/cru_ts3.24.1901.2015.pet.dat.nc.gz
 CRU_PET <- "~/Data/CRU/cru_ts3.24.1901.2015.pet.dat.nc.gz"
+# Computed (see 1-cci.R) from data downloaded 6 June 2017 from http://data.ceda.ac.uk/neodc/esacci/soil_moisture/data/daily_files/COMBINED/v02.2/
+CCI_MEANS <- "~/Data/ESA-CCI/ESACCI-SOILMOISTURE-L3S-SSMV-COMBINED-fv02.2.nc_means.nc"
+# Computed (see 1-cci.R) from data downloaded 6 June 2017 from http://data.ceda.ac.uk/neodc/esacci/soil_moisture/data/daily_files/COMBINED/v02.2/
+CCI_STDS <- "~/Data/ESA-CCI/ESACCI-SOILMOISTURE-L3S-SSMV-COMBINED-fv02.2.nc_stds.nc"
+
 
 APPEND_ONLY <- FALSE
 
@@ -69,7 +74,7 @@ match_fluxnet <- function(d, fluxnet) {
 # Extract data from a raster brick or raster stack, given vectors of lon/lat/time info
 # This is general-purpose and called by both extract_ncdf_data and extract_geotiff_data below
 extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears, 
-                         file_startyear, file_layers,
+                         file_startyear, file_layers, file_varname,
                          baseline = c(1961, 1990), 
                          trendline = DEFAULT_TRENDLINE,
                          print_every = 100,
@@ -208,10 +213,12 @@ extract_geotiff_data <- function(directory, varname, lon, lat, midyear, nyears, 
 
 # -----------------------------------------------------------------------------
 # Extract CRU and Max Planck data given vectors of lon/lat/time info
-extract_ncdf_data <- function(filename, lon, lat, midyear, nyears, file_startyear,
+extract_ncdf_data <- function(filename, lon, lat, midyear, nyears, 
+                              file_startyear, varname,
                               baseline = c(1961, 1990),
                               trendline = DEFAULT_TRENDLINE,
-                              print_every = 100) {
+                              print_every = 100,
+                              months_per_layer = 1) {
   
   assert_that(length(lon) == length(lat))
   assert_that(length(lon) == length(midyear))
@@ -225,12 +232,12 @@ extract_ncdf_data <- function(filename, lon, lat, midyear, nyears, file_startyea
   } else {
     ncfile <- filename
   }
-  nc <- brick(ncfile)
-  varname <- attributes(nc@data)$zvar
+  nc <- brick(ncfile, varname = varname)
   
   out <- extract_data(nc, varname, lon, lat, midyear, nyears, 
                       file_startyear = file_startyear, file_layers = nc@data@nlayers, 
-                      baseline, trendline, print_every)
+                      baseline = baseline, trendline = trendline, 
+                      print_every = print_every, months_per_layer = months_per_layer)
   
   # Clean up
   if(compressed) {
@@ -366,10 +373,10 @@ all_data[["srdb"]] <- srdb
 
 # -------------- 3. Match with CRU climate data ------------------- 
 
-all_data[["tmp"]] <- extract_ncdf_data(CRU_TMP, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
-pre <- extract_ncdf_data(CRU_PRE, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
+all_data[["tmp"]] <- extract_ncdf_data(CRU_TMP, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901, varname = "tmp")
+pre <- extract_ncdf_data(CRU_PRE, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901, varname = "pre")
 all_data[["pre"]] <- pre * 12 # mm/month to mm/yr
-pet <- extract_ncdf_data(CRU_PET, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901)
+pet <- extract_ncdf_data(CRU_PET, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, file_startyear = 1901, varname = "pet")
 all_data[["pet"]] <- pet * 365 # mm/day to mm/yr
 
 
@@ -378,11 +385,11 @@ all_data[["pet"]] <- pet * 365 # mm/day to mm/yr
 fn <- "/Users/d3x290/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc.gz"
 # Downloaded 5 Jan 2017 from https://www.bgc-jena.mpg.de/geodb/tmpdnld/201715151429EnsembleGPP_GL.nc
 # See https://www.bgc-jena.mpg.de/bgi/index.php/Services/Overview
-gpp <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, baseline = NULL, trendline = NULL, file_startyear = 1982)
+gpp <- extract_ncdf_data(fn, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, baseline = NULL, trendline = NULL, file_startyear = 1982, varname = "gpp")
 all_data[["gpp"]] <- gpp * 1000 * 60 * 60 * 24 * 365  # Convert from kgC/m2/s to gC/m2/yr
 
 # We also look up Max Planck (MTE) data for the Fluxnet towers
-fluxnet_mtegpp <- extract_ncdf_data(fn, fluxnet$LOCATION_LONG, fluxnet$LOCATION_LAT, fluxnet$Year + 0.5, rep(1, nrow(fluxnet)), baseline = NULL, trendline = NULL, file_startyear = 1982)
+fluxnet_mtegpp <- extract_ncdf_data(fn, fluxnet$LOCATION_LONG, fluxnet$LOCATION_LAT, fluxnet$Year + 0.5, rep(1, nrow(fluxnet)), baseline = NULL, trendline = NULL, file_startyear = 1982, varname = "gpp")
 fluxnet_mtegpp <- fluxnet_mtegpp * 1000 * 60 * 60 * 24 * 365  # Convert from kgC/m2/s to gC/m2/yr
 names(fluxnet_mtegpp) <- "gpp_mte"
 
@@ -423,7 +430,7 @@ orc <- extract_geotiff_data(dir, "ORC", srdb$Longitude, srdb$Latitude, srdb$Stud
 all_data[["soc"]] <- tibble(SOC = bd$BD * orc$ORC / 1000)  # kg C in top 1 m
 
 
-# -------------- 7. ISIMIP GPP ------------------- 
+# -------------- 7. ISIMIP GPP (Referee 1) ------------------- 
 
 # Received 2 June 2017 from Min Chen
 # Dimensions are 360 x 720 x 40 (lat, lon, years 1971-2010)
@@ -433,6 +440,13 @@ all_data[["isimip"]]  <- extract_geotiff_data(dir, "gpp_isimip", srdb$Longitude,
                                               file_startyear = 1971,
                                               months_per_layer = 12)
 
+
+# -------------- 8. ESA CCI soil moisture (Referee 2) ------------------- 
+
+all_data[["sm_mean"]] <- extract_ncdf_data(CCI_MEANS, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, baseline = NULL, trendline = NULL, file_startyear = 1989, varname = "sm", months_per_layer = 12)
+sm_sd <- extract_ncdf_data(CCI_STDS, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, baseline = NULL, trendline = NULL, file_startyear = 1989, varname = "sm", months_per_layer = 12)
+names(sm_sd) <- "sm_sd"
+all_data[["sm_sd"]] <- sm_sd
 
 # -------------- Done!  ------------------- 
 
@@ -457,7 +471,7 @@ bind_cols(all_data) %>%
 save_data(srdb_filtered, scriptfolder = FALSE, fname = basename(SRDB_FILTERED_FILE))
 
 
-# -------------- 7. Prep global grids ------------------- 
+# -------------- 9. Not done. Prep global grids ------------------- 
 
 GG_PERIOD <- c(1990, 2014)
 
