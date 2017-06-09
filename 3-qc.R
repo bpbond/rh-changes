@@ -20,6 +20,12 @@ read_csv("outputs/srdb_filtered.csv") %>%
   print_dims() ->
   srdb
 
+# Check CCI soil moisture data by ecosystem type and as related to precip
+qplot(Ecosystem_type, sm, data=subset(srdb, sm > 0), geom = c("violin", "jitter"), alpha=I(.2)) 
+save_plot("sm_by_ecosystem_type")
+qplot(pre_hadcrut4, sm, data=srdb, color=tmp_hadcrut4) + geom_smooth()
+save_plot("sm_versus_precip")
+
 # Check to see if Rs_annual, Ra_annual, Rh_annual are within 5%
 
 lbls <- subset(srdb, abs(Rs_annual - (Ra_annual+Rh_annual)) > Rs_annual * 0.05)
@@ -173,7 +179,7 @@ save_plot("distributions-alt")
 # between 2010 Nature paper and now
 srdb %>%
   filter(Rs_annual < 4000) %>%
-  select(Study_midyear, Record_number, Rs_annual, Rh_annual, Biome) %>%
+  dplyr::select(Study_midyear, Record_number, Rs_annual, Rh_annual, Biome) %>%
   gather(respiration, value, Rs_annual, Rh_annual) ->
   srdb_stan
 
@@ -253,3 +259,4 @@ printlog("All done with", SCRIPTNAME)
 closelog()
 
 if(PROBLEM) warning("There was a problem - see log")
+
