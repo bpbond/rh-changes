@@ -71,6 +71,26 @@ match_fluxnet <- function(d, fluxnet) {
 
 
 # -----------------------------------------------------------------------------
+# Get data for a single point
+extract_point <- function(rasterstack, sp, start_layer, nlayers) {
+  try({ rasterstack %>%
+      raster::extract(sp, layer = start_layer, nl = nlayers) %>%
+      mean(na.rm = TRUE) ->
+      x
+  })
+  
+  if(is.na(x)) {  # If we don't get a value, try bilinear
+    try({ rasterstack %>%
+        raster::extract(sp, layer = start_layer, nl = max(2, nlayers), method = "bilinear") %>%
+        mean(na.rm = TRUE) ->
+        x
+    })
+  }
+  x
+}
+
+
+# -----------------------------------------------------------------------------
 # Extract data from a raster brick or raster stack, given vectors of lon/lat/time info
 # This is general-purpose and called by both extract_ncdf_data and extract_geotiff_data below
 extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears, 
@@ -94,8 +114,8 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
     if(is.null(file_startyear)) {
       start_layer <- nlayers <- 1  # no time dimension
     } else {
-      midyear_layer <- (midyear[i] - file_startyear) * (12 / months_per_layer)
-      start_layer <- midyear_layer - nyears[i] / 2 * (12 / months_per_layer)
+      midyear_layer <- (midyear[i] - file_startyear + 1) * (12 / months_per_layer)
+      start_layer <- ceiling(midyear_layer - nyears[i] / 2 * (12 / months_per_layer))
       nlayers <- nyears[i] * (12 / months_per_layer)
     }
     
@@ -113,10 +133,7 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
     }
     
     # Extract the information for this point, over as many years as needed, then average
-    rasterstack %>%
-      raster::extract(sp, layer = start_layer, nl = nlayers) %>%
-      mean(na.rm = TRUE) ->
-      x[i]
+    x[i] <- extract_point(rasterstack, sp, start_layer, nlayers)
     
     if(printit) {
       printlog(varname, "value:", x[i])
@@ -126,10 +143,7 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
     if(!is.null(baseline)) {
       start_layer <- max(1, (baseline[1] - file_startyear) * (12 / months_per_layer) + 1)
       nlayers <- (baseline[2] - baseline[1] + 1) * (12 / months_per_layer)
-      rasterstack %>%
-        raster::extract(sp, layer = start_layer, nl = nlayers) %>%
-        mean(na.rm = TRUE) ->
-        normx[i]
+      normx[i] <- extract_point(rasterstack, sp, start_layer, nlayers)
       if(printit) {
         printlog(varname, "normal:", normx[i])
       }
@@ -139,9 +153,7 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
     if(!is.null(trendline)) {
       start_layer <- max(1, (trendline[1] - file_startyear) * (12 / months_per_layer) + 1)
       nlayers <- (trendline[2] - trendline[1] + 1) * (12 / months_per_layer)
-      rasterstack %>%
-        raster::extract(sp, layer = start_layer, nl = nlayers) ->
-        vals
+      vals <- extract_point(rasterstack, sp, start_layer, nlayers)
       tibble(year = rep(trendline[1]:trendline[2], each = (12 / months_per_layer)), 
              x = as.numeric(vals)) %>%
         group_by(year) %>%
@@ -443,9 +455,13 @@ all_data[["isimip"]]  <- extract_geotiff_data(dir, "gpp_isimip", srdb$Longitude,
 
 # -------------- 8. ESA CCI soil moisture (Referee 2) ------------------- 
 
-all_data[["sm_mean"]] <- extract_ncdf_data(CCI_MEANS, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, baseline = NULL, trendline = NULL, file_startyear = 1989, varname = "sm", months_per_layer = 12)
-sm_sd <- extract_ncdf_data(CCI_STDS, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, baseline = NULL, trendline = NULL, file_startyear = 1989, varname = "sm", months_per_layer = 12)
-names(sm_sd) <- "sm_sd"
+all_data[["sm_mean"]] <- extract_ncdf_data(CCI_MEANS, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData, 
+                                           baseline = c(1978, 2007), trendline = NULL, 
+                                           file_startyear = 1978, varname = "sm", months_per_layer = 12)
+sm_sd <- extract_ncdf_data(CCI_STDS, srdb$Longitude, srdb$Latitude, srdb$Study_midyear, srdb$YearsOfData,
+                           baseline = c(1978, 2007), trendline = NULL, 
+                           file_startyear = 1978, varname = "sm", months_per_layer = 12)
+names(sm_sd) <- c("sm_sd", "sm_sd_norm")
 all_data[["sm_sd"]] <- sm_sd
 
 # -------------- Done!  ------------------- 
