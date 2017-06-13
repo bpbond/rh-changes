@@ -15,7 +15,7 @@ What we did:
 - Matched temporally- and spatially-resolved respiration data with the ancillary datasets
 - Used linear models to examine whether Rh, Rs, and Rh:Rs change over a 25-year period
 
-To re-run our analysis
+To re-run our analysis:
 - All scripts used are included in this repository
 - Unless you want to rebuild everything from the underlying SRDB, Hadley, MODIS, MTE, etc., datasets, it's simplest to use a pre-processed dataset and start with the main analysis script `4-analysis.R`
 - Copy the `srdb-filtered.csv` file from the `reproducibility/` folder to `outputs/` (you may need to create the latter if no scripts have been run yet)
