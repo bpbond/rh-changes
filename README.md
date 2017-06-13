@@ -12,7 +12,8 @@ Potential lines of evidence might include:
 
 What we did:
 - Updated the global [Soil Respiration Database](http://www.biogeosciences.net/7/1915/2010/) with data through 2015
-- 
+- Matched temporally- and spatially-resolved respiration data with the ancillary datasets
+- Used linear models to examine whether Rh, Rs, and Rh:Rs change over a 25-year period
 
 To re-run our analysis
 - All scripts used are included in this repository
