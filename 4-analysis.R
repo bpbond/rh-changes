@@ -40,12 +40,24 @@ openlog(file.path(outputdir(), paste0(SCRIPTNAME, ".log.txt")), sink = TRUE)
 printlog("Welcome to", SCRIPTNAME)
 
 read_csv(SRDB_FILTERED_FILE, guess_max = 1e6) %>%
-  print_dims() ->
+  print_dims() %>%
+  
+  # Per Referee 2, we look at land cover, splitting trees (by far the largest Ecosystem_type) into 
+  # deciduous and coniferous categories
+  mutate(Land_cover = if_else(Ecosystem_type == "Forest", paste(Leaf_habit, Ecosystem_type), Ecosystem_type)) ->
   srdb_complete
+
+# Group most land cover categories (with less than 100 observations) into "Other"
+srdb_complete %>% group_by(Land_cover) %>% summarise(n = n()) %>% filter(n >= 100) -> over100
+srdb_complete$Land_cover[! srdb_complete$Land_cover %in% over100$Land_cover] <- "Other"
+lvls <- unique(srdb_complete$Land_cover)
+lvls <- c(lvls[-which(lvls == "Other")], "Other")
+srdb_complete$Land_cover <- factor(srdb_complete$Land_cover, levels = lvls)
 
 srdb_complete %>%
   filter(Study_midyear >= SRDB_MINYEAR,
-         Ecosystem_state != "Managed") ->
+         Ecosystem_state != "Managed",
+         Ecosystem_type != "Agriculture") ->
   srdb
 
 printlog("Filtered for studies after", SRDB_MINYEAR)
@@ -59,7 +71,7 @@ printlog(SEPARATOR)
 printlog("SRDB Rh:Rs analysis")
 
 srdb %>%
-  filter(!is.na(Stage), !is.na(Leaf_habit), 
+  filter(!is.na(Stage),
          !is.na(Rs_annual), !is.na(Rh_annual), 
          Year >= SRDB_MINYEAR) %>%
   mutate(Year = as.integer(Year),
@@ -72,7 +84,7 @@ srdb %>%
 
 m1_rh_rs <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + 
                  Study_midyear * Partition_method +
-                 Study_midyear * Leaf_habit +
+                 Study_midyear * Land_cover +
                  mat_hadcrut4 * map_hadcrut4 ^ 2 + 
                  Study_midyear * SOC, 
                data = s_rh_rs)
@@ -161,11 +173,11 @@ srdb %>%
   filter(!is.na(mat_hadcrut4), !is.na(tmp_anom), 
          !is.na(mat_hadcrut4), !is.na(pre_anom),
          !is.na(pet_norm), !is.na(pet_anom),
-         !is.na(Rh_annual), !is.na(Leaf_habit), !is.na(Stage)) ->
+         !is.na(Rh_annual), !is.na(Stage)) ->
   s_rh_climate
 m2_rh_climate <- lm(sqrt(Rh_annual) ~ tmp_hadcrut4 * pre_hadcrut4 ^ 2 * pet + 
                       tmp_hadcrut4 * Stage + pre_hadcrut4 * Stage + 
-                      tmp_hadcrut4 * Leaf_habit + pre_hadcrut4 * Leaf_habit, 
+                      tmp_hadcrut4 * Land_cover + pre_hadcrut4 * Land_cover, 
                     data = s_rh_climate)
 m2_rh_climate <- stepAIC(m2_rh_climate, direction = "both")
 print(anova(m2_rh_climate))
@@ -254,7 +266,7 @@ srdb %>%
          FLUXNET_DIST <= MAX_FLUXNET_DIST,
          NEE_VUT_REF_QC >= MIN_NEE_QC) %>%
   # We only allow one observation per site per year
-  group_by(FLUXNET_SITE_ID, IGBP, tmp_trend, pre_trend, Leaf_habit, Stage, Year) %>%
+  group_by(FLUXNET_SITE_ID, IGBP, tmp_trend, pre_trend, Land_cover, Stage, Year) %>%
   summarise(Rs_annual = mean(Rs_annual),
             Rh_annual = mean(Rh_annual),
             RECO_NT_VUT_REF = mean(RECO_NT_VUT_REF),
@@ -280,7 +292,7 @@ printlog("Mann-Kendall trend test:")
 mk3_fluxnet <- MannKendall(s_fluxnet$Rs_annual / s_fluxnet$gpp_fluxnet)
 print(mk3_fluxnet)
 
-m_fluxnet <- lm(Rs_annual/gpp_fluxnet ~ Year * Leaf_habit + mat_hadcrut4 * map_hadcrut4 ^ 2, 
+m_fluxnet <- lm(Rs_annual/gpp_fluxnet ~ Year * Land_cover + mat_hadcrut4 * map_hadcrut4 ^ 2, 
                 data = s_fluxnet, weights = YearsOfData)
 m_fluxnet <- MASS::stepAIC(m_fluxnet, direction = "both")
 print(anova(m_fluxnet))
@@ -290,7 +302,7 @@ print(p)
 save_plot("fluxnet_basic")
 
 s_fluxnet_nohf <- subset(s_fluxnet, FLUXNET_SITE_ID != "US-Ha1")
-m_fluxnet_nohf <- lm(Rs_annual/gpp_fluxnet ~ Year * Leaf_habit + mat_hadcrut4 * map_hadcrut4, 
+m_fluxnet_nohf <- lm(Rs_annual/gpp_fluxnet ~ Year * Land_cover + mat_hadcrut4 * map_hadcrut4, 
                      data = s_fluxnet_nohf, weights = YearsOfData)
 m_fluxnet_nohf <- MASS::stepAIC(m_fluxnet_nohf, direction = "both")
 print(anova(m_fluxnet_nohf))
@@ -416,7 +428,7 @@ rescale <- function(x, a, b) {
 }
 
 srdb %>%
-  dplyr::select(Study_midyear, Biome, Leaf_habit, Partition_method, Stage,
+  dplyr::select(Study_midyear, Biome, Land_cover, Partition_method, Stage,
                 mat_hadcrut4, map_hadcrut4,
                 gpp_beer, gpp_modis, 
                 SCIA_SIF, GOME2_SIF,
@@ -431,7 +443,7 @@ srdb %>%
   mutate(Prettyflux = if_else(Flux == "Rs_annual", "R[S]", "R[H]")) %>%
   gather(GPPSIF, gppsifvalue, `GPP[MTE]`, `GPP[MODIS]`, `SIF[SCIAMACHY]`, `SIF[GOME2]`) %>%
   mutate(GPPSIF = factor(GPPSIF, levels = c("GPP[MTE]", "GPP[MODIS]", "SIF[SCIAMACHY]", "SIF[GOME2]"))) %>%
-  filter(!is.na(Leaf_habit), !is.na(gppsifvalue), !is.na(SOC)) ->
+  filter(!is.na(Land_cover), !is.na(gppsifvalue), !is.na(SOC)) ->
   s_gppsif
 
 s_gppsif %>%
@@ -441,16 +453,16 @@ s_gppsif %>%
   filter(fluxvalue / gppsifvalue > MAX_FLUX_TO_GPP) ->
   s_gppsif_excluded
 
-p_gppsif_base <- ggplot(s_gppsif_included, aes(Study_midyear, fluxvalue / gppsifvalue, color = Leaf_habit)) +
+p_gppsif_base <- ggplot(s_gppsif_included, aes(Study_midyear, fluxvalue / gppsifvalue, color = Land_cover)) +
   geom_point(alpha = I(0.75), size = 0.5) +
   facet_grid(GPPSIF ~ Prettyflux, scales = "free", labeller = label_parsed) +
-  scale_color_discrete("Leaf habit") +
+  scale_color_discrete("Land cover") +
   xlab("Year") +
   ylab("Respiration:(GPP or SIF)") +
   coord_cartesian(ylim = c(0, 2))
 p_gppsif <- p_gppsif_base + 
   geom_smooth(data = filter(s_gppsif_included, 
-                            Leaf_habit %in% c("Deciduous", "Evergreen"), 
+                            ! Land_cover %in% c("Other"), 
                             GPPSIF != "SIF[GOME2]"),
               method = "lm", show.legend = FALSE)
 print(p_gppsif )
@@ -458,13 +470,13 @@ save_plot("2-gppsif", ptype = ".png", height = 8, width = 7)
 
 s_gppsif1 <- subset(s_gppsif_included, GPPSIF %in% c("GPP[MTE]", "GPP[MODIS]", "SIF[SCIAMACHY]"))
 p_gppsif1 <- p_gppsif_base %+% s_gppsif1 +
-  geom_smooth(data = subset(s_gppsif1, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
+  geom_smooth(data = subset(s_gppsif1, ! Land_cover %in% c("Other")), method = "lm", show.legend = FALSE)
 print(p_gppsif1)
 save_plot("2-gppsif_scia", ptype = ".png")
 
 s_gppsif2 <- subset(s_gppsif_included, GPPSIF %in% c("GPP[MTE]", "GPP[MODIS]"))
 p_gppsif2 <- p_gppsif_base %+% s_gppsif2 +
-  geom_smooth(data = subset(s_gppsif2, Leaf_habit %in% c("Deciduous", "Evergreen")), method = "lm", show.legend = FALSE)
+  geom_smooth(data = subset(s_gppsif2, ! Land_cover %in% c("Other")), method = "lm", show.legend = FALSE)
 print(p_gppsif2)
 save_plot("2-gppsif_gpp", ptype = ".png")
 
@@ -486,7 +498,7 @@ for(dataset in unique(s_gppsif_included$GPPSIF)) {
     
     # Linear model
     m <- lm(fluxvalue / gppsifvalue ~ mat_hadcrut4 + map_hadcrut4 ^ 2 + 
-              Study_midyear * Leaf_habit + 
+              Study_midyear * Land_cover + 
               Study_midyear * Stage + SOC, 
             data = d)
     m <- stepAIC(m, direction = "both", trace = 0)
@@ -498,16 +510,16 @@ for(dataset in unique(s_gppsif_included$GPPSIF)) {
     
     signif <- anova(m)["Study_midyear", "Pr(>F)"]
     assign(paste0(mn, "_signif"), signif)
-    leaf_signif <- anova(m)["Leaf_habit", "Pr(>F)"]
-    assign(paste0(mn, "_leaf_signif"), leaf_signif)
-    leaf_trend_signif <- anova(m)["Study_midyear:Leaf_habit", "Pr(>F)"]
-    assign(paste0(mn, "_leaf_trend_signif"), leaf_trend_signif)
+    lc_signif <- anova(m)["Land_cover", "Pr(>F)"]
+    assign(paste0(mn, "_lc_signif"), lc_signif)
+    lc_trend_signif <- anova(m)["Study_midyear:Land_cover", "Pr(>F)"]
+    assign(paste0(mn, "_lc_trend_signif"), lc_trend_signif)
     results[[paste(f, dataset)]] <- tibble(flux = f, 
                                            dataset = make.names(dataset),
                                            n = nrow(d),
                                            `m-k` = pclean(mk$sl),
                                            time_signif = pclean(signif),
-                                           leaf_signif = pclean(leaf_trend_signif))
+                                           lc_signif = pclean(lc_trend_signif))
   }
 }
 rs_results <- bind_rows(results)
@@ -522,13 +534,13 @@ print(MannKendall(srdb$Rh_annual / srdb$gpp_isimip))
 
 srdb %>%
   dplyr::select(Rh_annual, mat_hadcrut4, map_hadcrut4, Study_midyear, gpp_isimip,
-         Leaf_habit, Stage, SOC) %>%
+         Land_cover, Stage, SOC) %>%
   na.omit ->
   srdb_isimip
 
 # Linear model
 m <- lm(Rh_annual / gpp_isimip ~ mat_hadcrut4 + map_hadcrut4 ^ 2 + 
-          Study_midyear * Leaf_habit + 
+          Study_midyear * Land_cover + 
           Study_midyear * Stage + SOC, 
         data = srdb_isimip)
 m <- stepAIC(m, direction = "both", trace = 0)
@@ -552,12 +564,12 @@ for(minyr in min(srdb_complete$Study_midyear):(max(srdb_complete$Study_midyear) 
   # Repeatedly fit our basic Rh/Rs time model to shorter and shorter time periods
   d <- srdb_complete %>%
     filter(Study_midyear >= minyr, Ecosystem_state != "Managed") %>%
-    dplyr::select(Rh_annual, Rs_annual, Study_midyear, Stage, Partition_method, Leaf_habit,
+    dplyr::select(Rh_annual, Rs_annual, Study_midyear, Stage, Partition_method, Land_cover,
                   map_hadcrut4, mat_hadcrut4, SOC)
   d <- d[complete.cases(d),]
   m <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + 
             Study_midyear * Partition_method +
-            Study_midyear * Leaf_habit +
+            Study_midyear * Land_cover +
             mat_hadcrut4 * map_hadcrut4 ^ 2 + 
             Study_midyear * SOC, 
           data = d)
@@ -589,12 +601,11 @@ printlog("Doing Referee 1 site-level analysis...")
 R1_MIN_TIMESPAN <- 8
 R1_MIN_OBS <- 3
 srdb_complete %>% 
-  replace_na(list(Leaf_habit = "Mixed")) %>%
   mutate(Longitude = round(Longitude, 1), Latitude = round(Latitude, 1)) ->
   srdb_complete_rounded
 
 srdb_complete_rounded %>% 
-  group_by(Longitude, Latitude, Ecosystem_state, Ecosystem_type, Leaf_habit) %>% 
+  group_by(Longitude, Latitude, Ecosystem_state, Land_cover) %>% 
   summarise(nyears = length(unique(Study_midyear)), 
             year_range = round(max(Study_midyear) - min(Study_midyear), 0),
             Site_name = substr(paste(unique(Site_name), collapse = " "), 1, 20)) %>% 
@@ -608,10 +619,10 @@ save_data(longterm_sites_list)
 
 # Filter the complete database to these sites, run regressions
 srdb_complete_rounded %>%
-  dplyr::select(Study_midyear, Longitude, Latitude, Ecosystem_state, Ecosystem_type, Leaf_habit,
+  dplyr::select(Study_midyear, Longitude, Latitude, Ecosystem_state, Land_cover,
                 Rs_annual, Rh_annual) %>%
   semi_join(longterm_sites_list, by = c("Longitude", "Latitude")) %>%
-  group_by(Longitude, Latitude, Ecosystem_state, Ecosystem_type, Leaf_habit) ->
+  group_by(Longitude, Latitude, Ecosystem_state, Land_cover) ->
   srdb_complete_rounded
 
 srdb_complete_rounded %>%
@@ -620,16 +631,16 @@ srdb_complete_rounded %>%
   tidy(rsmod) %>%
   filter(term == "Study_midyear") %>%
   mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not rising")) %>%
-  group_by(Ecosystem_type, Leaf_habit, trend) %>% 
+  group_by(Land_cover, trend) %>% 
   summarise(n = n()) %>%
-  complete(nesting(Ecosystem_type, trend), fill = list(n = 0)) ->
+  complete(nesting(Land_cover, trend), fill = list(n = 0)) ->
   rs_site_summary
 
 printlog(rs_site_summary %>% spread(trend, n))
 
-p_rs_sites <- ggplot(rs_site_summary, aes(trend, n, fill=Leaf_habit)) + 
-  geom_bar(stat="identity") + 
-  facet_wrap(~Ecosystem_type) +
+p_rs_sites <- ggplot(rs_site_summary, aes(trend, n)) + 
+  geom_bar(stat = "identity") + 
+  facet_wrap(~Land_cover) +
   xlab(expression(R[S]~trend)) + ylab("Number of sites")
 print(p_rs_sites)
 save_plot("rs_all_sites")
@@ -641,17 +652,17 @@ srdb_complete_rounded %>%
   tidy(rhmod) %>%
   filter(term == "Study_midyear") %>%
   mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not rising")) %>%
-  group_by(Ecosystem_type, Leaf_habit, trend) %>% 
+  group_by(Land_cover, trend) %>% 
   summarise(n = n()) %>%
   # Put in an artifical row so the plot matches the Rs one
-  bind_rows(tibble(Ecosystem_type = "Wetland", Leaf_habit = "Mixed", trend = "Rising", n = 0)) ->
+  bind_rows(tibble(Land_cover = "Other", trend = "Rising", n = 0)) ->
   rh_site_summary
 
 printlog(rh_site_summary %>% spread(trend, n))
 
-p_rh_sites <- ggplot(rh_site_summary, aes(trend, n, fill=Leaf_habit)) + 
-  geom_bar(stat="identity") + 
-  facet_wrap(~Ecosystem_type) +
+p_rh_sites <- ggplot(rh_site_summary, aes(trend, n)) + 
+  geom_bar(stat = "identity") + 
+  facet_wrap(~Land_cover) +
   xlab(expression(R[H]~trend)) + ylab("Number of sites")
 print(p_rh_sites)
 save_plot("rh_all_sites")
