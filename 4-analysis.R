@@ -177,7 +177,7 @@ srdb %>%
   s_rh_climate
 m2_rh_climate <- lm(sqrt(Rh_annual) ~ tmp_hadcrut4 * pre_hadcrut4 ^ 2 * pet + 
                       tmp_hadcrut4 * Stage + pre_hadcrut4 * Stage + 
-                      tmp_hadcrut4 * Land_cover + pre_hadcrut4 * Land_cover, 
+                      tmp_hadcrut4 * Leaf_habit + pre_hadcrut4 * Leaf_habit, 
                     data = s_rh_climate)
 m2_rh_climate <- stepAIC(m2_rh_climate, direction = "both")
 print(anova(m2_rh_climate))
@@ -296,7 +296,7 @@ m_fluxnet <- lm(Rs_annual/gpp_fluxnet ~ Year * Land_cover + mat_hadcrut4 * map_h
                 data = s_fluxnet, weights = YearsOfData)
 m_fluxnet <- MASS::stepAIC(m_fluxnet, direction = "both")
 print(anova(m_fluxnet))
-p <- qplot(Year, Rs_annual/gpp_fluxnet, color=pre_trend_label, data=s_fluxnet) + 
+p <- qplot(Year, Rs_annual/gpp_fluxnet, color = pre_trend_label, data = s_fluxnet) + 
   geom_smooth(method = "lm", na.rm = TRUE)
 print(p)
 save_plot("fluxnet_basic")
@@ -314,7 +314,7 @@ s_fluxnet %>%
   group_by(FLUXNET_SITE_ID, IGBP) %>%
   summarise(Year = min(Year), 
             ratio = (Rs_annual / gpp_fluxnet)[which.min(Year)],
-            pre_trend_label = unique(pre_trend_label)) ->
+            pre_trend_label = paste(pre_trend_label, collapse = " ")) ->
   s_fluxnet_labels
 
 p_fluxnet <- ggplot(s_fluxnet, aes(Year, Rs_annual / gpp_fluxnet, group = FLUXNET_SITE_ID)) + 
