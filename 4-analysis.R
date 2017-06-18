@@ -581,6 +581,8 @@ srdb_complete %>%
 srdb_complete_rounded %>% 
   group_by(Longitude, Latitude, Ecosystem_state, Land_cover) %>% 
   summarise(nyears = length(unique(Study_midyear)), 
+            pre_trend = mean(pre_trend),
+            tmp_trend = mean(tmp_trend),
             year_range = round(max(Study_midyear) - min(Study_midyear), 0),
             Site_name = substr(paste(unique(Site_name), collapse = " "), 1, 20)) %>% 
   filter(year_range >= R1_MIN_TIMESPAN, nyears >= R1_MIN_OBS) %>%
@@ -639,8 +641,15 @@ p_rh_sites <- ggplot(rh_site_summary, aes(trend, n)) +
   facet_wrap(~Land_cover) +
   xlab(expression(R[H]~trend)) + ylab("Number of sites")
 print(p_rh_sites)
-save_plot("rh_all_sites", height = 6, width = 8)
+save_plot("rh_all_sites", height = 5, width = 8)
 
+p_rh_site_climatespace <- ggplot(srdb, aes(tmp_trend, pre_trend)) +
+  geom_vline(xintercept = 0) + geom_hline(yintercept=0) + 
+  geom_jitter(size = 2, alpha = 0.2, color = "darkgrey") + 
+  geom_point(data = longterm_sites_list, aes(color = Land_cover), size = 3) +
+  xlab("1991-2010 temp trend, degC/yr") + ylab("1991-2010 precip trend, mm/yr")
+print(p_rh_site_climatespace)
+save_plot("rh_site_climatespace", height = 5, width = 8)
 
 # ----------------------- Clean up ------------------------- 
 
