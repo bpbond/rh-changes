@@ -431,11 +431,6 @@ add_result("FLUXNET NEEnight / GPP ~ time", s_fluxnet_only$Year, s_fluxnet_only$
 printlog(SEPARATOR)
 printlog("Remote sensing analysis")
 
-rescale <- function(x, a, b) {
-  ((b - a) * (x - min(x, na.rm = TRUE))) / 
-    (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) + a
-}
-
 srdb %>%
   dplyr::select(Study_midyear, Biome, Land_cover, Partition_method, Stage,
                 mat_hadcrut4, map_hadcrut4,

@@ -194,11 +194,6 @@ save_plot("database_growth")
 
 # Responding to Reviewer 1, see how well remote-sensing indices track tower GPP over time
 
-rescale <- function(x, a, b) {
-  ((b - a) * (x - min(x, na.rm = TRUE))) / 
-    (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) + a
-}
-
 print(SEPARATOR)
 read_csv("outputs/fluxnet_remotesensing_comparison.csv") %>%
   arrange(Year) %>%

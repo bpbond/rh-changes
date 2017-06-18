@@ -118,6 +118,13 @@ pclean <- function(x, digits = 3, printP = TRUE) {
   }
 } # pclean
 
+# -----------------------------------------------------------------------------
+# Rescale vector x to the range [a,b]
+rescale <- function(x, a, b) {
+  ((b - a) * (x - min(x, na.rm = TRUE))) / 
+    (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)) + a
+}
+
 
 if(!file.exists(OUTPUT_DIR)) {
   dir.create(OUTPUT_DIR)
