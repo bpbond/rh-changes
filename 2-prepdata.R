@@ -149,18 +149,18 @@ extract_data <- function(rasterstack, varname, lon, lat, midyear, nyears,
       }
     }
     
-    # Calculate trend
+    # Extract data for trend calculation
     if(!is.null(trendline)) {
       start_layer <- max(1, (trendline[1] - file_startyear) * (12 / months_per_layer) + 1)
       nlayers <- (trendline[2] - trendline[1] + 1) * (12 / months_per_layer)
-      vals <- extract_point(rasterstack, sp, start_layer, nlayers)
+      vals <- raster::extract(rasterstack, sp, layer = start_layer, nl = nlayers)
       tibble(year = rep(trendline[1]:trendline[2], each = (12 / months_per_layer)), 
              x = as.numeric(vals)) %>%
         group_by(year) %>%
         summarise(x = mean(x, na.rm = TRUE)) ->
         vals
       
-      try({
+      try({  # to calculate a trend
         m <- lm(x ~ year, data = vals)
         trend[i] <- m$coefficients[2]
         trend_p[i] <- summary(m)$coefficients[2, 4]
