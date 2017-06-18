@@ -622,7 +622,7 @@ p_rs_sites <- ggplot(rs_site_summary, aes(trend, n)) +
   facet_wrap(~Land_cover) +
   xlab(expression(R[S]~trend)) + ylab("Number of sites")
 print(p_rs_sites)
-save_plot("rs_all_sites")
+save_plot("rs_all_sites", height = 6, width = 8)
 
 # ...and again for Rh
 srdb_complete_rounded %>%
@@ -644,7 +644,7 @@ p_rh_sites <- ggplot(rh_site_summary, aes(trend, n)) +
   facet_wrap(~Land_cover) +
   xlab(expression(R[H]~trend)) + ylab("Number of sites")
 print(p_rh_sites)
-save_plot("rh_all_sites")
+save_plot("rh_all_sites", height = 6, width = 8)
 
 
 # ----------------------- Clean up ------------------------- 
