@@ -7,8 +7,10 @@
 # 3. Is Rs:FLUXNET GPP rising over time?
 # 4. For FLUXNET only, is nighttime NEE:GPP rising?
 # 5. Remote sensing: are Rh:GPP, Rs:GPP, Rh:SIF, and Rs:SIF changing over time?
-# This script saves plots, but also leaves a bunch of stuff in-memory
+
+# This script saves plots and data, but also leaves a bunch of stuff in-memory
 # for the RMarkdown script to access.
+# Note June 18, 2017: the Rmarkdown script (6-report.Rmd) is broken at this point.
 
 source("0-functions.R")
 
@@ -23,6 +25,7 @@ MAX_FLUX_TO_GPP <- 5   # Exclude ratios above this value; chosen based on distri
 library(broom)  # 0.4.1
 library(Kendall) # 2.2
 library(MASS) # 7.3.45
+library(mblm) # 0.12
 
 
 # Save a 2x2 grid plot of linear model diagnostics
@@ -32,6 +35,19 @@ save_model_diagnostics <- function(m, modelname = deparse(substitute(m))) {
   plot(m)
   dev.off()
   par(old.par)
+}
+
+# Add a result to summary table
+overall_results <- list()
+add_result <- function(testname, x, y, p, p_landcover, p_disturbance) {
+  printlog("Fitting Theil-Sen for", testname, "and adding to results...")
+  m_ts <- mblm::mblm(y ~ x) %>% summary  # Theil-Sen
+  overall_results[[testname]] <<- tibble(test = testname,
+                                         n = length(x),
+                                         p = p,
+                                         p_theil.sen = m_ts$coefficients[2, 4],
+                                         p_land.cover = p_landcover,
+                                         p_disturbance = p_disturbance)
 }
 
 # --------------------- Main --------------------------- 
@@ -53,6 +69,7 @@ srdb_complete$Land_cover[! srdb_complete$Land_cover %in% over100$Land_cover] <- 
 lvls <- unique(srdb_complete$Land_cover)
 lvls <- c(lvls[-which(lvls == "Other")], "Other")
 srdb_complete$Land_cover <- factor(srdb_complete$Land_cover, levels = lvls)
+srdb_complete %>% group_by(Land_cover) %>% summarise(n = n()) 
 
 srdb_complete %>%
   filter(Study_midyear >= SRDB_MINYEAR,
@@ -64,6 +81,7 @@ printlog("Filtered for studies after", SRDB_MINYEAR)
 
 printlog("MAT range is", paste(round(range(srdb$mat_hadcrut4, na.rm = TRUE), 1), collapse = ", "))
 printlog("MAP range is", paste(round(range(srdb$map_hadcrut4, na.rm = TRUE), 0), collapse = ", "))
+
 
 # -------------- 1. SRDB Rh:Rs analysis ------------------- 
 
@@ -93,10 +111,10 @@ print(anova(m1_rh_rs))
 
 m1_rh_rs_signif <- anova(m1_rh_rs)["Study_midyear", "Pr(>F)"]
 save_model_diagnostics(m1_rh_rs)
-
-printlog("Mann-Kendall trend test:")
-mk1_rh_rs <- MannKendall(s_rh_rs$Rh_annual / s_rh_rs$Rs_annual)
-print(mk1_rh_rs)
+add_result("Rh:Rs ~ time", s_rh_rs$Study_midyear, s_rh_rs$Rh_annual / s_rh_rs$Rs_annual, 
+           p = anova(m1_rh_rs)["Study_midyear", "Pr(>F)"], 
+           p_landcover = anova(m1_rh_rs)["Land_cover", "Pr(>F)"],
+           p_disturbance = anova(m1_rh_rs)["Stage", "Pr(>F)"])
 
 # Compute summary statistics
 s_rh_rs %>%
@@ -108,13 +126,6 @@ s_rh_rs %>%
             n = n()) ->
   rh_rs_summary
 
-# Rudimentary figure of Rh:Rs showing naive trend line
-p_rh_rs <- ggplot(s_rh_rs, aes(Study_midyear, Rh_annual / Rs_annual)) + 
-  geom_point(aes(color = Biome)) + geom_smooth(method = "lm") +
-  xlab("Year") + ylab(expression(R[H]:R[S]))
-print(p_rh_rs)
-save_plot("rh_rs", width = 7, height = 6)
-
 # Make Figure 1
 p1_rh_rs <- ggplot(s_rh_rs, aes(Rs_annual, Rh_annual, color = group)) +
   scale_x_log10() + scale_y_log10() +
@@ -122,7 +133,6 @@ p1_rh_rs <- ggplot(s_rh_rs, aes(Rs_annual, Rh_annual, color = group)) +
   xlab(expression(R[S]~(g~C~m^-2~yr^-1))) +
   ylab(expression(R[H]~(g~C~m^-2~yr^-1))) + 
   coord_cartesian(xlim=c(80, 3300), ylim=c(70, 2000))
-p1_rh_rs_bw <- p1_rh_rs + scale_color_grey("Year", start = 0.8, end = 0.2)
 p1_rh_rs_clr <- p1_rh_rs + scale_color_discrete("Year")
 p1_rh_rs_clr2 <- p1_rh_rs + scale_color_brewer("Year")
 
@@ -131,16 +141,11 @@ p_inset <- ggplot(s_rh_rs, aes(Rh_annual / Rs_annual, color = yeargroup, fill = 
   xlab(expression(R[H]:R[S])) + ylab("") +
   theme(axis.ticks.y = element_blank(), axis.text.y  = element_blank(),
         axis.text.x = element_text(size = 6), axis.title.x = element_text(size = 8))
-p_inset_bw <- p_inset +  scale_fill_grey(start = 0.8, end = 0.2, guide = FALSE) +
-  scale_color_grey(start = 0.8, end = 0.2, guide = FALSE)
 p_inset_clr <- p_inset +  scale_fill_discrete(guide = FALSE) +
   scale_color_discrete(guide = FALSE)
 p_inset_clr2 <- p_inset +  scale_fill_brewer(guide = FALSE) +
   scale_color_brewer(guide = FALSE)
 
-p1_rh_rs_bw <- p1_rh_rs_bw + 
-  annotation_custom(grob = ggplotGrob(p_inset_bw), xmin = log10(60), xmax = log10(800), ymin = log10(600), ymax = log10(2300)) +
-  geom_point() + geom_smooth(method = "lm", se = FALSE)
 p1_rh_rs_clr <- p1_rh_rs_clr + 
   annotation_custom(grob = ggplotGrob(p_inset_clr), xmin = log10(60), xmax = log10(800), ymin = log10(600), ymax = log10(2300)) +
   geom_point() + geom_smooth(method = "lm", se = FALSE)
@@ -151,12 +156,10 @@ p1_rh_rs_clr2 <- p1_rh_rs_clr2 +
 printlog("NOTE we are plotting this graph with one point cut off:")
 printlog(s_rh_rs[which.min(s_rh_rs$Rs_annual), c("Rs_annual", "Rh_annual")])
 
-print(p1_rh_rs_bw)
-save_plot("1-srdb-rh-rs-bw", ptype = ".png")
 print(p1_rh_rs_clr)
-save_plot("1-srdb-rh-rs-clr", ptype = ".png")
+save_plot("1-srdb-rh-rs-clr", ptype = ".png", width = 9, height = 8)
 print(p1_rh_rs_clr2)
-save_plot("1-srdb-rh-rs-clr2", ptype = ".png")
+save_plot("1-srdb-rh-rs-clr2", ptype = ".png", width = 9, height = 8)
 
 
 # ------------- 2. SRDB Rh:climate analysis --------------- 
@@ -186,6 +189,8 @@ m2_rh_climate_pre_signif <- anova(m2_rh_climate)["pre_hadcrut4", "Pr(>F)"]
 m2_rh_climate_pet_signif <- anova(m2_rh_climate)["pet", "Pr(>F)"]
 m2_rh_climate_stage_signif <- anova(m2_rh_climate)["Stage", "Pr(>F)"]
 save_model_diagnostics(m2_rh_climate)
+add_result("Rh ~ time, climate", s_rh_climate$Study_midyear, s_rh_climate$Rh_annual,
+           p = NA, p_landcover = NA, p_disturbance = m2_rh_climate_stage_signif)
 
 # Global flux computation
 
@@ -288,14 +293,15 @@ s_fluxnet %>%
   facet_wrap(~FLUXNET_SITE_ID, scales = "free")
 save_plot("fluxnet_site_diagnostic")
 
-printlog("Mann-Kendall trend test:")
-mk3_fluxnet <- MannKendall(s_fluxnet$Rs_annual / s_fluxnet$gpp_fluxnet)
-print(mk3_fluxnet)
-
 m_fluxnet <- lm(Rs_annual/gpp_fluxnet ~ Year * Land_cover + mat_hadcrut4 * map_hadcrut4 ^ 2, 
                 data = s_fluxnet, weights = YearsOfData)
 m_fluxnet <- MASS::stepAIC(m_fluxnet, direction = "both")
 print(anova(m_fluxnet))
+add_result("Rs/GPPfluxnet ~ time", s_fluxnet$Year, s_fluxnet$Rs_annual / s_fluxnet$gpp_fluxnet,
+           p = anova(m_fluxnet)["Year", "Pr(>F)"], 
+           p_landcover = anova(m_fluxnet)["Land_cover", "Pr(>F)"],
+           p_disturbance = anova(m_fluxnet)["Stage", "Pr(>F)"])
+
 p <- qplot(Year, Rs_annual/gpp_fluxnet, color = pre_trend_label, data = s_fluxnet) + 
   geom_smooth(method = "lm", na.rm = TRUE)
 print(p)
@@ -344,7 +350,7 @@ s_fluxnet %>%
   x
 fluxnet_Rs_GPP_sitetrends = x$n
 names(fluxnet_Rs_GPP_sitetrends) <- x$trend
-
+print(fluxnet_Rs_GPP_sitetrends)
 
 # --------------- 4. FLUXNET-only analysis --------------------- 
 
@@ -415,7 +421,10 @@ print(anova(m_fluxnet_only))
 m_fluxnet_only_trend_signif <- anova(m_fluxnet_only)["Year", "Pr(>F)"]
 m_fluxnet_only_precip_trend_signif <- anova(m_fluxnet_only)["Year:p_trend", "Pr(>F)"]
 save_model_diagnostics(m_fluxnet_only)
-
+add_result("FLUXNET NEEnight / GPP ~ time", s_fluxnet_only$Year, s_fluxnet_only$NEE_VUT_REF_NIGHT / s_fluxnet_only$GPP_DT_VUT_REF,
+           p = m_fluxnet_only_trend_signif, 
+           p_landcover = anova(m_fluxnet_only)["IGBP", "Pr(>F)"],
+           p_disturbance = NA)
 
 # ----------- 5. GPP and SIF analysis -------------- 
 
@@ -449,9 +458,6 @@ srdb %>%
 s_gppsif %>%
   filter(fluxvalue / gppsifvalue <= MAX_FLUX_TO_GPP) ->
   s_gppsif_included
-s_gppsif %>%
-  filter(fluxvalue / gppsifvalue > MAX_FLUX_TO_GPP) ->
-  s_gppsif_excluded
 
 p_gppsif_base <- ggplot(s_gppsif_included, aes(Study_midyear, fluxvalue / gppsifvalue, color = Land_cover)) +
   geom_point(alpha = I(0.75), size = 0.5) +
@@ -468,33 +474,13 @@ p_gppsif <- p_gppsif_base +
 print(p_gppsif )
 save_plot("2-gppsif", ptype = ".png", height = 8, width = 7)
 
-s_gppsif1 <- subset(s_gppsif_included, GPPSIF %in% c("GPP[MTE]", "GPP[MODIS]", "SIF[SCIAMACHY]"))
-p_gppsif1 <- p_gppsif_base %+% s_gppsif1 +
-  geom_smooth(data = subset(s_gppsif1, ! Land_cover %in% c("Other")), method = "lm", show.legend = FALSE)
-print(p_gppsif1)
-save_plot("2-gppsif_scia", ptype = ".png")
-
-s_gppsif2 <- subset(s_gppsif_included, GPPSIF %in% c("GPP[MTE]", "GPP[MODIS]"))
-p_gppsif2 <- p_gppsif_base %+% s_gppsif2 +
-  geom_smooth(data = subset(s_gppsif2, ! Land_cover %in% c("Other")), method = "lm", show.legend = FALSE)
-print(p_gppsif2)
-save_plot("2-gppsif_gpp", ptype = ".png")
-
 printlog("Trend tests")
-results <- list()
 for(dataset in unique(s_gppsif_included$GPPSIF)) {
   for(f in unique(s_gppsif_included$Flux)) {
     d <- filter(s_gppsif_included, Flux == f, GPPSIF == dataset, !is.na(mat_hadcrut4), !is.na(map_hadcrut4))
     dname <- make.names(paste("s", dataset, f, sep = "_"))
     assign(dname, d)
     save_data(d, fname = dname, scriptfolder = FALSE)
-    
-    printlog("Trend tests for", f, dataset)
-    
-    # Mann-Kendall
-    mk <- MannKendall(d$fluxvalue / d$gppsifvalue)
-    print(mk)
-    assign(make.names(paste("mk", dataset, f, sep = "_")), mk)
     
     # Linear model
     m <- lm(fluxvalue / gppsifvalue ~ mat_hadcrut4 + map_hadcrut4 ^ 2 + 
@@ -508,43 +494,36 @@ for(dataset in unique(s_gppsif_included$GPPSIF)) {
     save_model_diagnostics(m, modelname = mn)
     assign(mn, m)
     
-    signif <- anova(m)["Study_midyear", "Pr(>F)"]
-    assign(paste0(mn, "_signif"), signif)
-    lc_signif <- anova(m)["Land_cover", "Pr(>F)"]
-    assign(paste0(mn, "_lc_signif"), lc_signif)
-    lc_trend_signif <- anova(m)["Study_midyear:Land_cover", "Pr(>F)"]
-    assign(paste0(mn, "_lc_trend_signif"), lc_trend_signif)
-    results[[paste(f, dataset)]] <- tibble(flux = f, 
-                                           dataset = make.names(dataset),
-                                           n = nrow(d),
-                                           `m-k` = pclean(mk$sl),
-                                           time_signif = pclean(signif),
-                                           lc_signif = pclean(lc_trend_signif))
+    add_result(paste(f, "/", dataset, "~ time"), d$Study_midyear, d$fluxvalue / d$gppsifvalue,
+               p = anova(m)["Study_midyear", "Pr(>F)"], 
+               p_landcover = anova(m)["Land_cover", "Pr(>F)"], 
+               p_disturbance = anova(m)["Stage", "Pr(>F)"])
   }
 }
-rs_results <- bind_rows(results)
 
 
 # ----------- 6. ISIMIP analysis (per Referee 1) -------------- 
 
 printlog("Testing ratio of RH to ISIMIP GPP...")
 
-# Mann-Kendall
-print(MannKendall(srdb$Rh_annual / srdb$gpp_isimip))
-
 srdb %>%
   dplyr::select(Rh_annual, mat_hadcrut4, map_hadcrut4, Study_midyear, gpp_isimip,
-         Land_cover, Stage, SOC) %>%
+                Land_cover, Stage, SOC) %>%
   na.omit ->
   srdb_isimip
 
 # Linear model
-m <- lm(Rh_annual / gpp_isimip ~ mat_hadcrut4 + map_hadcrut4 ^ 2 + 
-          Study_midyear * Land_cover + 
-          Study_midyear * Stage + SOC, 
-        data = srdb_isimip)
-m <- stepAIC(m, direction = "both", trace = 0)
-print(summary(m))
+m_isimip <- lm(Rh_annual / gpp_isimip ~ mat_hadcrut4 + map_hadcrut4 ^ 2 + 
+                 Study_midyear * Land_cover + 
+                 Study_midyear * Stage + SOC, 
+               data = srdb_isimip)
+m_isimip <- stepAIC(m_isimip, direction = "both", trace = 0)
+print(summary(m_isimip))
+
+add_result("Rh / GPPisimip ~ time", srdb_isimip$Study_midyear, srdb_isimip$Rh_annual / srdb_isimip$gpp_isimip,
+           p = anova(m_isimip)["Study_midyear", "Pr(>F)"], 
+           p_landcover = anova(m_isimip)["Land_cover", "Pr(>F)"],
+           p_disturbance = anova(m_isimip)["Stage", "Pr(>F)"])
 
 # Plot
 p_isimip <- ggplot(srdb, aes(Study_midyear, Rh_annual / gpp_isimip)) + 
@@ -669,6 +648,17 @@ save_plot("rh_all_sites")
 
 
 # ----------------------- Clean up ------------------------- 
+
+overall_results_table <- bind_rows(overall_results)
+overall_results_table %>%
+  mutate(p = pclean(p), 
+         p_theil.sen = pclean(p_theil.sen),
+         p_land.cover = pclean(p_land.cover),
+         p_disturbance = pclean(p_disturbance)) ->
+  overall_results_table_clean
+printlog(overall_results_table_clean)
+save_data(overall_results_table)
+save_data(overall_results_table_clean)
 
 printlog("All done with", SCRIPTNAME)
 closelog()
