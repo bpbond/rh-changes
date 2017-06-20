@@ -629,9 +629,7 @@ srdb_complete_rounded %>%
   filter(term == "Study_midyear") %>%
   mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not rising")) %>%
   group_by(Land_cover, trend) %>% 
-  summarise(n = n()) %>%
-  # Put in an artifical row so the plot matches the Rs one
-  bind_rows(tibble(Land_cover = "Other", trend = "Rising", n = 0)) ->
+  summarise(n = n()) ->
   rh_site_summary
 
 printlog(rh_site_summary %>% spread(trend, n))
@@ -641,7 +639,7 @@ p_rh_sites <- ggplot(rh_site_summary, aes(trend, n)) +
   facet_wrap(~Land_cover) +
   xlab(expression(R[H]~trend)) + ylab("Number of sites")
 print(p_rh_sites)
-save_plot("rh_all_sites", height = 5, width = 8)
+save_plot("rh_all_sites", height = 3, width = 8)
 
 p_rh_site_climatespace <- ggplot(srdb, aes(tmp_trend, pre_trend)) +
   geom_vline(xintercept = 0) + geom_hline(yintercept=0) + 
@@ -650,6 +648,11 @@ p_rh_site_climatespace <- ggplot(srdb, aes(tmp_trend, pre_trend)) +
   xlab("1991-2010 temp trend, degC/yr") + ylab("1991-2010 precip trend, mm/yr")
 print(p_rh_site_climatespace)
 save_plot("rh_site_climatespace", height = 5, width = 8)
+
+printlog("Climate space of main dataset:")
+print(summary(dplyr::select(srdb, tmp_trend, pre_trend)))
+printlog("Climate space of longterm sites:")
+print(summary(dplyr::select(longterm_sites_list, tmp_trend, pre_trend)))
 
 # ----------------------- Clean up ------------------------- 
 
