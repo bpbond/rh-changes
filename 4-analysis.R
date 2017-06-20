@@ -39,11 +39,11 @@ save_model_diagnostics <- function(m, modelname = deparse(substitute(m))) {
 
 # Add a result to summary table
 overall_results <- list()
-add_result <- function(testname, x, y, p, p_landcover, p_disturbance) {
+add_result <- function(testname, x, y, n, p, p_landcover, p_disturbance) {
   printlog("Fitting Theil-Sen for", testname, "and adding to results...")
   m_ts <- mblm::mblm(y ~ x) %>% summary  # Theil-Sen
   overall_results[[testname]] <<- tibble(test = testname,
-                                         n = length(x),
+                                         n = n,
                                          p = p,
                                          p_theil.sen = m_ts$coefficients[2, 4],
                                          p_land.cover = p_landcover,
@@ -112,6 +112,7 @@ print(anova(m1_rh_rs))
 m1_rh_rs_signif <- anova(m1_rh_rs)["Study_midyear", "Pr(>F)"]
 save_model_diagnostics(m1_rh_rs)
 add_result("Rh:Rs ~ time", s_rh_rs$Study_midyear, s_rh_rs$Rh_annual / s_rh_rs$Rs_annual, 
+           n = length(m1_rh_rs$residuals),
            p = anova(m1_rh_rs)["Study_midyear", "Pr(>F)"], 
            p_landcover = anova(m1_rh_rs)["Land_cover", "Pr(>F)"],
            p_disturbance = anova(m1_rh_rs)["Stage", "Pr(>F)"])
@@ -190,6 +191,7 @@ m2_rh_climate_pet_signif <- anova(m2_rh_climate)["pet", "Pr(>F)"]
 m2_rh_climate_stage_signif <- anova(m2_rh_climate)["Stage", "Pr(>F)"]
 save_model_diagnostics(m2_rh_climate)
 add_result("Rh ~ time, climate", s_rh_climate$Study_midyear, s_rh_climate$Rh_annual,
+           n = length(m2_rh_climate$residuals), 
            p = NA, p_landcover = NA, p_disturbance = m2_rh_climate_stage_signif)
 
 # Global flux computation
@@ -298,7 +300,7 @@ m_fluxnet <- lm(Rs_annual/gpp_fluxnet ~ Year * Land_cover + mat_hadcrut4 * map_h
 m_fluxnet <- MASS::stepAIC(m_fluxnet, direction = "both")
 print(anova(m_fluxnet))
 add_result("Rs/GPPfluxnet ~ time", s_fluxnet$Year, s_fluxnet$Rs_annual / s_fluxnet$gpp_fluxnet,
-           p = anova(m_fluxnet)["Year", "Pr(>F)"], 
+           n = length(m_fluxnet$residuals), p = anova(m_fluxnet)["Year", "Pr(>F)"], 
            p_landcover = anova(m_fluxnet)["Land_cover", "Pr(>F)"],
            p_disturbance = anova(m_fluxnet)["Stage", "Pr(>F)"])
 
@@ -422,7 +424,7 @@ m_fluxnet_only_trend_signif <- anova(m_fluxnet_only)["Year", "Pr(>F)"]
 m_fluxnet_only_precip_trend_signif <- anova(m_fluxnet_only)["Year:p_trend", "Pr(>F)"]
 save_model_diagnostics(m_fluxnet_only)
 add_result("FLUXNET NEEnight / GPP ~ time", s_fluxnet_only$Year, s_fluxnet_only$NEE_VUT_REF_NIGHT / s_fluxnet_only$GPP_DT_VUT_REF,
-           p = m_fluxnet_only_trend_signif, 
+           n = length(m_fluxnet_only$residuals), p = m_fluxnet_only_trend_signif, 
            p_landcover = anova(m_fluxnet_only)["IGBP", "Pr(>F)"],
            p_disturbance = NA)
 
@@ -490,7 +492,7 @@ for(dataset in unique(s_gppsif_included$GPPSIF)) {
     assign(mn, m)
     
     add_result(paste(f, "/", dataset, "~ time"), d$Study_midyear, d$fluxvalue / d$gppsifvalue,
-               p = anova(m)["Study_midyear", "Pr(>F)"], 
+               n = length(m$residuals), p = anova(m)["Study_midyear", "Pr(>F)"], 
                p_landcover = anova(m)["Land_cover", "Pr(>F)"], 
                p_disturbance = anova(m)["Stage", "Pr(>F)"])
   }
@@ -516,7 +518,7 @@ m_isimip <- stepAIC(m_isimip, direction = "both", trace = 0)
 print(summary(m_isimip))
 
 add_result("Rh / GPPisimip ~ time", srdb_isimip$Study_midyear, srdb_isimip$Rh_annual / srdb_isimip$gpp_isimip,
-           p = anova(m_isimip)["Study_midyear", "Pr(>F)"], 
+           n = length(m_isimip$residuals), p = anova(m_isimip)["Study_midyear", "Pr(>F)"], 
            p_landcover = anova(m_isimip)["Land_cover", "Pr(>F)"],
            p_disturbance = anova(m_isimip)["Stage", "Pr(>F)"])
 
