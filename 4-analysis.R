@@ -184,6 +184,7 @@ m2_rh_climate <- lm(sqrt(Rh_annual) ~ tmp_hadcrut4 * pre_hadcrut4 ^ 2 * pet +
                       tmp_hadcrut4 * Leaf_habit + pre_hadcrut4 * Leaf_habit, 
                     data = s_rh_climate)
 m2_rh_climate <- stepAIC(m2_rh_climate, direction = "both")
+print(summary(m2_rh_climate))
 print(anova(m2_rh_climate))
 
 m2_rh_climate_pre_signif <- anova(m2_rh_climate)["pre_hadcrut4", "Pr(>F)"]

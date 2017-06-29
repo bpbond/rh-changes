@@ -79,7 +79,7 @@ read_csv <- function(fn, datadir = ".", ...) {
     fqfn <- file.path(datadir, fn)      
   }
   printlog("Opening", fqfn)
-  invisible(readr::read_csv(fqfn, ...))
+  invisible(readr::read_csv(fqfn, progress = FALSE, ...))
 } # read_csv
 
 # -----------------------------------------------------------------------------
