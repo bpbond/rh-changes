@@ -111,6 +111,14 @@ srdb %>%
   mutate(SOC = if_else(is.na(SOC), SOC_biome, SOC)) -> 
   s_rh_rs
 
+s_rh_rs %>%
+  group_by(yeargroup) %>%
+  summarise(`Rh:Rs` = mean(Rh_annual / Rs_annual) %>% round(2),
+            stdev = sd(Rh_annual / Rs_annual) %>% round(2),
+            n = n()) %>%
+  print()
+
+
 m1_rh_rs <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + 
                  Study_midyear * Partition_method +
                  Study_midyear * Land_cover +
@@ -251,7 +259,8 @@ gp %>%
   group_by(case) %>%
   summarise(first_rh = first(rh_fit), last_rh = last(rh_fit),
             first_tmp = first(tmp_fit), last_tmp = last(tmp_fit),
-            q10 = (last_rh / first_rh) ^ (10 / (last_tmp - first_tmp))) ->
+            q10 = (last_rh / first_rh) ^ (10 / (last_tmp - first_tmp))) %>%
+  print ->
   gp_summary
 
 p_prediction <- qplot(year, rh_PgC, data = gp, geom = "line", group = case) + 
@@ -422,6 +431,7 @@ p_fluxnet_only <- ggplot(s_fluxnet_only, aes(Year, NEE_VUT_REF_NIGHT / GPP_DT_VU
   geom_smooth(method = "lm", group = 1, na.rm = TRUE) +
   ylab(expression(NEE[night]:GPP[fluxnet])) +
   facet_wrap(~ IGBP) +
+  coord_cartesian(xlim = c(1990, 2016)) +
   ylim(c(0, 1))
 
 print(p_fluxnet_only)
@@ -480,7 +490,7 @@ p_gppsif_base <- ggplot(s_gppsif_included, aes(Study_midyear, fluxvalue / gppsif
 p_gppsif <- p_gppsif_base + 
   geom_smooth(data = filter(s_gppsif_included, 
                             ! Land_cover %in% c("Other"), 
-                            GPPSIF != "SIF[GOME2]"),
+                            (GPPSIF != "SIF[GOME2]" | Flux == "Rs_annual")),
               method = "lm", show.legend = FALSE)
 print(p_gppsif )
 save_plot("2-gppsif", ptype = ".png", height = 8, width = 7)
