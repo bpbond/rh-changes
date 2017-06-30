@@ -88,7 +88,13 @@ printlog("MAP range is", paste(round(range(srdb$map_hadcrut4, na.rm = TRUE), 0),
 printlog(SEPARATOR)
 printlog("SRDB Rh:Rs analysis")
 
+srdb %>% group_by(Biome, Ecosystem_type) %>% 
+  summarise(SOC_biome = median(SOC, na.rm = TRUE)) -> 
+  biome_medians
+
 srdb %>%
+  dplyr::select(Year, Biome, Ecosystem_type, Rh_annual, Rs_annual, Study_midyear, Stage, Partition_method, 
+                Land_cover, mat_hadcrut4, map_hadcrut4, SOC) %>%
   filter(!is.na(Stage),
          !is.na(Rs_annual), !is.na(Rh_annual), 
          Year >= SRDB_MINYEAR) %>%
@@ -97,7 +103,12 @@ srdb %>%
                          labels = c("1990-1998", "1999-2006", "2007-2014"))) %>%
   group_by(yeargroup) %>% 
   mutate(group_midyear = mean(Year),
-         group = paste0(yeargroup, " (N = ", n(), ")")) -> 
+         group = paste0(yeargroup, " (N = ", n(), ")")) %>%
+  # There are a few studies with NA for Partition_method; assume they're exclusions (by far the most common)
+  replace_na(list(Partition_method = "Exclusion")) %>%
+  # A few studies are missing SOC from the soilsgrid1km database; replace with biome median 
+  left_join(biome_medians, by = c("Biome", "Ecosystem_type")) %>%
+  mutate(SOC = if_else(is.na(SOC), SOC_biome, SOC)) -> 
   s_rh_rs
 
 m1_rh_rs <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + 
@@ -463,7 +474,9 @@ p_gppsif_base <- ggplot(s_gppsif_included, aes(Study_midyear, fluxvalue / gppsif
   scale_color_discrete("Land cover") +
   xlab("Year") +
   ylab("Respiration:(GPP or SIF)") +
-  coord_cartesian(ylim = c(0, 2))
+  coord_cartesian(ylim = c(0, 2)) + 
+  scale_x_continuous(breaks = c(1990, 1995, 2000, 2005, 2010, 2015),
+                     labels = c(1990, 1995, 2000, 2005, 2010,""))
 p_gppsif <- p_gppsif_base + 
   geom_smooth(data = filter(s_gppsif_included, 
                             ! Land_cover %in% c("Other"), 
