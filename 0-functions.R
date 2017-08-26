@@ -12,6 +12,7 @@ OUTPUT_DIR		<- "outputs/"
 SEPARATOR		<- "-------------------"
 
 SRDB_FILTERED_FILE <- file.path(OUTPUT_DIR, "srdb_filtered.csv")
+SRDB_GPPSIF_FILE <- file.path(OUTPUT_DIR, "gpp_sif_filtered.csv")
 
 # -----------------------------------------------------------------------------
 # Print dimensions of data frame

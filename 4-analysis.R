@@ -478,6 +478,8 @@ s_gppsif %>%
   filter(fluxvalue / gppsifvalue <= MAX_FLUX_TO_GPP) ->
   s_gppsif_included
 
+save_data(s_gppsif_included, fname = basename(SRDB_GPPSIF_FILE), scriptfolder = FALSE)
+
 p_gppsif_base <- ggplot(s_gppsif_included, aes(Study_midyear, fluxvalue / gppsifvalue, color = Land_cover)) +
   geom_point(alpha = I(0.75), size = 0.5) +
   facet_grid(GPPSIF ~ Prettyflux, scales = "free", labeller = label_parsed) +
