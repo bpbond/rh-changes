@@ -624,18 +624,27 @@ save_data(longterm_sites_list)
 # Filter the complete database to these sites, run regressions
 srdb_complete_rounded %>%
   dplyr::select(Study_midyear, Longitude, Latitude, Ecosystem_state, Land_cover,
-                Rs_annual, Rh_annual) %>%
-  semi_join(longterm_sites_list, by = c("Longitude", "Latitude")) %>%
-  group_by(Longitude, Latitude, Ecosystem_state, Land_cover) ->
+                Rs_annual, Rh_annual, tmp_trend, pre_trend) %>%
+  semi_join(longterm_sites_list, by = c("Longitude", "Latitude")) ->
   srdb_complete_rounded
 
 srdb_complete_rounded %>%
   filter(!is.na(Rs_annual)) %>%
+  group_by(Longitude, Latitude, Ecosystem_state, Land_cover, tmp_trend, pre_trend) %>% 
   do(rsmod = lm(Rs_annual ~ Study_midyear, data = .)) %>%
   tidy(rsmod) %>%
   filter(term == "Study_midyear") %>%
-  mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not rising")) %>%
-  group_by(Land_cover, trend) %>% 
+  mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not rising")) ->
+  rs_site_individual
+
+p <- ggplot(rs_site_individual, aes(tmp_trend, pre_trend, color = trend)) + 
+  geom_point() + ggtitle("Rs longitudinal trends") +
+  geom_hline(yintercept = 0) + geom_vline(xintercept = 0)
+print(p)
+save_plot("Rs_longitudinal_trends_climate")
+
+rs_site_individual %>%
+  group_by(Land_cover, tmp_trend, pre_trend, trend) %>% 
   summarise(n = n()) %>%
   complete(nesting(Land_cover, trend), fill = list(n = 0)) ->
   rs_site_summary
@@ -652,10 +661,20 @@ save_plot("rs_all_sites", height = 6, width = 8)
 # ...and again for Rh
 srdb_complete_rounded %>%
   filter(!is.na(Rh_annual)) %>%
+  group_by(Longitude, Latitude, Ecosystem_state, Land_cover, tmp_trend, pre_trend) %>% 
   do(rhmod = lm(Rh_annual ~ Study_midyear, data = .)) %>%
   tidy(rhmod) %>%
   filter(term == "Study_midyear") %>%
-  mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not rising")) %>%
+  mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not rising")) ->
+  rh_site_individual
+
+p <- ggplot(rh_site_individual, aes(tmp_trend, pre_trend, color = trend)) + 
+  geom_point() + ggtitle("Rh longitudinal trends") +
+  geom_hline(yintercept = 0) + geom_vline(xintercept = 0)
+print(p)
+save_plot("Rh_longitudinal_trends_climate")
+
+rh_site_individual %>%
   group_by(Land_cover, trend) %>% 
   summarise(n = n()) ->
   rh_site_summary
