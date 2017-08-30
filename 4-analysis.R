@@ -550,11 +550,11 @@ add_result("Rh / GPPisimip ~ time", srdb_isimip$Study_midyear, srdb_isimip$Rh_an
 
 # Plot
 p_isimip <- ggplot(srdb, aes(Study_midyear, Rh_annual / gpp_isimip)) + 
-  geom_point(aes(color = Biome)) + geom_smooth(method = "lm") +
-  xlab("Year") + ylab(expression(R[H]:GPP[isimip]))
+  geom_point(aes(color = Land_cover)) + geom_smooth(method = "lm") +
+  xlab("Year") + ylab(expression(R[H]:GPP[isimip])) + 
+  theme(legend.position = c(0.25, 0.85)) + scale_color_discrete("")
 print(p_isimip)
 save_plot("isimip", width = 7, height = 4)
-
 
 # ----------- 7. Sensitivity to start date (per Referee 1) -------------- 
 
@@ -665,7 +665,7 @@ srdb_complete_rounded %>%
   do(rhmod = lm(Rh_annual ~ Study_midyear, data = .)) %>%
   tidy(rhmod) %>%
   filter(term == "Study_midyear") %>%
-  mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not rising")) ->
+  mutate(trend = if_else(sign(estimate) > 0, "Rising", "Not\nrising")) ->
   rh_site_individual
 
 p <- ggplot(rh_site_individual, aes(tmp_trend, pre_trend, color = trend)) + 
@@ -700,6 +700,33 @@ printlog("Climate space of main dataset:")
 print(summary(dplyr::select(srdb, tmp_trend, pre_trend)))
 printlog("Climate space of longterm sites:")
 print(summary(dplyr::select(longterm_sites_list, tmp_trend, pre_trend)))
+
+
+# ----------------- Multipanel figure 2 --------------------- 
+
+printlog("Doing new multipanel Figure 2...")
+library(cowplot)  # 0.8.0
+xts <- 7  # x axis text size
+sts <- 8  # strip (facet) text size
+p_gppsif1 <- p_gppsif + theme(axis.text = element_text(size = xts),
+                              strip.text = element_text(size = sts))
+p_isimip1 <- p_isimip + theme(axis.text = element_text(size = xts),
+                              legend.text = element_text(size = 5),
+                              legend.background = element_rect(fill = "transparent", colour = NA),
+                              legend.key.height = unit(0.25, "cm"))
+p_rh_sites1 <- p_rh_sites + theme(axis.text = element_text(size = xts),
+                                  strip.text = element_text(size = 6))
+
+fig2_multipanel <- ggdraw() +
+  draw_plot(p_gppsif1 + guides(colour = FALSE), 0, 0, 0.6, 1) +
+  # draw_plot(p_gppsif1 + guides(colour = guide_legend(NULL, nrow = 2)) + 
+  #             theme(legend.position = "bottom"), 0, 0, 0.6, 1) +
+  draw_plot(p_isimip1, 0.6, 0.5, 0.39, 0.5) +
+  draw_plot(p_rh_sites1, 0.6, 0, 0.4, 0.5) +
+  draw_plot_label(c("A", "B", "C"), c(0, 0.6, 0.6), c(1, 1, 0.5), size = 15)
+
+cowplot::save_plot(file.path(outputdir(), "fig2-multipanel.pdf"), fig2_multipanel, base_aspect_ratio = 1.5)
+
 
 # ----------------------- Clean up ------------------------- 
 
