@@ -404,14 +404,19 @@ s_fluxnet_only %>%
 s_fluxnet_only %>%
   group_by(SITE_ID) %>%
   summarise(nyears = n()) %>%
-  filter(nyears > 2) %>%
+  filter(nyears > 4) %>%
   left_join(s_fluxnet_only, by = "SITE_ID") %>%
-  group_by(SITE_ID) %>%
+  group_by(IGBP, SITE_ID) %>%
   do(mod = lm(NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF ~ Year, data = .)) %>%
   tidy(mod) %>%
-  filter(term == "Year") -> site_trends 
+  filter(term == "Year") %>%
+  mutate(rising = if_else(estimate > 0, "Rising", "Not\nrising")) -> site_trends 
 printlog("Sites with positive NEE night/GPP trends =", sum(site_trends$estimate > 0), "of", nrow(site_trends))
 printlog("Sites with SIGNIFICANT positive NEE night/GPP trends =", sum(site_trends$p.value < 0.05 & site_trends$estimate > 0), "of", nrow(site_trends))
+
+p_fluxnet_sitecounts <- ggplot(site_trends, aes(x = rising)) + 
+  geom_bar() + facet_wrap(~IGBP) +
+  xlab(expression(NEE[night]:GPP[fluxnet]))
 
 s_fluxnet_only %>%
   group_by(IGBP) %>%
@@ -706,6 +711,7 @@ print(summary(dplyr::select(longterm_sites_list, tmp_trend, pre_trend)))
 
 printlog("Doing new multipanel Figure 2...")
 library(cowplot)  # 0.8.0
+theme_set(theme_bw())
 xts <- 7  # x axis text size
 sts <- 8  # strip (facet) text size
 p_gppsif1 <- p_gppsif + theme(axis.text = element_text(size = xts),
@@ -716,12 +722,15 @@ p_isimip1 <- p_isimip + theme(axis.text = element_text(size = xts),
                               legend.key.height = unit(0.25, "cm"))
 p_rh_sites1 <- p_rh_sites + theme(axis.text = element_text(size = xts),
                                   strip.text = element_text(size = 6))
+p_fluxnet_sitecounts1 <- p_fluxnet_sitecounts + theme(axis.text = element_text(size = xts),
+                                                    strip.text = element_text(size = 6))
 
 fig2_multipanel <- ggdraw() +
   draw_plot(p_gppsif1 + guides(colour = FALSE), 0, 0, 0.6, 1) +
   # draw_plot(p_gppsif1 + guides(colour = guide_legend(NULL, nrow = 2)) + 
   #             theme(legend.position = "bottom"), 0, 0, 0.6, 1) +
   draw_plot(p_isimip1, 0.6, 0.5, 0.39, 0.5) +
+#  draw_plot(p_fluxnet_sitecounts1, 0.6, 0, 0.4, 0.5) +
   draw_plot(p_rh_sites1, 0.6, 0, 0.4, 0.5) +
   draw_plot_label(c("A", "B", "C"), c(0, 0.6, 0.6), c(1, 1, 0.5), size = 15)
 

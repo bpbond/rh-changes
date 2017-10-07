@@ -21,9 +21,6 @@ read_csv(SRDB_GPPSIF_FILE) %>%
   mutate(year_round = round(Study_midyear, 0)) ->
   s_gppsif
 
-# First, construct our adjustment table, that sets how much we'll adjust
-# the observed GPP values by
-
 yrs <- 1990:2014
 
 all_data <- list()
@@ -32,8 +29,8 @@ for(missing_gpp_per_year in seq(0, 30, by = 2)) {
   printlog(SEPARATOR) 
   
   printlog("Trend tests")
-  for(dataset in unique(s_gppsif$GPPSIF)) {
-    for(f in unique(s_gppsif$Flux)) {
+  for(dataset in unique(s_gppsif$GPPSIF)) {   # MODIS, MTE, GPP, SIF
+    for(f in unique(s_gppsif$Flux)) {         # Rh or Rs
       d <- filter(s_gppsif, Flux == f, GPPSIF == dataset, !is.na(mat_hadcrut4), !is.na(map_hadcrut4))
       dname <- make.names(paste("gppadjust", dataset, f, missing_gpp_per_year))
       
