@@ -25,54 +25,67 @@ yrs <- 1990:2014
 
 all_data <- list()
 results <- list()
-for(missing_gpp_per_year in seq(0, 30, by = 2)) {
+
+# We assume a real-world GPP increase of 0.4%/yr. This is very conservative,
+# i.e. it's at the top end of estimates--unlikely this high (Anav et al. 2015, Ito et al. 2017)
+# but produces the largest effect to test robustness of R:GPP trends
+real_gpp_increase <- 0.4   # %/yr, i.e. 1.005 each year
+
+# Test how robust the R:GPP trends are assuming satellites are seeing anywhere from ALL the 
+# GPP increase (missing_percent_per_year = 0) to NONE of it (missing_percent_per_year = 100)
+for(missing_percent_per_year in seq(0, 100, by = 10)) {
   printlog(SEPARATOR) 
   
   printlog("Trend tests")
   for(dataset in unique(s_gppsif$GPPSIF)) {   # MODIS, MTE, GPP, SIF
     for(f in unique(s_gppsif$Flux)) {         # Rh or Rs
       d <- filter(s_gppsif, Flux == f, GPPSIF == dataset, !is.na(mat_hadcrut4), !is.na(map_hadcrut4))
-      dname <- make.names(paste("gppadjust", dataset, f, missing_gpp_per_year))
+      dname <- make.names(paste("gppadjust", dataset, f, missing_percent_per_year))
       
-      trend <- coefficients(lm(gppsifvalue ~ Study_midyear, data = d))["Study_midyear"]      # Compute an adjusted GPP, which is GPP + years * adjustment/yr
-      d$gppsif_adjusted <- d$gppsifvalue + (d$Study_midyear - min(d$Study_midyear)) * missing_gpp_per_year
-      d$missing_gpp_per_year <- missing_gpp_per_year
-      
-      # Linear model
-      m <- lm(fluxvalue / gppsif_adjusted ~ Study_midyear, data = d)
-      #      m <- stepAIC(m, direction = "both", trace = 0)
-      print(summary(m))
+      m <- lm(fluxvalue / gppsifvalue ~ Study_midyear, data = d)
+      trend <- coefficients(m)["Study_midyear"]
       p <- anova(m)["Study_midyear", "Pr(>F)"]
-      sat_missing <- missing_gpp_per_year / (missing_gpp_per_year + abs(trend)) * 100
-      d$p <- p
-      d$sat_missing <- sat_missing
+      
+      # We assume that every year satellites are missing some percentage of GPP increase
+      # so compute an adjusted value. For example, if satellites are missing 0.1%/yr, and we
+      # have a value of 1000 after 10 years into record, the adjusted value is
+      # 1000 * (1.001 ^ 10) = 1010. 
+      # (This assumes that every record is 'good' (no error) at beginning, and accumulates
+      # error with time. This doesn't quite match reality, in which different records are calibrated
+      # to different time periods and then extended, but seems a reasonable simplification.)
+      unaccounted_gpp <- real_gpp_increase * missing_percent_per_year/100 # in %/yr
+      d$gppsif_adjusted <- d$gppsifvalue * (1 + unaccounted_gpp/100) ^ (d$Study_midyear - min(d$Study_midyear))
+      m_adj <- lm(fluxvalue / gppsif_adjusted ~ Study_midyear, data = d)
+      trend_adj <- coefficients(m_adj)["Study_midyear"]
+      p_adj <- anova(m_adj)["Study_midyear", "Pr(>F)"]
+      
+      cat(missing_percent_per_year, dataset, f, trend, p, trend_adj, p_adj, "\n")
+      d$p_adj <- p_adj
+      d$sat_missing <- missing_percent_per_year
+      
       results[[dname]] <- tibble(dataset = dataset,
                                  flux = f,
-                                 missing_gpp_per_year = missing_gpp_per_year,
-                                 n = length(m$residuals),
+                                 missing_percent_per_year = missing_percent_per_year,
+                                 n = length(m_adj$residuals),
                                  trend = trend,
-                                 newtrend = m$coefficients["Study_midyear"],
-                                 sat_missing = sat_missing,
-                                 p = p)
+                                 trend_adj = trend_adj,
+                                 p = p, p_adj = p_adj)
       # Save for later use
       all_data[[dname]] <- d
     }
   }
   
-}  # end of rs_adjustment_25yr loop
+}  # end of missing_percent_per_year loop
 
 
 printlog(SEPARATOR)
 results <- bind_rows(results)
 
-results$signed_p_value <- results$p * sign(results$trend)
-
-p <- ggplot(results, aes(sat_missing, p, color = dataset)) +
+p <- ggplot(results, aes(missing_percent_per_year, p_adj, color = dataset)) +
   geom_line() + facet_grid(flux ~ ., scales = "free") +
   xlab("Percent of GPP increase missed by satellites") + 
   ylab("p-value for trend of R/GPPadjusted") +
-  geom_hline(yintercept = 0.05, linetype = 2) +
-  coord_cartesian(xlim = c(0, 50)) # there's no way satellites are missing more than 50%!
+  geom_hline(yintercept = 0.05, linetype = 2) + ylim(c(0, 0.1))
 print(p)
 save_plot("satellite_missing_gpp")
 
