@@ -1,15 +1,11 @@
-# Test: 
+# Test whether the R:GPP/SIF trends are robust or not (per Reviewer 1)
 #
-# Method: 
-#
-# Ben Bond-Lamberty August 2017
+# Ben Bond-Lamberty September 2017
 
 source("0-functions.R")
 
 SCRIPTNAME  	<- "X-rev2_gppsif.R"
 PROBLEM       <- FALSE
-
-library(MASS) # 7.3.45
 
 # ==============================================================================
 # Main 
@@ -21,22 +17,20 @@ read_csv(SRDB_GPPSIF_FILE) %>%
   mutate(year_round = round(Study_midyear, 0)) ->
   s_gppsif
 
-yrs <- 1990:2014
-
 all_data <- list()
 results <- list()
 
 # We assume a real-world GPP increase of 0.4%/yr. This is very conservative,
-# i.e. it's at the top end of estimates--unlikely this high (Anav et al. 2015, Ito et al. 2017)
-# but produces the largest effect to test robustness of R:GPP trends
+# i.e. it's at the high end of estimates (Anav et al. 2015, Ito et al. 2017)
+# and so produces the largest effect to test robustness of R:GPP trends
 real_gpp_increase <- 0.4   # %/yr, i.e. 1.005 each year
 
-# Test how robust the R:GPP trends are assuming satellites are seeing anywhere from ALL the 
-# GPP increase (missing_percent_per_year = 0) to NONE of it (missing_percent_per_year = 100)
+# Assume satellites are seeing anywhere from ALL of the GPP increase above
+# (missing_percent_per_year = 0) to NONE of it (missing_percent_per_year = 100)
 for(missing_percent_per_year in seq(0, 100, by = 10)) {
   printlog(SEPARATOR) 
+  printlog(missing_percent_per_year)
   
-  printlog("Trend tests")
   for(dataset in unique(s_gppsif$GPPSIF)) {   # MODIS, MTE, GPP, SIF
     for(f in unique(s_gppsif$Flux)) {         # Rh or Rs
       d <- filter(s_gppsif, Flux == f, GPPSIF == dataset, !is.na(mat_hadcrut4), !is.na(map_hadcrut4))
@@ -74,7 +68,6 @@ for(missing_percent_per_year in seq(0, 100, by = 10)) {
       all_data[[dname]] <- d
     }
   }
-  
 }  # end of missing_percent_per_year loop
 
 
@@ -110,4 +103,3 @@ printlog("All done with", SCRIPTNAME)
 closelog()
 
 if(PROBLEM) warning("There was a problem - see log")
-

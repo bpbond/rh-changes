@@ -561,32 +561,38 @@ p_isimip <- ggplot(srdb, aes(Study_midyear, Rh_annual / gpp_isimip)) +
 print(p_isimip)
 save_plot("isimip", width = 7, height = 4)
 
-# ----------- 7. Sensitivity to start date (per Referee 1) -------------- 
+# ----------- 7. Sensitivity to start/end date (per Referee 1) -------------- 
 
 printlog("Checking sensitivity of results to start date...")
 
 startdate_results <- list()
-for(minyr in min(srdb_complete$Study_midyear):(max(srdb_complete$Study_midyear) - 5)) {
-  print(minyr)
-  # Repeatedly fit our basic Rh/Rs time model to shorter and shorter time periods
-  d <- srdb_complete %>%
-    filter(Study_midyear >= minyr, Ecosystem_state != "Managed") %>%
-    dplyr::select(Rh_annual, Rs_annual, Study_midyear, Stage, Partition_method, Land_cover,
-                  map_hadcrut4, mat_hadcrut4, SOC)
-  d <- d[complete.cases(d),]
-  m <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + 
-            Study_midyear * Partition_method +
-            Study_midyear * Land_cover +
-            mat_hadcrut4 * map_hadcrut4 ^ 2 + 
-            Study_midyear * SOC, 
-          data = d)
-  m <- MASS::stepAIC(m, direction = "both", trace = 0)
-  startdate_results[[as.character(minyr)]] <- tibble(min_year = minyr, 
-                                                     p = round(anova(m)["Study_midyear", "Pr(>F)"], 3),
-                                                     n = length(m$residuals))
-  
+for(minyr in 1981:(max(srdb_complete$Study_midyear) - 5)) {
+  printlog(minyr)
+  for(maxyr in (minyr + 5):max(srdb_complete$Study_midyear)) {
+    # Repeatedly fit our basic Rh/Rs time model to shorter and shorter time periods
+    d <- srdb_complete %>%
+      filter(Study_midyear >= minyr, Study_midyear <= maxyr,
+             Ecosystem_state != "Managed") %>%
+      dplyr::select(Rh_annual, Rs_annual, Study_midyear, Stage, Partition_method, Land_cover,
+                    map_hadcrut4, mat_hadcrut4, SOC)
+    d <- d[complete.cases(d),]
+    try({
+      m <- lm(Rh_annual/Rs_annual ~ Study_midyear * Stage + 
+                Study_midyear * Partition_method +
+                Study_midyear * Land_cover +
+                mat_hadcrut4 * map_hadcrut4 ^ 2 + 
+                Study_midyear * SOC, 
+              data = d)
+      m <- MASS::stepAIC(m, direction = "both", trace = 0)
+      startdate_results[[paste(minyr, maxyr)]] <- tibble(min_year = minyr, max_year = maxyr,
+                                                         p = round(anova(m)["Study_midyear", "Pr(>F)"], 3),
+                                                         n = length(m$residuals))
+    })
+    
+  }
 }
 startdate_results <- bind_rows(startdate_results)
+
 
 p_startdate <- ggplot(startdate_results, aes(min_year, p, color = (p <= 0.05))) + 
   geom_point() +
@@ -599,6 +605,14 @@ p_startdate <- ggplot(startdate_results, aes(min_year, p, color = (p <= 0.05))) 
 print(p_startdate)
 save_plot("startdate", width = 7, height = 4)
 
+p_startdate_2d <- ggplot(startdate_results, aes(min_year, max_year)) + 
+  geom_tile(aes(fill = p < 0.05)) + 
+  xlab("First year in dataset") + ylab("Last year in dataset") +
+  annotate(geom = "point", x = 1989, y = 2014, pch = 5, size = 3)
+print(p_startdate_2d)
+save_plot("startdate_2d", width = 7, height = 4)
+
+stop()
 
 # ----- 8. Site-specific trends, both managed and unmanaged (per Referee 1) -------------- 
 
@@ -723,14 +737,14 @@ p_isimip1 <- p_isimip + theme(axis.text = element_text(size = xts),
 p_rh_sites1 <- p_rh_sites + theme(axis.text = element_text(size = xts),
                                   strip.text = element_text(size = 6))
 p_fluxnet_sitecounts1 <- p_fluxnet_sitecounts + theme(axis.text = element_text(size = xts),
-                                                    strip.text = element_text(size = 6))
+                                                      strip.text = element_text(size = 6))
 
 fig2_multipanel <- ggdraw() +
   draw_plot(p_gppsif1 + guides(colour = FALSE), 0, 0, 0.6, 1) +
   # draw_plot(p_gppsif1 + guides(colour = guide_legend(NULL, nrow = 2)) + 
   #             theme(legend.position = "bottom"), 0, 0, 0.6, 1) +
   draw_plot(p_isimip1, 0.6, 0.5, 0.39, 0.5) +
-#  draw_plot(p_fluxnet_sitecounts1, 0.6, 0, 0.4, 0.5) +
+  #  draw_plot(p_fluxnet_sitecounts1, 0.6, 0, 0.4, 0.5) +
   draw_plot(p_rh_sites1, 0.6, 0, 0.4, 0.5) +
   draw_plot_label(c("A", "B", "C"), c(0, 0.6, 0.6), c(1, 1, 0.5), size = 15)
 
