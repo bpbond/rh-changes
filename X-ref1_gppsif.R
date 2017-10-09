@@ -4,7 +4,7 @@
 
 source("0-functions.R")
 
-SCRIPTNAME  	<- "X-rev2_gppsif.R"
+SCRIPTNAME  	<- "X-ref1_gppsif.R"
 PROBLEM       <- FALSE
 
 # ==============================================================================

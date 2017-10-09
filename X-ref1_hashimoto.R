@@ -9,7 +9,7 @@
 
 source("0-functions.R")
 
-SCRIPTNAME  	<- "X-rev2_hashimoto.R"
+SCRIPTNAME  	<- "X-ref1_hashimoto.R"
 PROBLEM       <- FALSE
 
 
