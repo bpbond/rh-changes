@@ -187,6 +187,13 @@ p_rh_rs_time <- ggplot(s_rh_rs, aes(Study_midyear, Rh_annual/Rs_annual, color = 
 print(p_rh_rs_time)
 save_plot("1-rh_rs_time", width = 6, height = 4)
 
+# Simple regression for Figure 1 - appears in Extended Data Table 1
+printlog("Formula for lines in Figure 1:")
+mx <- lm(log(Rh_annual) ~ log(Rs_annual) * yeargroup, data=s_rh_rs)
+mx <- MASS::stepAIC(mx, direction="both")
+print(summary(mx))
+print(anova(mx))
+
 
 # ------------- 2. SRDB Rh:climate analysis --------------- 
 
