@@ -23,7 +23,7 @@ results <- list()
 # We assume a real-world GPP increase of 0.4%/yr. This is very conservative,
 # i.e. it's at the high end of estimates (Anav et al. 2015, Ito et al. 2017)
 # and so produces the largest effect to test robustness of R:GPP trends
-real_gpp_increase <- 0.4   # %/yr, i.e. 1.005 each year
+real_gpp_increase <- 0.5   # %/yr, i.e. 1.005 each year
 
 # Assume satellites are seeing anywhere from ALL of the GPP increase above
 # (missing_percent_per_year = 0) to NONE of it (missing_percent_per_year = 100)
