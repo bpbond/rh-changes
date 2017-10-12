@@ -74,6 +74,7 @@ for(missing_percent_per_year in seq(0, 100, by = 10)) {
 printlog(SEPARATOR)
 results <- bind_rows(results)
 
+# This is the response to reviewers figure, and Extended Data Figure 4
 p <- ggplot(results, aes(missing_percent_per_year, p_adj, color = dataset)) +
   geom_line() + facet_grid(flux ~ ., scales = "free") +
   xlab("Percent of GPP increase missed by satellites") + 
@@ -82,6 +83,7 @@ p <- ggplot(results, aes(missing_percent_per_year, p_adj, color = dataset)) +
 print(p)
 save_plot("satellite_missing_gpp")
 
+# Also make some diagnostic figures
 all_data <- bind_rows(all_data)
 all_data$sat_missing_bin <- cut(all_data$sat_missing, breaks = 4)
 
