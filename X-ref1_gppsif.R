@@ -20,7 +20,7 @@ read_csv(SRDB_GPPSIF_FILE) %>%
 all_data <- list()
 results <- list()
 
-# We assume a real-world GPP increase of 0.4%/yr. This is very conservative,
+# We assume a real-world GPP increase of 0.5%/yr. This is very conservative,
 # i.e. it's at the high end of estimates (Anav et al. 2015, Ito et al. 2017)
 # and so produces the largest effect to test robustness of R:GPP trends
 real_gpp_increase <- 0.5   # %/yr, i.e. 1.005 each year
