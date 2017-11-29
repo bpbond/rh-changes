@@ -131,12 +131,10 @@ if(!file.exists(OUTPUT_DIR)) {
   dir.create(OUTPUT_DIR)
 }
 
-# if(require(checkpoint) & exists("CHECKPOINTDATE"))
-#   try(checkpoint(CHECKPOINTDATE)) # 'try' b/c errors w/o network (issue #171)
-library(dplyr)
-library(tidyr)
-library(readr)
-library(ggplot2)
+library(dplyr)    # 0.7.4
+library(tidyr)    # 0.7.1
+library(readr)    # 1.1.1
+library(ggplot2)  # 2.2.2
 theme_set(theme_bw() + theme(panel.grid.minor = element_blank()))
 library(luzlogr)  # 0.2.0
 library(R.utils)

@@ -405,7 +405,8 @@ readr::read_csv("outputs/fluxnet.csv") %>%
 s_fluxnet_only %>% 
   group_by(SITE_ID) %>% 
   summarise(nyears = n()) %>% 
-  summarise_each(funs(mean, median, sd, min, max), nyears) -> 
+  dplyr::select(-SITE_ID) %>% 
+  summarise_all(funs(mean, median, sd, min, max)) -> 
   s_fluxnet_nyears
 
 # Make table for acknowledging FLUXNET publications
@@ -576,7 +577,8 @@ save_plot("isimip", width = 7, height = 4)
 
 # ----------- 7. Sensitivity to start/end date (per Referee 1) -------------- 
 
-printlog("Checking sensitivity of results to start date...")
+printlog(SEPARATOR)
+printlog("Checking sensitivity of results to start date (note this generates some errors in red)...")
 
 startdate_results <- list()
 for(minyr in 1981:(max(srdb_complete$Study_midyear) - 5)) {
@@ -624,8 +626,6 @@ p_startdate_2d <- ggplot(startdate_results, aes(min_year, max_year)) +
   annotate(geom = "point", x = 1989, y = 2014, pch = 5, size = 3)
 print(p_startdate_2d)
 save_plot("startdate_2d", width = 7, height = 4)
-
-stop()
 
 # ----- 8. Site-specific trends, both managed and unmanaged (per Referee 1) -------------- 
 
@@ -732,6 +732,16 @@ printlog("Climate space of main dataset:")
 print(summary(dplyr::select(srdb, tmp_trend, pre_trend)))
 printlog("Climate space of longterm sites:")
 print(summary(dplyr::select(longterm_sites_list, tmp_trend, pre_trend)))
+
+# Late Referee 1 suggestion - look at trends across all these longitudinal sites
+
+srdb_complete_rounded %>% 
+  semi_join(dplyr::select(ungroup(rh_site_individual), Longitude, Latitude)) -> 
+  srdb_13sites
+
+printlog("Models across all the longitudinal sites:")
+m_longitudinal_rh <- lm(Rh_annual ~ Study_midyear + tmp_trend * pre_trend, data = srdb_13sites)
+print(summary(m_longitudinal_rh))
 
 
 # ----------------- Multipanel figure 2 --------------------- 
