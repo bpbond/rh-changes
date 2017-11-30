@@ -8,9 +8,10 @@
 # 4. For FLUXNET only, is nighttime NEE:GPP rising?
 # 5. Remote sensing: are Rh:GPP, Rs:GPP, Rh:SIF, and Rs:SIF changing over time?
 
-# This script saves plots and data, but also leaves a bunch of stuff in-memory
-# for the RMarkdown script to access.
-# Note June 18, 2017: the Rmarkdown script (6-report.Rmd) is broken at this point.
+# Then there are three more sections added to address Referee 1 concerns:
+# 6. Does RH:ISIMIP GPP rise?
+# 7. How sensitive are the results to choice of start/end date?
+# 8. What about site-specific (longitudinal) trends?
 
 source("0-functions.R")
 

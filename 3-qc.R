@@ -149,8 +149,6 @@ if(require(maps) & require(mapdata)) {
 # Vanessa's request:
 # histogram of biome, ecosystem type, and stage, by decade 
 # (the combination of all 3, biome + type, and each separately). 
-# BUT…I’d like to see the histograms by decade, but then duplicate
-# the plots to shift the decadal start point by 5 years.
 srdb %>%
   filter(Study_midyear >= 1989) %>%
   dplyr::select(Study_midyear, Biome, Ecosystem_type, Stage, map_hadcrut4, mat_hadcrut4) %>%
@@ -175,7 +173,7 @@ print(last_plot() %+% srdb_combined)
 save_plot("distributions-alt")
 
 
-# A figure for my talk at Stanford, showing growth in SRDB
+# A figure for my talk at Stanford, March 2017, showing growth in SRDB
 # between 2010 Nature paper and now
 srdb %>%
   filter(Rs_annual < 4000) %>%

@@ -1,5 +1,5 @@
-# Prep the ESA-CCI data
-# Ben Bond-Lamberty January 2017
+# Prep the ESA-CCI data (per Referee 2 suggestion)
+# Ben Bond-Lamberty July 2017
 #
 # Unzip the folders for each year; concatenate the daily data; compute mean and var
 # Uses CDO version 1.7.1rc1 for processing netcdf files

@@ -1,6 +1,9 @@
 # Prep data for heterotrophic respiration analysis
 # Ben Bond-Lamberty January 2017
 #
+# This is an expensive (in time) script to run, and it depends on a wide
+# variety of data not included in this repository; see below.
+
 # Load SRDB; filter for 'good' data (unmanipulated ecosystems, IRGA/GC only, etc);
 # spatially match with CRU climate, Max Planck GPP, MODIS GPP (slow), FLUXNET,
 # and SoilGrids1km datasets. This is fairly time-intensive, so there is an
