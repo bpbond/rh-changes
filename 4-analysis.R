@@ -549,7 +549,7 @@ for(dataset in unique(s_gppsif_included$GPPSIF)) {
 printlog("Testing ratio of RH to ISIMIP GPP...")
 
 srdb %>%
-  dplyr::select(Rh_annual, mat_hadcrut4, map_hadcrut4, Study_midyear, gpp_isimip,
+  dplyr::select(Longitude, Latitude, Rh_annual, mat_hadcrut4, map_hadcrut4, Study_midyear, gpp_isimip,
                 Land_cover, Stage, SOC) %>%
   na.omit ->
   srdb_isimip
@@ -574,6 +574,35 @@ p_isimip <- ggplot(srdb, aes(Study_midyear, Rh_annual / gpp_isimip)) +
   theme(legend.position = c(0.25, 0.85)) + scale_color_discrete("")
 print(p_isimip)
 save_plot("isimip", width = 7, height = 4)
+
+# New test per Referee 1: how well explained by climate is ISIMIP RH?
+printlog(SEPARATOR)
+printlog("How well is ISIMIP RH explained by climate?")
+read_csv("ancillary/isimip-rh/all_annual_site_rh.csv") %>% 
+  gather(year, rh, matches("[0-9]{4}")) %>% 
+  mutate(year = as.integer(year), lat = round(lat, 2), lon = round(lon, 2)) %>% 
+  # Compute a mean ISIMIP RH for each lon/lat/year
+  group_by(lat, lon, year) %>% 
+  summarise(rh_isimip = mean(rh)) ->
+  isimip_site_rh
+
+# Merge the ISIMIP GPP data with our observational data
+srdb_isimip %>% 
+  mutate(Study_midyear = round(Study_midyear, 0),
+         Longitude = round(Longitude, 2), 
+         Latitude = round(Latitude, 2)) %>% 
+  left_join(isimip_site_rh, by = c("Longitude" = "lon", "Latitude" = "lat", "Study_midyear" = "year")) ->
+  srdb_isimip
+
+# Now fit our basic linear model
+m_rh_isimip <- lm(rh_isimip ~ Study_midyear * Stage + 
+                    Study_midyear * Land_cover +
+                    mat_hadcrut4 * map_hadcrut4 ^ 2 + 
+                    Study_midyear * SOC, 
+                  data = srdb_isimip)
+m_rh_isimip <- MASS::stepAIC(m_rh_isimip, direction = "both")
+print(summary(m_rh_isimip))
+
 
 # ----------- 7. Sensitivity to start/end date (per Referee 1) -------------- 
 
@@ -701,7 +730,8 @@ srdb_complete_rounded %>%
   rh_site_individual
 
 p <- ggplot(rh_site_individual, aes(tmp_trend, pre_trend, color = trend)) + 
-  geom_point() + ggtitle("Rh longitudinal trends") +
+  geom_point(size = 3) + ggtitle("Rh longitudinal trends") +
+  xlab("Temperature trend (C/yr/yr)") + ylab("Precipitation trend (mm/yr/yr)") +
   geom_hline(yintercept = 0) + geom_vline(xintercept = 0)
 print(p)
 save_plot("Rh_longitudinal_trends_climate")
