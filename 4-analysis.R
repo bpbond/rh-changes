@@ -799,7 +799,7 @@ fig2_multipanel <- ggdraw() +
   draw_plot(p_isimip1, 0.6, 0.5, 0.39, 0.5) +
   #  draw_plot(p_fluxnet_sitecounts1, 0.6, 0, 0.4, 0.5) +
   draw_plot(p_rh_sites1, 0.6, 0, 0.4, 0.5) +
-  draw_plot_label(c("A", "B", "C"), c(0, 0.6, 0.6), c(1, 1, 0.5), size = 15)
+  draw_plot_label(c("a", "b", "c"), c(0, 0.6, 0.6), c(1, 1, 0.5), size = 15)
 
 cowplot::save_plot(file.path(outputdir(), "fig2-multipanel.pdf"), fig2_multipanel, base_aspect_ratio = 1.5)
 
