@@ -1,0 +1,211 @@
+Thu Jun  8 16:53:04 2017  Opening outputs//1-cci/1-cci.R.log.txt 
+Thu Jun  8 16:53:04 2017  Welcome to 1-cci.R 
+Thu Jun  8 16:53:04 2017  ------------------- 
+Thu Jun  8 16:53:04 2017  Decompressing 1978.zip 
+Thu Jun  8 16:53:04 2017  Concatenating daily data... 
+Thu Jun  8 16:53:06 2017  Calculating ~/Data/ESA-CCI//1978-mean.nc 
+Thu Jun  8 16:53:06 2017  Calculating ~/Data/ESA-CCI//1978-std.nc 
+Thu Jun  8 16:53:07 2017  ------------------- 
+Thu Jun  8 16:53:07 2017  Decompressing 1979.zip 
+Thu Jun  8 16:53:08 2017  Concatenating daily data... 
+Thu Jun  8 16:53:20 2017  Calculating ~/Data/ESA-CCI//1979-mean.nc 
+Thu Jun  8 16:53:23 2017  Calculating ~/Data/ESA-CCI//1979-std.nc 
+Thu Jun  8 16:53:26 2017  ------------------- 
+Thu Jun  8 16:53:26 2017  Decompressing 1980.zip 
+Thu Jun  8 16:53:26 2017  Concatenating daily data... 
+Thu Jun  8 16:53:37 2017  Calculating ~/Data/ESA-CCI//1980-mean.nc 
+Thu Jun  8 16:53:40 2017  Calculating ~/Data/ESA-CCI//1980-std.nc 
+Thu Jun  8 16:53:43 2017  ------------------- 
+Thu Jun  8 16:53:43 2017  Decompressing 1981.zip 
+Thu Jun  8 16:53:44 2017  Concatenating daily data... 
+Thu Jun  8 16:53:54 2017  Calculating ~/Data/ESA-CCI//1981-mean.nc 
+Thu Jun  8 16:53:56 2017  Calculating ~/Data/ESA-CCI//1981-std.nc 
+Thu Jun  8 16:54:00 2017  ------------------- 
+Thu Jun  8 16:54:00 2017  Decompressing 1982.zip 
+Thu Jun  8 16:54:00 2017  Concatenating daily data... 
+Thu Jun  8 16:54:10 2017  Calculating ~/Data/ESA-CCI//1982-mean.nc 
+Thu Jun  8 16:54:13 2017  Calculating ~/Data/ESA-CCI//1982-std.nc 
+Thu Jun  8 16:54:17 2017  ------------------- 
+Thu Jun  8 16:54:17 2017  Decompressing 1983.zip 
+Thu Jun  8 16:54:17 2017  Concatenating daily data... 
+Thu Jun  8 16:54:28 2017  Calculating ~/Data/ESA-CCI//1983-mean.nc 
+Thu Jun  8 16:54:30 2017  Calculating ~/Data/ESA-CCI//1983-std.nc 
+Thu Jun  8 16:54:34 2017  ------------------- 
+Thu Jun  8 16:54:34 2017  Decompressing 1984.zip 
+Thu Jun  8 16:54:34 2017  Concatenating daily data... 
+Thu Jun  8 16:54:44 2017  Calculating ~/Data/ESA-CCI//1984-mean.nc 
+Thu Jun  8 16:54:47 2017  Calculating ~/Data/ESA-CCI//1984-std.nc 
+Thu Jun  8 16:54:50 2017  ------------------- 
+Thu Jun  8 16:54:50 2017  Decompressing 1985.zip 
+Thu Jun  8 16:54:51 2017  Concatenating daily data... 
+Thu Jun  8 16:55:01 2017  Calculating ~/Data/ESA-CCI//1985-mean.nc 
+Thu Jun  8 16:55:03 2017  Calculating ~/Data/ESA-CCI//1985-std.nc 
+Thu Jun  8 16:55:07 2017  ------------------- 
+Thu Jun  8 16:55:07 2017  Decompressing 1986.zip 
+Thu Jun  8 16:55:07 2017  Concatenating daily data... 
+Thu Jun  8 16:55:17 2017  Calculating ~/Data/ESA-CCI//1986-mean.nc 
+Thu Jun  8 16:55:20 2017  Calculating ~/Data/ESA-CCI//1986-std.nc 
+Thu Jun  8 16:55:23 2017  ------------------- 
+Thu Jun  8 16:55:23 2017  Decompressing 1987.zip 
+Thu Jun  8 16:55:24 2017  Concatenating daily data... 
+Thu Jun  8 16:55:34 2017  Calculating ~/Data/ESA-CCI//1987-mean.nc 
+Thu Jun  8 16:55:37 2017  Calculating ~/Data/ESA-CCI//1987-std.nc 
+Thu Jun  8 16:55:40 2017  ------------------- 
+Thu Jun  8 16:55:40 2017  Decompressing 1988.zip 
+Thu Jun  8 16:55:41 2017  Concatenating daily data... 
+Thu Jun  8 16:55:51 2017  Calculating ~/Data/ESA-CCI//1988-mean.nc 
+Thu Jun  8 16:55:54 2017  Calculating ~/Data/ESA-CCI//1988-std.nc 
+Thu Jun  8 16:55:58 2017  ------------------- 
+Thu Jun  8 16:55:58 2017  Decompressing 1989.zip 
+Thu Jun  8 16:55:59 2017  Concatenating daily data... 
+Thu Jun  8 16:56:09 2017  Calculating ~/Data/ESA-CCI//1989-mean.nc 
+Thu Jun  8 16:56:12 2017  Calculating ~/Data/ESA-CCI//1989-std.nc 
+Thu Jun  8 16:56:16 2017  ------------------- 
+Thu Jun  8 16:56:16 2017  Decompressing 1990.zip 
+Thu Jun  8 16:56:17 2017  Concatenating daily data... 
+Thu Jun  8 16:56:27 2017  Calculating ~/Data/ESA-CCI//1990-mean.nc 
+Thu Jun  8 16:56:29 2017  Calculating ~/Data/ESA-CCI//1990-std.nc 
+Thu Jun  8 16:56:33 2017  ------------------- 
+Thu Jun  8 16:56:33 2017  Decompressing 1991.zip 
+Thu Jun  8 16:56:34 2017  Concatenating daily data... 
+Thu Jun  8 16:56:43 2017  Calculating ~/Data/ESA-CCI//1991-mean.nc 
+Thu Jun  8 16:56:47 2017  Calculating ~/Data/ESA-CCI//1991-std.nc 
+Thu Jun  8 16:56:51 2017  ------------------- 
+Thu Jun  8 16:56:51 2017  Decompressing 1992.zip 
+Thu Jun  8 16:56:52 2017  Concatenating daily data... 
+Thu Jun  8 16:57:02 2017  Calculating ~/Data/ESA-CCI//1992-mean.nc 
+Thu Jun  8 16:57:05 2017  Calculating ~/Data/ESA-CCI//1992-std.nc 
+Thu Jun  8 16:57:08 2017  ------------------- 
+Thu Jun  8 16:57:08 2017  Decompressing 1993.zip 
+Thu Jun  8 16:57:09 2017  Concatenating daily data... 
+Thu Jun  8 16:57:20 2017  Calculating ~/Data/ESA-CCI//1993-mean.nc 
+Thu Jun  8 16:57:23 2017  Calculating ~/Data/ESA-CCI//1993-std.nc 
+Thu Jun  8 16:57:27 2017  ------------------- 
+Thu Jun  8 16:57:27 2017  Decompressing 1994.zip 
+Thu Jun  8 16:57:28 2017  Concatenating daily data... 
+Thu Jun  8 16:57:38 2017  Calculating ~/Data/ESA-CCI//1994-mean.nc 
+Thu Jun  8 16:57:41 2017  Calculating ~/Data/ESA-CCI//1994-std.nc 
+Thu Jun  8 16:57:45 2017  ------------------- 
+Thu Jun  8 16:57:45 2017  Decompressing 1995.zip 
+Thu Jun  8 16:57:46 2017  Concatenating daily data... 
+Thu Jun  8 16:57:56 2017  Calculating ~/Data/ESA-CCI//1995-mean.nc 
+Thu Jun  8 16:57:59 2017  Calculating ~/Data/ESA-CCI//1995-std.nc 
+Thu Jun  8 16:58:03 2017  ------------------- 
+Thu Jun  8 16:58:03 2017  Decompressing 1996.zip 
+Thu Jun  8 16:58:04 2017  Concatenating daily data... 
+Thu Jun  8 16:58:14 2017  Calculating ~/Data/ESA-CCI//1996-mean.nc 
+Thu Jun  8 16:58:17 2017  Calculating ~/Data/ESA-CCI//1996-std.nc 
+Thu Jun  8 16:58:21 2017  ------------------- 
+Thu Jun  8 16:58:21 2017  Decompressing 1997.zip 
+Thu Jun  8 16:58:22 2017  Concatenating daily data... 
+Thu Jun  8 16:58:33 2017  Calculating ~/Data/ESA-CCI//1997-mean.nc 
+Thu Jun  8 16:58:36 2017  Calculating ~/Data/ESA-CCI//1997-std.nc 
+Thu Jun  8 16:58:39 2017  ------------------- 
+Thu Jun  8 16:58:39 2017  Decompressing 1998.zip 
+Thu Jun  8 16:58:41 2017  Concatenating daily data... 
+Thu Jun  8 16:58:51 2017  Calculating ~/Data/ESA-CCI//1998-mean.nc 
+Thu Jun  8 16:58:55 2017  Calculating ~/Data/ESA-CCI//1998-std.nc 
+Thu Jun  8 16:58:58 2017  ------------------- 
+Thu Jun  8 16:58:58 2017  Decompressing 1999.zip 
+Thu Jun  8 16:59:00 2017  Concatenating daily data... 
+Thu Jun  8 16:59:11 2017  Calculating ~/Data/ESA-CCI//1999-mean.nc 
+Thu Jun  8 16:59:14 2017  Calculating ~/Data/ESA-CCI//1999-std.nc 
+Thu Jun  8 16:59:18 2017  ------------------- 
+Thu Jun  8 16:59:18 2017  Decompressing 2000.zip 
+Thu Jun  8 16:59:20 2017  Concatenating daily data... 
+Thu Jun  8 16:59:30 2017  Calculating ~/Data/ESA-CCI//2000-mean.nc 
+Thu Jun  8 16:59:33 2017  Calculating ~/Data/ESA-CCI//2000-std.nc 
+Thu Jun  8 16:59:37 2017  ------------------- 
+Thu Jun  8 16:59:37 2017  Decompressing 2001.zip 
+Thu Jun  8 16:59:39 2017  Concatenating daily data... 
+Thu Jun  8 16:59:49 2017  Calculating ~/Data/ESA-CCI//2001-mean.nc 
+Thu Jun  8 16:59:52 2017  Calculating ~/Data/ESA-CCI//2001-std.nc 
+Thu Jun  8 16:59:56 2017  ------------------- 
+Thu Jun  8 16:59:56 2017  Decompressing 2002.zip 
+Thu Jun  8 16:59:58 2017  Concatenating daily data... 
+Thu Jun  8 17:00:09 2017  Calculating ~/Data/ESA-CCI//2002-mean.nc 
+Thu Jun  8 17:00:12 2017  Calculating ~/Data/ESA-CCI//2002-std.nc 
+Thu Jun  8 17:00:16 2017  ------------------- 
+Thu Jun  8 17:00:16 2017  Decompressing 2003.zip 
+Thu Jun  8 17:00:18 2017  Concatenating daily data... 
+Thu Jun  8 17:00:28 2017  Calculating ~/Data/ESA-CCI//2003-mean.nc 
+Thu Jun  8 17:00:32 2017  Calculating ~/Data/ESA-CCI//2003-std.nc 
+Thu Jun  8 17:00:35 2017  ------------------- 
+Thu Jun  8 17:00:35 2017  Decompressing 2004.zip 
+Thu Jun  8 17:00:38 2017  Concatenating daily data... 
+Thu Jun  8 17:00:48 2017  Calculating ~/Data/ESA-CCI//2004-mean.nc 
+Thu Jun  8 17:00:51 2017  Calculating ~/Data/ESA-CCI//2004-std.nc 
+Thu Jun  8 17:00:55 2017  ------------------- 
+Thu Jun  8 17:00:55 2017  Decompressing 2005.zip 
+Thu Jun  8 17:00:57 2017  Concatenating daily data... 
+Thu Jun  8 17:01:08 2017  Calculating ~/Data/ESA-CCI//2005-mean.nc 
+Thu Jun  8 17:01:11 2017  Calculating ~/Data/ESA-CCI//2005-std.nc 
+Thu Jun  8 17:01:15 2017  ------------------- 
+Thu Jun  8 17:01:15 2017  Decompressing 2006.zip 
+Thu Jun  8 17:01:17 2017  Concatenating daily data... 
+Thu Jun  8 17:01:28 2017  Calculating ~/Data/ESA-CCI//2006-mean.nc 
+Thu Jun  8 17:01:31 2017  Calculating ~/Data/ESA-CCI//2006-std.nc 
+Thu Jun  8 17:01:35 2017  ------------------- 
+Thu Jun  8 17:01:35 2017  Decompressing 2007.zip 
+Thu Jun  8 17:01:37 2017  Concatenating daily data... 
+Thu Jun  8 17:01:48 2017  Calculating ~/Data/ESA-CCI//2007-mean.nc 
+Thu Jun  8 17:01:51 2017  Calculating ~/Data/ESA-CCI//2007-std.nc 
+Thu Jun  8 17:01:55 2017  ------------------- 
+Thu Jun  8 17:01:55 2017  Decompressing 2008.zip 
+Thu Jun  8 17:01:58 2017  Concatenating daily data... 
+Thu Jun  8 17:02:09 2017  Calculating ~/Data/ESA-CCI//2008-mean.nc 
+Thu Jun  8 17:02:12 2017  Calculating ~/Data/ESA-CCI//2008-std.nc 
+Thu Jun  8 17:02:16 2017  ------------------- 
+Thu Jun  8 17:02:16 2017  Decompressing 2009.zip 
+Thu Jun  8 17:02:18 2017  Concatenating daily data... 
+Thu Jun  8 17:02:29 2017  Calculating ~/Data/ESA-CCI//2009-mean.nc 
+Thu Jun  8 17:02:33 2017  Calculating ~/Data/ESA-CCI//2009-std.nc 
+Thu Jun  8 17:02:37 2017  ------------------- 
+Thu Jun  8 17:02:37 2017  Decompressing 2010.zip 
+Thu Jun  8 17:02:39 2017  Concatenating daily data... 
+Thu Jun  8 17:02:50 2017  Calculating ~/Data/ESA-CCI//2010-mean.nc 
+Thu Jun  8 17:02:54 2017  Calculating ~/Data/ESA-CCI//2010-std.nc 
+Thu Jun  8 17:02:57 2017  ------------------- 
+Thu Jun  8 17:02:57 2017  Decompressing 2011.zip 
+Thu Jun  8 17:03:00 2017  Concatenating daily data... 
+Thu Jun  8 17:03:11 2017  Calculating ~/Data/ESA-CCI//2011-mean.nc 
+Thu Jun  8 17:03:14 2017  Calculating ~/Data/ESA-CCI//2011-std.nc 
+Thu Jun  8 17:03:18 2017  ------------------- 
+Thu Jun  8 17:03:18 2017  Decompressing 2012.zip 
+Thu Jun  8 17:03:21 2017  Concatenating daily data... 
+Thu Jun  8 17:03:33 2017  Calculating ~/Data/ESA-CCI//2012-mean.nc 
+Thu Jun  8 17:03:36 2017  Calculating ~/Data/ESA-CCI//2012-std.nc 
+Thu Jun  8 17:12:23 2017  ------------------- 
+Thu Jun  8 17:12:23 2017  Decompressing 2013.zip 
+Thu Jun  8 17:12:25 2017  Concatenating daily data... 
+Thu Jun  8 17:12:41 2017  Calculating ~/Data/ESA-CCI//2013-mean.nc 
+Thu Jun  8 17:12:45 2017  Calculating ~/Data/ESA-CCI//2013-std.nc 
+Thu Jun  8 17:12:50 2017  ------------------- 
+Thu Jun  8 17:12:50 2017  Decompressing 2014.zip 
+Thu Jun  8 17:12:51 2017  Concatenating daily data... 
+Thu Jun  8 17:13:04 2017  Calculating ~/Data/ESA-CCI//2014-mean.nc 
+Thu Jun  8 17:13:07 2017  Calculating ~/Data/ESA-CCI//2014-std.nc 
+Thu Jun  8 17:13:12 2017  Creating final mean and stdfiles... 
+Thu Jun  8 17:13:13 2017  Final meanfile created OK; removing annual files 
+Thu Jun  8 17:13:14 2017  Final stdfile created OK; removing annual files 
+Thu Jun  8 17:13:14 2017  All done with 1-cci.R 
+Thu Jun  8 17:13:14 2017  Closing outputs//1-cci/1-cci.R.log.txt flags = 0 
+-------
+R version 3.3.3 (2017-03-06)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X El Capitan 10.11.6
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] raster_2.5-8      sp_1.2-3          assertthat_0.1    R.utils_2.3.0     R.oo_1.20.0       R.methodsS3_1.7.1 luzlogr_0.2.0    
+ [8] ggplot2_2.2.0     readr_1.1.0       tidyr_0.6.0       dplyr_0.5.0      
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.9      magrittr_1.5     hms_0.2          munsell_0.4.3    colorspace_1.2-6 lattice_0.20-34  R6_2.2.0        
+ [8] plyr_1.8.4       tools_3.3.3      rgdal_1.2-4      grid_3.3.3       gtable_0.2.0     DBI_0.5-1        lazyeval_0.2.0  
+[15] tibble_1.2       ncdf4_1.15       scales_0.4.1    

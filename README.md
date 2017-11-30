@@ -18,5 +18,6 @@ What we did:
 To re-run our analysis:
 - All scripts used are included in this repository
 - Unless you want to rebuild everything from the underlying SRDB, Hadley, MODIS, MTE, etc., datasets, it's simplest to use a pre-processed dataset and start with the main analysis script `4-analysis.R`
-- Copy the `srdb-filtered.csv` file from the `reproducibility/` folder to `outputs/` (you may need to create the latter if no scripts have been run yet)
-- Run the analysis script. Note that the original script logs, including R session information details, are archived in `reproducibility/`
+- Copy `reproducibility/srdb-filtered.csv` folder to `outputs/srdb-filtered.csv`
+- Run the main analysis script. It uses a bunch of R packages, the names and version numbers of which are listed in the script and in `0-functions.R`
+- Note that the original script logs, including R session information details, are archived in `reproducibility/`

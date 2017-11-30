@@ -1,0 +1,2320 @@
+Fri Jun 30 10:48:06 2017  Opening outputs//2-prepdata/2-prepdata.R.log.txt 
+Fri Jun 30 10:48:06 2017  Welcome to 2-prepdata.R 
+Fri Jun 30 10:48:06 2017  Opening ./inputs/srdb-data.csv 
+Fri Jun 30 10:48:06 2017  srdb rows = 6192 cols = 104 
+Fri Jun 30 10:48:06 2017  Filtering... 
+Fri Jun 30 10:48:06 2017  srdb rows = 2294 cols = 21 
+Fri Jun 30 10:48:06 2017  Joining with SIF data... 
+Fri Jun 30 10:48:06 2017  Opening ./inputs/SIF.csv 
+Fri Jun 30 10:48:07 2017  Opening ./outputs/fluxnet.csv 
+Fri Jun 30 10:48:07 2017  Starting FLUXNET nearest-neighbor matching... 
+Fri Jun 30 10:48:13 2017  Building merge data by expanding SRDB years... 
+Fri Jun 30 10:48:14 2017  Saving outputs//2-prepdata/srdb_expanded.csv 
+Fri Jun 30 10:48:14 2017  Computing FLUXNET means as necessary and merging back in... 
+Fri Jun 30 10:48:15 2017  Checking for ecosystem type match between FLUXNET and SRDB 
+Fri Jun 30 10:48:15 2017  Decompressing ~/Data/CRU/cru_ts3.24.1901.2015.tmp.dat.nc.gz 
+Fri Jun 30 10:48:26 2017  ------------------- 
+Fri Jun 30 10:48:26 2017  Starting extraction for varname: tmp 
+Fri Jun 30 10:48:33 2017  Extracting 100 37.58 54.83 1992.5 1 - layers 1104 to 1115 ... 
+Fri Jun 30 10:48:33 2017  tmp value: 4.533333 
+Fri Jun 30 10:48:33 2017  tmp normal: 4.979167 
+Fri Jun 30 10:48:33 2017  tmp trend: 0.06390351 p = 0.01933333 
+Fri Jun 30 10:48:39 2017  Extracting 200 24.3 61.78 1991 1 - layers 1086 to 1097 ... 
+Fri Jun 30 10:48:39 2017  tmp value: 4.966667 
+Fri Jun 30 10:48:39 2017  tmp normal: 3.243611 
+Fri Jun 30 10:48:39 2017  tmp trend: 0.009730576 p = 0.7065419 
+Fri Jun 30 10:48:48 2017  Extracting 300 -67.07 -9.88 1999.5 1 - layers 1188 to 1199 ... 
+Fri Jun 30 10:48:48 2017  tmp value: 26.43333 
+Fri Jun 30 10:48:48 2017  tmp normal: 26.64806 
+Fri Jun 30 10:48:48 2017  tmp trend: 0.03531955 p = 0.002319155 
+Fri Jun 30 10:48:54 2017  Extracting 400 -98.2 27.67 1996.5 1.3 - layers 1151 to 1165.6 ... 
+Fri Jun 30 10:48:54 2017  tmp value: 20.34375 
+Fri Jun 30 10:48:54 2017  tmp normal: 21.97056 
+Fri Jun 30 10:48:54 2017  tmp trend: 0.05038221 p = 0.01220231 
+Fri Jun 30 10:55:45 2017  Extracting 500 4.52 51.31 2001 1 - layers 1206 to 1217 ... 
+Fri Jun 30 10:55:45 2017  tmp value: 11.09167 
+Fri Jun 30 10:55:45 2017  tmp normal: 9.836944 
+Fri Jun 30 10:55:45 2017  tmp trend: 0.03087719 p = 0.2315953 
+Fri Jun 30 10:55:53 2017  Extracting 600 116.93 28.26 1999.5 1 - layers 1188 to 1199 ... 
+Fri Jun 30 10:55:53 2017  tmp value: 18.075 
+Fri Jun 30 10:55:53 2017  tmp normal: 17.89972 
+Fri Jun 30 10:55:53 2017  tmp trend: 0.05280702 p = 0.0003032586 
+Fri Jun 30 10:56:00 2017  Extracting 700 24.3 61.78 2005 1 - layers 1254 to 1265 ... 
+Fri Jun 30 10:56:00 2017  tmp value: 3.716667 
+Fri Jun 30 10:56:00 2017  tmp normal: 3.243611 
+Fri Jun 30 10:56:00 2017  tmp trend: 0.009730576 p = 0.7065419 
+Fri Jun 30 10:56:11 2017  Extracting 800 -121.28 39.25 2003 1 - layers 1230 to 1241 ... 
+Fri Jun 30 10:56:11 2017  tmp value: 16.51667 
+Fri Jun 30 10:56:11 2017  tmp normal: 15.19083 
+Fri Jun 30 10:56:11 2017  tmp trend: 0.01507519 p = 0.3689047 
+Fri Jun 30 10:56:19 2017  Extracting 900 -105.1 40.6 2001 1 - layers 1206 to 1217 ... 
+Fri Jun 30 10:56:19 2017  tmp value: 7.408333 
+Fri Jun 30 10:56:19 2017  tmp normal: 6.556111 
+Fri Jun 30 10:56:19 2017  tmp trend: 0.001973684 p = 0.9306631 
+Fri Jun 30 10:56:27 2017  Extracting 1000 11.01 46.04 2002 2 - layers 1212 to 1235 ... 
+Fri Jun 30 10:56:27 2017  tmp value: 6.279167 
+Fri Jun 30 10:56:27 2017  tmp normal: 4.866944 
+Fri Jun 30 10:56:27 2017  tmp trend: 0.001610276 p = 0.9414927 
+Fri Jun 30 10:56:35 2017  Extracting 1100 138.47 35.96 2002.5 2 - layers 1218 to 1241 ... 
+Fri Jun 30 10:56:35 2017  tmp value: 7.570833 
+Fri Jun 30 10:56:35 2017  tmp normal: 6.862778 
+Fri Jun 30 10:56:35 2017  tmp trend: 0.0410401 p = 0.01993675 
+Fri Jun 30 10:56:44 2017  Extracting 1200 116.25 44 2001.5 1 - layers 1212 to 1223 ... 
+Fri Jun 30 10:56:44 2017  tmp value: 3.25 
+Fri Jun 30 10:56:44 2017  tmp normal: 1.725556 
+Fri Jun 30 10:56:44 2017  tmp trend: 0.02318296 p = 0.2631481 
+Fri Jun 30 10:56:53 2017  Extracting 1300 -82.32889 39.98917 2005.25 1 - layers 1257 to 1268 ... 
+Fri Jun 30 10:56:53 2017  tmp value: 11.975 
+Fri Jun 30 10:56:53 2017  tmp normal: 10.87139 
+Fri Jun 30 10:56:54 2017  tmp trend: 0.008276942 p = 0.7467687 
+Fri Jun 30 10:57:01 2017  Extracting 1400 99 38 2004.5 2 - layers 1242 to 1265 ... 
+Fri Jun 30 10:57:01 2017  tmp value: -6.3375 
+Fri Jun 30 10:57:01 2017  tmp normal: -6.6425 
+Fri Jun 30 10:57:01 2017  tmp trend: 0.009636591 p = 0.5027418 
+Fri Jun 30 10:57:09 2017  Extracting 1500 127.2667 38.23333 2006 2 - layers 1260 to 1283 ... 
+Fri Jun 30 10:57:09 2017  tmp value: 10.55 
+Fri Jun 30 10:57:09 2017  tmp normal: 9.358889 
+Fri Jun 30 10:57:09 2017  tmp trend: 0.01490602 p = 0.4346541 
+Fri Jun 30 10:57:16 2017  Extracting 1600 10.45222 51.07944 2003 1 - layers 1230 to 1241 ... 
+Fri Jun 30 10:57:16 2017  tmp value: 9.116667 
+Fri Jun 30 10:57:16 2017  tmp normal: 7.733056 
+Fri Jun 30 10:57:16 2017  tmp trend: 0.01857143 p = 0.5225431 
+Fri Jun 30 10:57:25 2017  Extracting 1700 112.8333 22.56667 2008.5 2 - layers 1290 to 1313 ... 
+Fri Jun 30 10:57:25 2017  tmp value: 21.98333 
+Fri Jun 30 10:57:25 2017  tmp normal: 21.87389 
+Fri Jun 30 10:57:26 2017  tmp trend: 0.01151003 p = 0.446919 
+Fri Jun 30 10:57:33 2017  Extracting 1800 -3.333 40.533 2008.5 2 - layers 1290 to 1313 ... 
+Fri Jun 30 10:57:33 2017  tmp value: 13.67083 
+Fri Jun 30 10:57:33 2017  tmp normal: 12.88556 
+Fri Jun 30 10:57:33 2017  tmp trend: 0.01717419 p = 0.3636326 
+Fri Jun 30 10:57:41 2017  Extracting 1900 24.28861 62.51667 2008 2 - layers 1284 to 1307 ... 
+Fri Jun 30 10:57:41 2017  tmp value: 4.283333 
+Fri Jun 30 10:57:41 2017  tmp normal: 2.839167 
+Fri Jun 30 10:57:41 2017  tmp trend: -0.00712406 p = 0.7771178 
+Fri Jun 30 10:57:49 2017  Extracting 2000 128.1733 35.20583 2010 2 - layers 1308 to 1331 ... 
+Fri Jun 30 10:57:49 2017  tmp value: 12.45833 
+Fri Jun 30 10:57:49 2017  tmp normal: 12.08722 
+Fri Jun 30 10:57:49 2017  tmp trend: 0.01013158 p = 0.5534054 
+Fri Jun 30 10:57:56 2017  Extracting 2100 -72.18 42.53 2007.5 1 - layers 1284 to 1295 ... 
+Fri Jun 30 10:57:56 2017  tmp value: 8.7 
+Fri Jun 30 10:57:56 2017  tmp normal: 8.252222 
+Fri Jun 30 10:57:56 2017  tmp trend: 0.03849624 p = 0.1496999 
+Fri Jun 30 10:58:00 2017  tmp layer out of bounds # 2154 
+Fri Jun 30 10:58:00 2017  tmp layer out of bounds # 2155 
+Fri Jun 30 10:58:06 2017  Extracting 2200 101.83 29.42 2009 1 - layers 1302 to 1313 ... 
+Fri Jun 30 10:58:06 2017  tmp value: 0.9916667 
+Fri Jun 30 10:58:06 2017  tmp normal: -0.1 
+Fri Jun 30 10:58:06 2017  tmp trend: 0.05031328 p = 0.007725477 
+Fri Jun 30 10:58:13 2017  Extracting 2300 33.23183 58.27378 2011.5 1 - layers 1332 to 1343 ... 
+Fri Jun 30 10:58:13 2017  tmp value: 4.458333 
+Fri Jun 30 10:58:13 2017  tmp normal: 3.999444 
+Fri Jun 30 10:58:13 2017  tmp trend: -0.01304511 p = 0.5651881 
+Fri Jun 30 10:58:20 2017  Extracting 2400 -51.45 -1.72 2010.5 3 - layers 1308 to 1343 ... 
+Fri Jun 30 10:58:20 2017  tmp value: 27.93056 
+Fri Jun 30 10:58:20 2017  tmp normal: 26.89306 
+Fri Jun 30 10:58:20 2017  tmp trend: 0.0387406 p = 0.0001429197 
+Fri Jun 30 10:58:25 2017  tmp layer out of bounds # 2454 
+Fri Jun 30 10:58:25 2017  tmp layer out of bounds # 2455 
+Fri Jun 30 10:58:25 2017  tmp layer out of bounds # 2456 
+Fri Jun 30 10:58:28 2017  Extracting 2500 118.72 32.2 2011.5 1 - layers 1332 to 1343 ... 
+Fri Jun 30 10:58:28 2017  tmp value: 15.79167 
+Fri Jun 30 10:58:28 2017  tmp normal: 15.16944 
+Fri Jun 30 10:58:28 2017  tmp trend: 0.05483709 p = 0.003591732 
+Fri Jun 30 10:58:31 2017  Removing /Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.tmp.dat.nc 
+Fri Jun 30 10:58:32 2017  Decompressing ~/Data/CRU/cru_ts3.24.1901.2015.pre.dat.nc.gz 
+Fri Jun 30 10:58:43 2017  ------------------- 
+Fri Jun 30 10:58:43 2017  Starting extraction for varname: pre 
+Fri Jun 30 10:58:50 2017  Extracting 100 37.58 54.83 1992.5 1 - layers 1104 to 1115 ... 
+Fri Jun 30 10:58:50 2017  pre value: 51.39167 
+Fri Jun 30 10:58:50 2017  pre normal: 51.7725 
+Fri Jun 30 10:58:51 2017  pre trend: 0.05991228 p = 0.8114832 
+Fri Jun 30 10:58:57 2017  Extracting 200 24.3 61.78 1991 1 - layers 1086 to 1097 ... 
+Fri Jun 30 10:58:57 2017  pre value: 50.575 
+Fri Jun 30 10:58:57 2017  pre normal: 46.08583 
+Fri Jun 30 10:58:57 2017  pre trend: -0.03577694 p = 0.8676541 
+Fri Jun 30 10:59:07 2017  Extracting 300 -67.07 -9.88 1999.5 1 - layers 1188 to 1199 ... 
+Fri Jun 30 10:59:07 2017  pre value: 307.1417 
+Fri Jun 30 10:59:07 2017  pre normal: 162.6456 
+Fri Jun 30 10:59:07 2017  pre trend: 0.9422556 p = 0.6906442 
+Fri Jun 30 10:59:14 2017  Extracting 400 -98.2 27.67 1996.5 1.3 - layers 1151 to 1165.6 ... 
+Fri Jun 30 10:59:14 2017  pre value: 55.5 
+Fri Jun 30 10:59:14 2017  pre normal: 57.02861 
+Fri Jun 30 10:59:14 2017  pre trend: -0.4925439 p = 0.2390732 
+Fri Jun 30 10:59:21 2017  Extracting 500 4.52 51.31 2001 1 - layers 1206 to 1217 ... 
+Fri Jun 30 10:59:21 2017  pre value: 81.25 
+Fri Jun 30 10:59:21 2017  pre normal: 66.58417 
+Fri Jun 30 10:59:21 2017  pre trend: 0.1802444 p = 0.6512452 
+Fri Jun 30 10:59:28 2017  Extracting 600 116.93 28.26 1999.5 1 - layers 1188 to 1199 ... 
+Fri Jun 30 10:59:28 2017  pre value: 140.5833 
+Fri Jun 30 10:59:28 2017  pre normal: 137.4172 
+Fri Jun 30 10:59:28 2017  pre trend: -0.5376754 p = 0.5917925 
+Fri Jun 30 10:59:35 2017  Extracting 700 24.3 61.78 2005 1 - layers 1254 to 1265 ... 
+Fri Jun 30 10:59:35 2017  pre value: 49.85833 
+Fri Jun 30 10:59:35 2017  pre normal: 46.08583 
+Fri Jun 30 10:59:35 2017  pre trend: -0.03577694 p = 0.8676541 
+Fri Jun 30 10:59:42 2017  Extracting 800 -121.28 39.25 2003 1 - layers 1230 to 1241 ... 
+Fri Jun 30 10:59:42 2017  pre value: 74.08333 
+Fri Jun 30 10:59:43 2017  pre normal: 85.21472 
+Fri Jun 30 10:59:43 2017  pre trend: -1.140533 p = 0.1893093 
+Fri Jun 30 10:59:49 2017  Extracting 900 -105.1 40.6 2001 1 - layers 1206 to 1217 ... 
+Fri Jun 30 10:59:50 2017  pre value: 18.30833 
+Fri Jun 30 10:59:50 2017  pre normal: 32.41056 
+Fri Jun 30 10:59:50 2017  pre trend: -0.3518609 p = 0.2774815 
+Fri Jun 30 10:59:56 2017  Extracting 1000 11.01 46.04 2002 2 - layers 1212 to 1235 ... 
+Fri Jun 30 10:59:56 2017  pre value: 98.51667 
+Fri Jun 30 10:59:56 2017  pre normal: 106.9172 
+Fri Jun 30 10:59:56 2017  pre trend: -0.6328258 p = 0.3400447 
+Fri Jun 30 11:00:04 2017  Extracting 1100 138.47 35.96 2002.5 2 - layers 1218 to 1241 ... 
+Fri Jun 30 11:00:04 2017  pre value: 151.5625 
+Fri Jun 30 11:00:04 2017  pre normal: 138.7808 
+Fri Jun 30 11:00:04 2017  pre trend: 0.4569862 p = 0.6491368 
+Fri Jun 30 11:00:10 2017  Extracting 1200 116.25 44 2001.5 1 - layers 1212 to 1223 ... 
+Fri Jun 30 11:00:10 2017  pre value: 17.68333 
+Fri Jun 30 11:00:10 2017  pre normal: 25.18361 
+Fri Jun 30 11:00:10 2017  pre trend: -0.6328697 p = 0.02509939 
+Fri Jun 30 11:00:18 2017  Extracting 1300 -82.32889 39.98917 2005.25 1 - layers 1257 to 1268 ... 
+Fri Jun 30 11:00:18 2017  pre value: 80.71667 
+Fri Jun 30 11:00:18 2017  pre normal: 82.97944 
+Fri Jun 30 11:00:18 2017  pre trend: 0.6201754 p = 0.1442561 
+Fri Jun 30 11:00:25 2017  Extracting 1400 99 38 2004.5 2 - layers 1242 to 1265 ... 
+Fri Jun 30 11:00:25 2017  pre value: 14.62083 
+Fri Jun 30 11:00:25 2017  pre normal: 13.83194 
+Fri Jun 30 11:00:25 2017  pre trend: 0.2507331 p = 0.00109892 
+Fri Jun 30 11:00:31 2017  Extracting 1500 127.2667 38.23333 2006 2 - layers 1260 to 1283 ... 
+Fri Jun 30 11:00:31 2017  pre value: 114.5042 
+Fri Jun 30 11:00:31 2017  pre normal: 111.0717 
+Fri Jun 30 11:00:31 2017  pre trend: 1.634906 p = 0.01972855 
+Fri Jun 30 11:00:37 2017  Extracting 1600 10.45222 51.07944 2003 1 - layers 1230 to 1241 ... 
+Fri Jun 30 11:00:37 2017  pre value: 52.25833 
+Fri Jun 30 11:00:37 2017  pre normal: 54.08028 
+Fri Jun 30 11:00:37 2017  pre trend: 0.2113158 p = 0.571548 
+Fri Jun 30 11:00:44 2017  Extracting 1700 112.8333 22.56667 2008.5 2 - layers 1290 to 1313 ... 
+Fri Jun 30 11:00:44 2017  pre value: 140.5458 
+Fri Jun 30 11:00:44 2017  pre normal: 155.5917 
+Fri Jun 30 11:00:44 2017  pre trend: -1.067751 p = 0.2620448 
+Fri Jun 30 11:00:51 2017  Extracting 1800 -3.333 40.533 2008.5 2 - layers 1290 to 1313 ... 
+Fri Jun 30 11:00:51 2017  pre value: 41.57917 
+Fri Jun 30 11:00:51 2017  pre normal: 39.92056 
+Fri Jun 30 11:00:51 2017  pre trend: 0.3355827 p = 0.2677822 
+Fri Jun 30 11:00:57 2017  Extracting 1900 24.28861 62.51667 2008 2 - layers 1284 to 1307 ... 
+Fri Jun 30 11:00:57 2017  pre value: 49.24583 
+Fri Jun 30 11:00:57 2017  pre normal: 43.41833 
+Fri Jun 30 11:00:57 2017  pre trend: 0.05721178 p = 0.7820546 
+Fri Jun 30 11:01:03 2017  Extracting 2000 128.1733 35.20583 2010 2 - layers 1308 to 1331 ... 
+Fri Jun 30 11:01:03 2017  pre value: 138.5583 
+Fri Jun 30 11:01:03 2017  pre normal: 123.4181 
+Fri Jun 30 11:01:03 2017  pre trend: 0.6107018 p = 0.638952 
+Fri Jun 30 11:01:09 2017  Extracting 2100 -72.18 42.53 2007.5 1 - layers 1284 to 1295 ... 
+Fri Jun 30 11:01:09 2017  pre value: 119.625 
+Fri Jun 30 11:01:09 2017  pre normal: 88.34417 
+Fri Jun 30 11:01:09 2017  pre trend: 0.8114348 p = 0.1059235 
+Fri Jun 30 11:01:13 2017  pre layer out of bounds # 2154 
+Fri Jun 30 11:01:13 2017  pre layer out of bounds # 2155 
+Fri Jun 30 11:01:19 2017  Extracting 2200 101.83 29.42 2009 1 - layers 1302 to 1313 ... 
+Fri Jun 30 11:01:19 2017  pre value: 58.475 
+Fri Jun 30 11:01:19 2017  pre normal: 60.86389 
+Fri Jun 30 11:01:19 2017  pre trend: 0.08412281 p = 0.7615928 
+Fri Jun 30 11:01:25 2017  Extracting 2300 33.23183 58.27378 2011.5 1 - layers 1332 to 1343 ... 
+Fri Jun 30 11:01:25 2017  pre value: 69.75 
+Fri Jun 30 11:01:25 2017  pre normal: 58.48694 
+Fri Jun 30 11:01:25 2017  pre trend: 0.3684211 p = 0.3223443 
+Fri Jun 30 11:01:31 2017  Extracting 2400 -51.45 -1.72 2010.5 3 - layers 1308 to 1343 ... 
+Fri Jun 30 11:01:31 2017  pre value: 190.9917 
+Fri Jun 30 11:01:31 2017  pre normal: 192.8725 
+Fri Jun 30 11:01:31 2017  pre trend: 1.309367 p = 0.1075939 
+Fri Jun 30 11:01:36 2017  pre layer out of bounds # 2454 
+Fri Jun 30 11:01:36 2017  pre layer out of bounds # 2455 
+Fri Jun 30 11:01:36 2017  pre layer out of bounds # 2456 
+Fri Jun 30 11:01:38 2017  Extracting 2500 118.72 32.2 2011.5 1 - layers 1332 to 1343 ... 
+Fri Jun 30 11:01:38 2017  pre value: 74.79167 
+Fri Jun 30 11:01:38 2017  pre normal: 86.82 
+Fri Jun 30 11:01:38 2017  pre trend: 0.2786654 p = 0.764304 
+Fri Jun 30 11:01:42 2017  Removing /Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.pre.dat.nc 
+Fri Jun 30 11:01:42 2017  Decompressing ~/Data/CRU/cru_ts3.24.1901.2015.pet.dat.nc.gz 
+Fri Jun 30 11:01:51 2017  ------------------- 
+Fri Jun 30 11:01:51 2017  Starting extraction for varname: pet 
+Fri Jun 30 11:02:01 2017  Extracting 100 37.58 54.83 1992.5 1 - layers 1104 to 1115 ... 
+Fri Jun 30 11:02:01 2017  pet value: 1.65 
+Fri Jun 30 11:02:01 2017  pet normal: 1.770556 
+Fri Jun 30 11:02:01 2017  pet trend: 0.006842105 p = 0.2314485 
+Fri Jun 30 11:02:07 2017  Extracting 200 24.3 61.78 1991 1 - layers 1086 to 1097 ... 
+Fri Jun 30 11:02:07 2017  pet value: 1.25 
+Fri Jun 30 11:02:07 2017  pet normal: 1.304167 
+Fri Jun 30 11:02:07 2017  pet trend: 0.001860902 p = 0.5556693 
+Fri Jun 30 11:02:16 2017  Extracting 300 -67.07 -9.88 1999.5 1 - layers 1188 to 1199 ... 
+Fri Jun 30 11:02:16 2017  pet value: 2.816667 
+Fri Jun 30 11:02:16 2017  pet normal: 2.86 
+Fri Jun 30 11:02:16 2017  pet trend: 0.006365915 p = 0.001304456 
+Fri Jun 30 11:02:24 2017  Extracting 400 -98.2 27.67 1996.5 1.3 - layers 1151 to 1165.6 ... 
+Fri Jun 30 11:02:24 2017  pet value: 3.81875 
+Fri Jun 30 11:02:25 2017  pet normal: 4.230278 
+Fri Jun 30 11:02:25 2017  pet trend: 0.02612782 p = 0.001471093 
+Fri Jun 30 11:02:31 2017  Extracting 500 4.52 51.31 2001 1 - layers 1206 to 1217 ... 
+Fri Jun 30 11:02:31 2017  pet value: 1.85 
+Fri Jun 30 11:02:31 2017  pet normal: 1.777778 
+Fri Jun 30 11:02:31 2017  pet trend: 0.00862782 p = 0.05473706 
+Fri Jun 30 11:02:41 2017  Extracting 600 116.93 28.26 1999.5 1 - layers 1188 to 1199 ... 
+Fri Jun 30 11:02:41 2017  pet value: 2.733333 
+Fri Jun 30 11:02:41 2017  pet normal: 2.685278 
+Fri Jun 30 11:02:41 2017  pet trend: 0.02406015 p = 0.0002132625 
+Fri Jun 30 11:02:52 2017  Extracting 700 24.3 61.78 2005 1 - layers 1254 to 1265 ... 
+Fri Jun 30 11:02:52 2017  pet value: 1.25 
+Fri Jun 30 11:02:52 2017  pet normal: 1.304167 
+Fri Jun 30 11:02:52 2017  pet trend: 0.001860902 p = 0.5556693 
+Fri Jun 30 11:03:24 2017  Extracting 800 -121.28 39.25 2003 1 - layers 1230 to 1241 ... 
+Fri Jun 30 11:03:24 2017  pet value: 3.933333 
+Fri Jun 30 11:03:24 2017  pet normal: 3.878889 
+Fri Jun 30 11:03:24 2017  pet trend: -0.003753133 p = 0.5052709 
+Fri Jun 30 11:03:40 2017  Extracting 900 -105.1 40.6 2001 1 - layers 1206 to 1217 ... 
+Fri Jun 30 11:03:40 2017  pet value: 3.416667 
+Fri Jun 30 11:03:40 2017  pet normal: 3.222778 
+Fri Jun 30 11:03:40 2017  pet trend: 0.003421053 p = 0.6006215 
+Fri Jun 30 11:03:51 2017  Extracting 1000 11.01 46.04 2002 2 - layers 1212 to 1235 ... 
+Fri Jun 30 11:03:51 2017  pet value: 1.7125 
+Fri Jun 30 11:03:51 2017  pet normal: 1.444167 
+Fri Jun 30 11:03:51 2017  pet trend: -0.004736842 p = 0.324486 
+Fri Jun 30 11:04:04 2017  Extracting 1100 138.47 35.96 2002.5 2 - layers 1218 to 1241 ... 
+Fri Jun 30 11:04:04 2017  pet value: 1.841667 
+Fri Jun 30 11:04:04 2017  pet normal: 1.749167 
+Fri Jun 30 11:04:05 2017  pet trend: 0.01260025 p = 0.003468709 
+Fri Jun 30 11:04:11 2017  Extracting 1200 116.25 44 2001.5 1 - layers 1212 to 1223 ... 
+Fri Jun 30 11:04:11 2017  pet value: 2.725 
+Fri Jun 30 11:04:11 2017  pet normal: 2.527778 
+Fri Jun 30 11:04:11 2017  pet trend: 0.01253759 p = 0.008372853 
+Fri Jun 30 11:04:19 2017  Extracting 1300 -82.32889 39.98917 2005.25 1 - layers 1257 to 1268 ... 
+Fri Jun 30 11:04:19 2017  pet value: 2.733333 
+Fri Jun 30 11:04:19 2017  pet normal: 2.549722 
+Fri Jun 30 11:04:19 2017  pet trend: 0.01097118 p = 0.1075872 
+Fri Jun 30 11:04:28 2017  Extracting 1400 99 38 2004.5 2 - layers 1242 to 1265 ... 
+Fri Jun 30 11:04:28 2017  pet value: 2.008333 
+Fri Jun 30 11:04:28 2017  pet normal: 1.9575 
+Fri Jun 30 11:04:28 2017  pet trend: -0.001215539 p = 0.4466173 
+Fri Jun 30 11:04:35 2017  Extracting 1500 127.2667 38.23333 2006 2 - layers 1260 to 1283 ... 
+Fri Jun 30 11:04:35 2017  pet value: 2.3125 
+Fri Jun 30 11:04:35 2017  pet normal: 2.229722 
+Fri Jun 30 11:04:35 2017  pet trend: -0.0001190476 p = 0.9717078 
+Fri Jun 30 11:04:41 2017  Extracting 1600 10.45222 51.07944 2003 1 - layers 1230 to 1241 ... 
+Fri Jun 30 11:04:41 2017  pet value: 1.933333 
+Fri Jun 30 11:04:41 2017  pet normal: 1.603056 
+Fri Jun 30 11:04:41 2017  pet trend: 0.002932331 p = 0.487001 
+Fri Jun 30 11:04:49 2017  Extracting 1700 112.8333 22.56667 2008.5 2 - layers 1290 to 1313 ... 
+Fri Jun 30 11:04:49 2017  pet value: 2.895833 
+Fri Jun 30 11:04:49 2017  pet normal: 2.809167 
+Fri Jun 30 11:04:49 2017  pet trend: 0.007431078 p = 0.1821543 
+Fri Jun 30 11:04:55 2017  Extracting 1800 -3.333 40.533 2008.5 2 - layers 1290 to 1313 ... 
+Fri Jun 30 11:04:55 2017  pet value: 3.091667 
+Fri Jun 30 11:04:55 2017  pet normal: 2.909722 
+Fri Jun 30 11:04:55 2017  pet trend: 0.001911028 p = 0.6657729 
+Fri Jun 30 11:05:06 2017  Extracting 1900 24.28861 62.51667 2008 2 - layers 1284 to 1307 ... 
+Fri Jun 30 11:05:06 2017  pet value: 1.2375 
+Fri Jun 30 11:05:06 2017  pet normal: 1.263889 
+Fri Jun 30 11:05:06 2017  pet trend: 1.879699e-05 p = 0.9950531 
+Fri Jun 30 11:05:12 2017  Extracting 2000 128.1733 35.20583 2010 2 - layers 1308 to 1331 ... 
+Fri Jun 30 11:05:12 2017  pet value: 2.445833 
+Fri Jun 30 11:05:12 2017  pet normal: 2.378889 
+Fri Jun 30 11:05:12 2017  pet trend: -0.0009210526 p = 0.8455281 
+Fri Jun 30 11:05:19 2017  Extracting 2100 -72.18 42.53 2007.5 1 - layers 1284 to 1295 ... 
+Fri Jun 30 11:05:19 2017  pet value: 2.5 
+Fri Jun 30 11:05:19 2017  pet normal: 2.440556 
+Fri Jun 30 11:05:19 2017  pet trend: 0.006641604 p = 0.1948921 
+Fri Jun 30 11:05:22 2017  pet layer out of bounds # 2154 
+Fri Jun 30 11:05:22 2017  pet layer out of bounds # 2155 
+Fri Jun 30 11:05:31 2017  Extracting 2200 101.83 29.42 2009 1 - layers 1302 to 1313 ... 
+Fri Jun 30 11:05:31 2017  pet value: 2.325 
+Fri Jun 30 11:05:31 2017  pet normal: 2.155278 
+Fri Jun 30 11:05:31 2017  pet trend: 0.006829574 p = 0.009068809 
+Fri Jun 30 11:05:37 2017  Extracting 2300 33.23183 58.27378 2011.5 1 - layers 1332 to 1343 ... 
+Fri Jun 30 11:05:37 2017  pet value: 1.291667 
+Fri Jun 30 11:05:37 2017  pet normal: 1.496389 
+Fri Jun 30 11:05:37 2017  pet trend: -0.006572682 p = 0.07736853 
+Fri Jun 30 11:05:44 2017  Extracting 2400 -51.45 -1.72 2010.5 3 - layers 1308 to 1343 ... 
+Fri Jun 30 11:05:44 2017  pet value: 3.166667 
+Fri Jun 30 11:05:44 2017  pet normal: 3.041389 
+Fri Jun 30 11:05:45 2017  pet trend: 0.005062657 p = 1.222785e-05 
+Fri Jun 30 11:05:50 2017  pet layer out of bounds # 2454 
+Fri Jun 30 11:05:50 2017  pet layer out of bounds # 2455 
+Fri Jun 30 11:05:50 2017  pet layer out of bounds # 2456 
+Fri Jun 30 11:05:58 2017  Extracting 2500 118.72 32.2 2011.5 1 - layers 1332 to 1343 ... 
+Fri Jun 30 11:05:58 2017  pet value: 3.016667 
+Fri Jun 30 11:05:58 2017  pet normal: 2.574167 
+Fri Jun 30 11:05:58 2017  pet trend: 0.01494361 p = 0.0254056 
+Fri Jun 30 11:06:01 2017  Removing /Users/d3x290/Data/CRU/cru_ts3.24.1901.2015.pet.dat.nc 
+Fri Jun 30 11:06:01 2017  Decompressing /Users/d3x290/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc.gz 
+Fri Jun 30 11:06:05 2017  ------------------- 
+Fri Jun 30 11:06:05 2017  Starting extraction for varname: gpp 
+Fri Jun 30 11:06:05 2017  gpp layer out of bounds # 31 
+Fri Jun 30 11:06:05 2017  gpp layer out of bounds # 32 
+Fri Jun 30 11:06:05 2017  gpp layer out of bounds # 68 
+Fri Jun 30 11:06:05 2017  gpp layer out of bounds # 70 
+Fri Jun 30 11:06:06 2017  Extracting 100 37.58 54.83 1992.5 1 - layers 132 to 143 ... 
+Fri Jun 30 11:06:06 2017  gpp value: 3.823302e-08 
+Fri Jun 30 11:06:07 2017  Extracting 200 24.3 61.78 1991 1 - layers 114 to 125 ... 
+Fri Jun 30 11:06:07 2017  gpp value: 2.934992e-08 
+Fri Jun 30 11:06:09 2017  Extracting 300 -67.07 -9.88 1999.5 1 - layers 216 to 227 ... 
+Fri Jun 30 11:06:09 2017  gpp value: 9.574652e-08 
+Fri Jun 30 11:06:10 2017  gpp layer out of bounds # 389 
+Fri Jun 30 11:06:10 2017  gpp layer out of bounds # 390 
+Fri Jun 30 11:06:10 2017  gpp layer out of bounds # 391 
+Fri Jun 30 11:06:11 2017  Extracting 400 -98.2 27.67 1996.5 1.3 - layers 179 to 193.6 ... 
+Fri Jun 30 11:06:11 2017  gpp value: 3.763021e-08 
+Fri Jun 30 11:06:12 2017  Extracting 500 4.52 51.31 2001 1 - layers 234 to 245 ... 
+Fri Jun 30 11:06:12 2017  gpp value: 4.357639e-08 
+Fri Jun 30 11:06:14 2017  Extracting 600 116.93 28.26 1999.5 1 - layers 216 to 227 ... 
+Fri Jun 30 11:06:14 2017  gpp value: 4.686535e-08 
+Fri Jun 30 11:06:14 2017  gpp layer out of bounds # 638 
+Fri Jun 30 11:06:14 2017  gpp layer out of bounds # 639 
+Fri Jun 30 11:06:14 2017  gpp layer out of bounds # 640 
+Fri Jun 30 11:06:14 2017  gpp layer out of bounds # 641 
+Fri Jun 30 11:06:15 2017  Extracting 700 24.3 61.78 2005 1 - layers 282 to 293 ... 
+Fri Jun 30 11:06:15 2017  gpp value: 3.162616e-08 
+Fri Jun 30 11:06:16 2017  Extracting 800 -121.28 39.25 2003 1 - layers 258 to 269 ... 
+Fri Jun 30 11:06:17 2017  gpp value: 3.783758e-08 
+Fri Jun 30 11:06:18 2017  Extracting 900 -105.1 40.6 2001 1 - layers 234 to 245 ... 
+Fri Jun 30 11:06:18 2017  gpp value: 1.477623e-08 
+Fri Jun 30 11:06:19 2017  Extracting 1000 11.01 46.04 2002 2 - layers 240 to 263 ... 
+Fri Jun 30 11:06:19 2017  gpp value: 3.494406e-08 
+Fri Jun 30 11:06:20 2017  gpp layer out of bounds # 1012 
+Fri Jun 30 11:06:20 2017  gpp layer out of bounds # 1013 
+Fri Jun 30 11:06:20 2017  gpp layer out of bounds # 1014 
+Fri Jun 30 11:06:20 2017  gpp layer out of bounds # 1040 
+Fri Jun 30 11:06:20 2017  gpp layer out of bounds # 1041 
+Fri Jun 30 11:06:20 2017  gpp layer out of bounds # 1076 
+Fri Jun 30 11:06:21 2017  Extracting 1100 138.47 35.96 2002.5 2 - layers 246 to 269 ... 
+Fri Jun 30 11:06:21 2017  gpp value: 4.773823e-08 
+Fri Jun 30 11:06:22 2017  gpp layer out of bounds # 1175 
+Fri Jun 30 11:06:22 2017  gpp layer out of bounds # 1176 
+Fri Jun 30 11:06:22 2017  gpp layer out of bounds # 1177 
+Fri Jun 30 11:06:22 2017  Extracting 1200 116.25 44 2001.5 1 - layers 240 to 251 ... 
+Fri Jun 30 11:06:22 2017  gpp value: 4.378858e-09 
+Fri Jun 30 11:06:22 2017  gpp layer out of bounds # 1219 
+Fri Jun 30 11:06:22 2017  gpp layer out of bounds # 1233 
+Fri Jun 30 11:06:23 2017  gpp layer out of bounds # 1251 
+Fri Jun 30 11:06:23 2017  gpp layer out of bounds # 1252 
+Fri Jun 30 11:06:23 2017  Extracting 1300 -82.32889 39.98917 2005.25 1 - layers 285 to 296 ... 
+Fri Jun 30 11:06:24 2017  gpp value: 4.721258e-08 
+Fri Jun 30 11:06:25 2017  Extracting 1400 99 38 2004.5 2 - layers 270 to 293 ... 
+Fri Jun 30 11:06:25 2017  gpp value: 1.347897e-08 
+Fri Jun 30 11:06:26 2017  Extracting 1500 127.2667 38.23333 2006 2 - layers 288 to 311 ... 
+Fri Jun 30 11:06:26 2017  gpp value: 3.977623e-08 
+Fri Jun 30 11:06:28 2017  Extracting 1600 10.45222 51.07944 2003 1 - layers 258 to 269 ... 
+Fri Jun 30 11:06:28 2017  gpp value: 3.888889e-08 
+Fri Jun 30 11:06:29 2017  Extracting 1700 112.8333 22.56667 2008.5 2 - layers 318 to 341 ... 
+Fri Jun 30 11:06:29 2017  gpp value: 6.537905e-08 
+Fri Jun 30 11:06:31 2017  Extracting 1800 -3.333 40.533 2008.5 2 - layers 318 to 341 ... 
+Fri Jun 30 11:06:31 2017  gpp value: 1.383584e-08 
+Fri Jun 30 11:06:33 2017  Extracting 1900 24.28861 62.51667 2008 2 - layers 312 to 335 ... 
+Fri Jun 30 11:06:33 2017  gpp value: 3.113426e-08 
+Fri Jun 30 11:06:34 2017  gpp layer out of bounds # 1991 
+Fri Jun 30 11:06:34 2017  gpp layer out of bounds # 1995 
+Fri Jun 30 11:06:34 2017  Extracting 2000 128.1733 35.20583 2010 2 - layers 336 to 359 ... 
+Fri Jun 30 11:06:34 2017  gpp value: 4.577064e-08 
+Fri Jun 30 11:06:34 2017  gpp layer out of bounds # 2004 
+Fri Jun 30 11:06:34 2017  gpp layer out of bounds # 2005 
+Fri Jun 30 11:06:35 2017  Extracting 2100 -72.18 42.53 2007.5 1 - layers 312 to 323 ... 
+Fri Jun 30 11:06:35 2017  gpp value: 4.138696e-08 
+Fri Jun 30 11:06:36 2017  gpp layer out of bounds # 2117 
+Fri Jun 30 11:06:36 2017  gpp layer out of bounds # 2146 
+Fri Jun 30 11:06:36 2017  gpp layer out of bounds # 2147 
+Fri Jun 30 11:06:36 2017  gpp layer out of bounds # 2148 
+Fri Jun 30 11:06:36 2017  gpp layer out of bounds # 2149 
+Fri Jun 30 11:06:36 2017  gpp layer out of bounds # 2150 
+Fri Jun 30 11:06:36 2017  gpp layer out of bounds # 2151 
+Fri Jun 30 11:06:36 2017  gpp layer out of bounds # 2152 
+Fri Jun 30 11:06:36 2017  gpp layer out of bounds # 2153 
+Fri Jun 30 11:06:36 2017  gpp layer out of bounds # 2154 
+Fri Jun 30 11:06:36 2017  gpp layer out of bounds # 2155 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2181 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2182 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2183 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2186 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2187 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2188 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2189 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2190 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2191 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2192 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2193 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2194 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2195 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2196 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2197 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2198 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2199 
+Fri Jun 30 11:06:37 2017  Extracting 2200 101.83 29.42 2009 1 - layers 330 to 341 ... 
+Fri Jun 30 11:06:37 2017  gpp value: 1.907793e-08 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2203 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2204 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2205 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2206 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2207 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2208 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2209 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2210 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2211 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2212 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2213 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2214 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2215 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2216 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2217 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2218 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2219 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2220 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2221 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2222 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2228 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2229 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2241 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2242 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2243 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2244 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2245 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2246 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2247 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2248 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2254 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2255 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2256 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2257 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2267 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2271 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2272 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2273 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2275 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2276 
+Fri Jun 30 11:06:37 2017  gpp layer out of bounds # 2277 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2286 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2287 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2288 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2289 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2290 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2291 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2292 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2293 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2294 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2295 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2296 
+Fri Jun 30 11:06:38 2017  Extracting 2300 33.23183 58.27378 2011.5 1 - layers 360 to 371 ... 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2300 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2301 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2302 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2303 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2304 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2305 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2322 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2323 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2324 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2336 
+Fri Jun 30 11:06:38 2017  gpp layer out of bounds # 2343 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2368 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2369 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2370 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2371 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2372 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2390 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2395 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2398 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2399 
+Fri Jun 30 11:06:39 2017  Extracting 2400 -51.45 -1.72 2010.5 3 - layers 336 to 371 ... 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2400 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2401 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2402 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2403 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2404 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2405 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2406 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2407 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2408 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2409 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2410 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2411 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2412 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2413 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2414 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2415 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2416 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2417 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2418 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2419 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2420 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2421 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2422 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2429 
+Fri Jun 30 11:06:39 2017  gpp layer out of bounds # 2431 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2448 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2449 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2450 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2454 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2455 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2456 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2457 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2458 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2459 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2460 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2468 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2469 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2470 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2478 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2489 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2490 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2491 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2492 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2493 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2494 
+Fri Jun 30 11:06:40 2017  Extracting 2500 118.72 32.2 2011.5 1 - layers 360 to 371 ... 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2500 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2501 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2502 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2503 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2504 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2505 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2508 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2509 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2510 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2511 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2515 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2516 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2517 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2518 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2519 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2520 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2522 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2523 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2524 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2525 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2526 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2527 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2528 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2529 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2530 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2531 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2532 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2533 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2534 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2535 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2536 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2537 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2538 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2539 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2544 
+Fri Jun 30 11:06:40 2017  gpp layer out of bounds # 2548 
+Fri Jun 30 11:06:40 2017  Removing /Users/d3x290/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc 
+Fri Jun 30 11:06:40 2017  Decompressing /Users/d3x290/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc.gz 
+Fri Jun 30 11:06:44 2017  ------------------- 
+Fri Jun 30 11:06:44 2017  Starting extraction for varname: gpp 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 3 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 5 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 6 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 16 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 17 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 22 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 23 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 25 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 26 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 27 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 28 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 29 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 30 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 31 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 36 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 37 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 38 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 42 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 43 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 44 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 45 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 49 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 50 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 51 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 52 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 53 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 54 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 55 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 59 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 60 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 61 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 62 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 63 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 64 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 75 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 76 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 77 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 78 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 81 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 82 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 83 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 84 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 85 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 86 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 87 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 88 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 92 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 93 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 94 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 95 
+Fri Jun 30 11:06:44 2017  gpp layer out of bounds # 96 
+Fri Jun 30 11:06:44 2017  Extracting 100 148.1517 -35.6566 2004.5 1 - layers 276 to 287 ... 
+Fri Jun 30 11:06:44 2017  gpp value: 5.187114e-08 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 107 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 108 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 109 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 110 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 115 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 116 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 117 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 118 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 120 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 121 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 122 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 123 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 139 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 140 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 141 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 142 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 150 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 151 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 152 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 153 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 169 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 170 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 171 
+Fri Jun 30 11:06:45 2017  gpp layer out of bounds # 172 
+Fri Jun 30 11:06:46 2017  Extracting 200 -98.5247 55.9058 2003.5 1 - layers 264 to 275 ... 
+Fri Jun 30 11:06:46 2017  gpp value: 1.515239e-08 
+Fri Jun 30 11:06:46 2017  gpp layer out of bounds # 255 
+Fri Jun 30 11:06:46 2017  gpp layer out of bounds # 256 
+Fri Jun 30 11:06:46 2017  gpp layer out of bounds # 257 
+Fri Jun 30 11:06:46 2017  gpp layer out of bounds # 258 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 273 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 274 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 275 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 276 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 283 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 284 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 285 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 286 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 294 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 295 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 296 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 297 
+Fri Jun 30 11:06:47 2017  Extracting 300 7.7319 47.2858 2004.5 1 - layers 276 to 287 ... 
+Fri Jun 30 11:06:47 2017  gpp value: 4.659529e-08 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 312 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 313 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 314 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 315 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 341 
+Fri Jun 30 11:06:47 2017  gpp layer out of bounds # 342 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 352 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 353 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 354 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 355 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 358 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 359 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 360 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 361 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 372 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 373 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 374 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 375 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 383 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 384 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 385 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 386 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 398 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 399 
+Fri Jun 30 11:06:48 2017  Extracting 400 13.5225 50.8929 2004.5 1 - layers 276 to 287 ... 
+Fri Jun 30 11:06:48 2017  gpp value: 4.011381e-08 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 407 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 408 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 409 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 410 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 413 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 414 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 415 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 419 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 420 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 421 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 422 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 423 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 424 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 425 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 426 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 427 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 428 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 429 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 430 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 435 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 436 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 437 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 439 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 440 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 441 
+Fri Jun 30 11:06:48 2017  gpp layer out of bounds # 442 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 458 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 459 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 460 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 461 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 466 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 467 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 468 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 469 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 485 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 486 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 487 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 488 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 492 
+Fri Jun 30 11:06:49 2017  Extracting 500 -20.5503 74.4732 2007.5 1 - layers 312 to 323 ... 
+Fri Jun 30 11:06:49 2017  gpp value: 0 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 504 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 505 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 506 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 507 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 527 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 528 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 529 
+Fri Jun 30 11:06:49 2017  gpp layer out of bounds # 530 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 548 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 549 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 550 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 551 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 558 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 559 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 560 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 561 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 569 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 570 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 595 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 596 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 597 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 598 
+Fri Jun 30 11:06:50 2017  Extracting 600 -52.9249 5.2788 2005.5 1 - layers 288 to 299 ... 
+Fri Jun 30 11:06:50 2017  gpp value: 9.812886e-08 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 606 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 607 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 608 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 609 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 617 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 618 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 619 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 620 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 621 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 622 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 623 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 624 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 625 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 626 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 627 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 628 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 629 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 630 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 631 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 632 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 648 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 649 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 650 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 651 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 652 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 653 
+Fri Jun 30 11:06:50 2017  gpp layer out of bounds # 654 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 665 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 666 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 678 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 679 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 680 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 681 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 690 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 691 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 692 
+Fri Jun 30 11:06:51 2017  Extracting 700 8.1515 40.6061 2011.5 1 - layers 360 to 371 ... 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 700 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 701 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 702 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 703 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 719 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 720 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 721 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 740 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 741 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 742 
+Fri Jun 30 11:06:51 2017  gpp layer out of bounds # 743 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 756 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 757 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 761 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 762 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 763 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 764 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 780 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 796 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 797 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 798 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 799 
+Fri Jun 30 11:06:52 2017  Extracting 800 15.923 78.186 2014.5 1 - layers 396 to 407 ... 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 800 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 815 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 816 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 817 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 831 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 832 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 833 
+Fri Jun 30 11:06:52 2017  gpp layer out of bounds # 834 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 844 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 845 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 846 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 849 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 850 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 853 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 854 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 867 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 868 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 896 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 897 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 898 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 899 
+Fri Jun 30 11:06:53 2017  Extracting 900 -72.1715 42.5378 1991.5 1 - layers 120 to 131 ... 
+Fri Jun 30 11:06:53 2017  gpp value: 4.361497e-08 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 920 
+Fri Jun 30 11:06:53 2017  gpp layer out of bounds # 921 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 937 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 938 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 939 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 940 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 952 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 953 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 954 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 955 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 957 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 958 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 959 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 960 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 973 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 974 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 975 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 976 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 977 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 978 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 979 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 980 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 991 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 992 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 993 
+Fri Jun 30 11:06:54 2017  Extracting 1000 -96.4701 41.1649 2007.5 1 - layers 312 to 323 ... 
+Fri Jun 30 11:06:54 2017  gpp value: 2.662037e-08 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 1004 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 1005 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 1006 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 1017 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 1018 
+Fri Jun 30 11:06:54 2017  gpp layer out of bounds # 1019 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1033 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1034 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1035 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1036 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1037 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1054 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1055 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1056 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1057 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1059 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1060 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1064 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1065 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1066 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1067 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1075 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1076 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1077 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1078 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1089 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1090 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1091 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1092 
+Fri Jun 30 11:06:55 2017  Extracting 1100 -120.966 38.4316 2008.5 1 - layers 324 to 335 ... 
+Fri Jun 30 11:06:55 2017  gpp value: 3.409529e-08 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1103 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1104 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1105 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1106 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1107 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1108 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1109 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1110 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1111 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1112 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1113 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1114 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1115 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1118 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1119 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1120 
+Fri Jun 30 11:06:55 2017  gpp layer out of bounds # 1121 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1133 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1134 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1135 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1136 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1141 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1142 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1143 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1144 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1156 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1157 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1158 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1159 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1172 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1173 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1174 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1175 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1180 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1181 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1182 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1183 
+Fri Jun 30 11:06:56 2017  Extracting 1200 -109.9419 31.7365 2008.5 1 - layers 324 to 335 ... 
+Fri Jun 30 11:06:56 2017  gpp value: 5.864197e-09 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1203 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1204 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1205 
+Fri Jun 30 11:06:56 2017  gpp layer out of bounds # 1206 
+Fri Jun 30 11:06:57 2017  Removing /Users/d3x290/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc 
+Fri Jun 30 11:06:57 2017  Creating raster stack from 192 files in /Users/d3x290/Data/MODIS_GPP/ 
+Fri Jun 30 11:06:58 2017  ------------------- 
+Fri Jun 30 11:06:58 2017  Starting extraction for varname: modisgpp 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 15 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 16 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 17 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 18 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 19 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 20 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 21 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 22 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 23 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 24 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 25 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 26 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 27 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 28 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 29 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 30 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 31 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 32 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 33 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 34 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 35 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 36 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 37 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 38 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 39 
+Fri Jun 30 11:07:40 2017  modisgpp layer out of bounds # 40 
+Fri Jun 30 11:07:49 2017  modisgpp layer out of bounds # 44 
+Fri Jun 30 11:07:49 2017  modisgpp layer out of bounds # 45 
+Fri Jun 30 11:07:49 2017  modisgpp layer out of bounds # 46 
+Fri Jun 30 11:07:49 2017  modisgpp layer out of bounds # 47 
+Fri Jun 30 11:07:49 2017  modisgpp layer out of bounds # 48 
+Fri Jun 30 11:07:49 2017  modisgpp layer out of bounds # 49 
+Fri Jun 30 11:07:49 2017  modisgpp layer out of bounds # 50 
+Fri Jun 30 11:07:49 2017  modisgpp layer out of bounds # 51 
+Fri Jun 30 11:07:49 2017  modisgpp layer out of bounds # 52 
+Fri Jun 30 11:07:49 2017  modisgpp layer out of bounds # 53 
+Fri Jun 30 11:07:49 2017  modisgpp layer out of bounds # 54 
+Fri Jun 30 11:07:51 2017  modisgpp layer out of bounds # 56 
+Fri Jun 30 11:07:51 2017  modisgpp layer out of bounds # 57 
+Fri Jun 30 11:07:51 2017  modisgpp layer out of bounds # 58 
+Fri Jun 30 11:07:51 2017  modisgpp layer out of bounds # 59 
+Fri Jun 30 11:07:51 2017  modisgpp layer out of bounds # 60 
+Fri Jun 30 11:07:51 2017  modisgpp layer out of bounds # 61 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 66 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 67 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 68 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 69 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 70 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 71 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 72 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 73 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 74 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 75 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 76 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 77 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 78 
+Fri Jun 30 11:07:58 2017  modisgpp layer out of bounds # 79 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 90 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 91 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 92 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 93 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 94 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 95 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 96 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 97 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 98 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 99 
+Fri Jun 30 11:08:17 2017  Extracting 100 37.58 54.83 1992.5 1 - layers -84 to -73 ... 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 100 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 101 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 102 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 103 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 104 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 105 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 106 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 107 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 108 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 109 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 110 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 111 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 112 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 113 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 114 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 115 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 116 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 117 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 118 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 119 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 120 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 121 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 122 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 123 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 124 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 125 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 126 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 127 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 128 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 129 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 130 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 131 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 132 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 133 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 134 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 135 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 136 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 137 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 138 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 139 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 140 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 141 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 142 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 143 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 144 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 145 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 146 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 147 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 148 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 149 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 150 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 151 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 152 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 153 
+Fri Jun 30 11:08:17 2017  modisgpp layer out of bounds # 154 
+Fri Jun 30 11:08:34 2017  modisgpp layer out of bounds # 164 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 198 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 199 
+Fri Jun 30 11:09:40 2017  Extracting 200 24.3 61.78 1991 1 - layers -102 to -91 ... 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 200 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 201 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 202 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 203 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 204 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 205 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 206 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 207 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 208 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 209 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 210 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 211 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 212 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 213 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 214 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 215 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 216 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 217 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 218 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 219 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 220 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 221 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 222 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 223 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 224 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 225 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 226 
+Fri Jun 30 11:09:40 2017  modisgpp layer out of bounds # 227 
+Fri Jun 30 11:09:50 2017  modisgpp layer out of bounds # 232 
+Fri Jun 30 11:09:57 2017  modisgpp layer out of bounds # 237 
+Fri Jun 30 11:09:57 2017  modisgpp layer out of bounds # 238 
+Fri Jun 30 11:09:57 2017  modisgpp layer out of bounds # 239 
+Fri Jun 30 11:09:57 2017  modisgpp layer out of bounds # 240 
+Fri Jun 30 11:09:57 2017  modisgpp layer out of bounds # 241 
+Fri Jun 30 11:09:57 2017  modisgpp layer out of bounds # 242 
+Fri Jun 30 11:10:03 2017  modisgpp layer out of bounds # 244 
+Fri Jun 30 11:10:03 2017  modisgpp layer out of bounds # 245 
+Fri Jun 30 11:10:03 2017  modisgpp layer out of bounds # 246 
+Fri Jun 30 11:10:03 2017  modisgpp layer out of bounds # 247 
+Fri Jun 30 11:10:03 2017  modisgpp layer out of bounds # 248 
+Fri Jun 30 11:10:03 2017  modisgpp layer out of bounds # 249 
+Fri Jun 30 11:10:03 2017  modisgpp layer out of bounds # 250 
+Fri Jun 30 11:10:03 2017  modisgpp layer out of bounds # 251 
+Fri Jun 30 11:10:03 2017  modisgpp layer out of bounds # 252 
+Fri Jun 30 11:10:03 2017  modisgpp layer out of bounds # 253 
+Fri Jun 30 11:10:06 2017  modisgpp layer out of bounds # 256 
+Fri Jun 30 11:10:06 2017  modisgpp layer out of bounds # 257 
+Fri Jun 30 11:10:06 2017  modisgpp layer out of bounds # 258 
+Fri Jun 30 11:10:06 2017  modisgpp layer out of bounds # 259 
+Fri Jun 30 11:10:06 2017  modisgpp layer out of bounds # 260 
+Fri Jun 30 11:10:06 2017  modisgpp layer out of bounds # 261 
+Fri Jun 30 11:10:06 2017  modisgpp layer out of bounds # 262 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 274 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 275 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 276 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 277 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 278 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 279 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 280 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 281 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 282 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 283 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 284 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 285 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 286 
+Fri Jun 30 11:10:37 2017  modisgpp layer out of bounds # 287 
+Fri Jun 30 11:10:50 2017  modisgpp layer out of bounds # 295 
+Fri Jun 30 11:10:57 2017  Extracting 300 -67.07 -9.88 1999.5 1 - layers 0 to 11 ... 
+Fri Jun 30 11:10:59 2017  modisgpp value: 2165.25 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 312 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 313 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 314 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 315 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 316 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 317 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 318 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 319 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 320 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 321 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 322 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 323 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 324 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 325 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 326 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 327 
+Fri Jun 30 11:11:20 2017  modisgpp layer out of bounds # 328 
+Fri Jun 30 11:11:31 2017  modisgpp layer out of bounds # 335 
+Fri Jun 30 11:11:31 2017  modisgpp layer out of bounds # 336 
+Fri Jun 30 11:11:33 2017  modisgpp layer out of bounds # 338 
+Fri Jun 30 11:11:33 2017  modisgpp layer out of bounds # 339 
+Fri Jun 30 11:11:51 2017  modisgpp layer out of bounds # 350 
+Fri Jun 30 11:11:51 2017  modisgpp layer out of bounds # 351 
+Fri Jun 30 11:11:51 2017  modisgpp layer out of bounds # 352 
+Fri Jun 30 11:11:51 2017  modisgpp layer out of bounds # 353 
+Fri Jun 30 11:11:51 2017  modisgpp layer out of bounds # 354 
+Fri Jun 30 11:11:51 2017  modisgpp layer out of bounds # 355 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 362 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 363 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 364 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 365 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 366 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 367 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 368 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 369 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 370 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 371 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 372 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 373 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 374 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 375 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 376 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 377 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 378 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 379 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 380 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 381 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 382 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 383 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 384 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 385 
+Fri Jun 30 11:12:02 2017  modisgpp layer out of bounds # 386 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 389 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 390 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 391 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 392 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 393 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 394 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 395 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 396 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 397 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 398 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 399 
+Fri Jun 30 11:12:09 2017  Extracting 400 -98.2 27.67 1996.5 1.3 - layers -37 to -22.4 ... 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 400 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 401 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 402 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 403 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 404 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 405 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 406 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 407 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 408 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 409 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 410 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 411 
+Fri Jun 30 11:12:09 2017  modisgpp layer out of bounds # 412 
+Fri Jun 30 11:12:20 2017  modisgpp layer out of bounds # 419 
+Fri Jun 30 11:12:20 2017  modisgpp layer out of bounds # 420 
+Fri Jun 30 11:12:20 2017  modisgpp layer out of bounds # 421 
+Fri Jun 30 11:12:20 2017  modisgpp layer out of bounds # 422 
+Fri Jun 30 11:12:20 2017  modisgpp layer out of bounds # 423 
+Fri Jun 30 11:12:20 2017  modisgpp layer out of bounds # 424 
+Fri Jun 30 11:12:20 2017  modisgpp layer out of bounds # 425 
+Fri Jun 30 11:12:20 2017  modisgpp layer out of bounds # 426 
+Fri Jun 30 11:12:20 2017  modisgpp layer out of bounds # 427 
+Fri Jun 30 11:12:20 2017  modisgpp layer out of bounds # 428 
+Fri Jun 30 11:12:20 2017  modisgpp layer out of bounds # 429 
+Fri Jun 30 11:15:42 2017  modisgpp layer out of bounds # 494 
+Fri Jun 30 11:15:51 2017  Extracting 500 4.52 51.31 2001 1 - layers 18 to 29 ... 
+Fri Jun 30 11:15:53 2017  modisgpp value: 1119 
+Fri Jun 30 11:16:14 2017  modisgpp layer out of bounds # 508 
+Fri Jun 30 11:16:14 2017  modisgpp layer out of bounds # 509 
+Fri Jun 30 11:16:14 2017  modisgpp layer out of bounds # 510 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 516 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 517 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 518 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 519 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 520 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 521 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 522 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 523 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 524 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 525 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 526 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 527 
+Fri Jun 30 11:16:23 2017  modisgpp layer out of bounds # 528 
+Fri Jun 30 11:16:25 2017  modisgpp layer out of bounds # 530 
+Fri Jun 30 11:16:25 2017  modisgpp layer out of bounds # 531 
+Fri Jun 30 11:16:27 2017  modisgpp layer out of bounds # 533 
+Fri Jun 30 11:16:27 2017  modisgpp layer out of bounds # 534 
+Fri Jun 30 11:16:31 2017  modisgpp layer out of bounds # 537 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 545 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 546 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 547 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 548 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 549 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 550 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 551 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 552 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 553 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 554 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 555 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 556 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 557 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 558 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 559 
+Fri Jun 30 11:16:44 2017  modisgpp layer out of bounds # 560 
+Fri Jun 30 11:16:54 2017  modisgpp layer out of bounds # 566 
+Fri Jun 30 11:16:54 2017  modisgpp layer out of bounds # 567 
+Fri Jun 30 11:16:54 2017  modisgpp layer out of bounds # 568 
+Fri Jun 30 11:16:54 2017  modisgpp layer out of bounds # 569 
+Fri Jun 30 11:16:58 2017  modisgpp layer out of bounds # 572 
+Fri Jun 30 11:16:58 2017  modisgpp layer out of bounds # 573 
+Fri Jun 30 11:16:58 2017  modisgpp layer out of bounds # 574 
+Fri Jun 30 11:16:58 2017  modisgpp layer out of bounds # 575 
+Fri Jun 30 11:17:02 2017  modisgpp layer out of bounds # 578 
+Fri Jun 30 11:17:02 2017  modisgpp layer out of bounds # 579 
+Fri Jun 30 11:17:08 2017  modisgpp layer out of bounds # 583 
+Fri Jun 30 11:17:08 2017  modisgpp layer out of bounds # 584 
+Fri Jun 30 11:17:24 2017  modisgpp layer out of bounds # 594 
+Fri Jun 30 11:17:34 2017  Extracting 600 116.93 28.26 1999.5 1 - layers 0 to 11 ... 
+Fri Jun 30 11:17:35 2017  modisgpp value: 637.1667 
+Fri Jun 30 11:17:35 2017  modisgpp layer out of bounds # 601 
+Fri Jun 30 11:17:35 2017  modisgpp layer out of bounds # 602 
+Fri Jun 30 11:17:35 2017  modisgpp layer out of bounds # 603 
+Fri Jun 30 11:17:35 2017  modisgpp layer out of bounds # 604 
+Fri Jun 30 11:17:35 2017  modisgpp layer out of bounds # 605 
+Fri Jun 30 11:17:35 2017  modisgpp layer out of bounds # 606 
+Fri Jun 30 11:17:37 2017  modisgpp layer out of bounds # 608 
+Fri Jun 30 11:17:37 2017  modisgpp layer out of bounds # 609 
+Fri Jun 30 11:17:51 2017  modisgpp layer out of bounds # 616 
+Fri Jun 30 11:17:51 2017  modisgpp layer out of bounds # 617 
+Fri Jun 30 11:17:51 2017  modisgpp layer out of bounds # 618 
+Fri Jun 30 11:17:58 2017  modisgpp layer out of bounds # 623 
+Fri Jun 30 11:17:58 2017  modisgpp layer out of bounds # 624 
+Fri Jun 30 11:17:58 2017  modisgpp layer out of bounds # 625 
+Fri Jun 30 11:17:58 2017  modisgpp layer out of bounds # 626 
+Fri Jun 30 11:18:22 2017  modisgpp layer out of bounds # 638 
+Fri Jun 30 11:18:22 2017  modisgpp layer out of bounds # 639 
+Fri Jun 30 11:18:22 2017  modisgpp layer out of bounds # 640 
+Fri Jun 30 11:18:22 2017  modisgpp layer out of bounds # 641 
+Fri Jun 30 11:18:26 2017  modisgpp layer out of bounds # 644 
+Fri Jun 30 11:19:10 2017  modisgpp layer out of bounds # 664 
+Fri Jun 30 11:19:10 2017  modisgpp layer out of bounds # 665 
+Fri Jun 30 11:19:10 2017  modisgpp layer out of bounds # 666 
+Fri Jun 30 11:19:40 2017  modisgpp layer out of bounds # 677 
+Fri Jun 30 11:19:40 2017  modisgpp layer out of bounds # 678 
+Fri Jun 30 11:19:40 2017  modisgpp layer out of bounds # 679 
+Fri Jun 30 11:19:40 2017  modisgpp layer out of bounds # 680 
+Fri Jun 30 11:19:40 2017  modisgpp layer out of bounds # 681 
+Fri Jun 30 11:19:40 2017  modisgpp layer out of bounds # 682 
+Fri Jun 30 11:19:40 2017  modisgpp layer out of bounds # 683 
+Fri Jun 30 11:19:40 2017  modisgpp layer out of bounds # 684 
+Fri Jun 30 11:19:40 2017  modisgpp layer out of bounds # 685 
+Fri Jun 30 11:19:40 2017  modisgpp layer out of bounds # 686 
+Fri Jun 30 11:20:19 2017  Extracting 700 24.3 61.78 2005 1 - layers 66 to 77 ... 
+Fri Jun 30 11:20:21 2017  modisgpp value: 764.8333 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 708 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 709 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 710 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 711 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 712 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 713 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 714 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 715 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 716 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 717 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 718 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 719 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 720 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 721 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 722 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 723 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 724 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 725 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 726 
+Fri Jun 30 11:20:34 2017  modisgpp layer out of bounds # 727 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 732 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 733 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 734 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 735 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 736 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 737 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 738 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 739 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 740 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 741 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 742 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 743 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 744 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 745 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 746 
+Fri Jun 30 11:20:47 2017  modisgpp layer out of bounds # 747 
+Fri Jun 30 11:22:44 2017  Extracting 800 -121.28 39.25 2003 1 - layers 42 to 53 ... 
+Fri Jun 30 11:22:46 2017  modisgpp value: 827.5833 
+Fri Jun 30 11:22:51 2017  modisgpp layer out of bounds # 804 
+Fri Jun 30 11:23:31 2017  modisgpp layer out of bounds # 816 
+Fri Jun 30 11:23:31 2017  modisgpp layer out of bounds # 817 
+Fri Jun 30 11:23:31 2017  modisgpp layer out of bounds # 818 
+Fri Jun 30 11:23:31 2017  modisgpp layer out of bounds # 819 
+Fri Jun 30 11:23:31 2017  modisgpp layer out of bounds # 820 
+Fri Jun 30 11:23:31 2017  modisgpp layer out of bounds # 821 
+Fri Jun 30 11:23:31 2017  modisgpp layer out of bounds # 822 
+Fri Jun 30 11:23:31 2017  modisgpp layer out of bounds # 823 
+Fri Jun 30 11:24:15 2017  modisgpp layer out of bounds # 845 
+Fri Jun 30 11:24:28 2017  modisgpp layer out of bounds # 852 
+Fri Jun 30 11:24:28 2017  modisgpp layer out of bounds # 853 
+Fri Jun 30 11:24:28 2017  modisgpp layer out of bounds # 854 
+Fri Jun 30 11:24:38 2017  modisgpp layer out of bounds # 858 
+Fri Jun 30 11:24:38 2017  modisgpp layer out of bounds # 859 
+Fri Jun 30 11:24:38 2017  modisgpp layer out of bounds # 860 
+Fri Jun 30 11:24:46 2017  modisgpp layer out of bounds # 863 
+Fri Jun 30 11:24:46 2017  modisgpp layer out of bounds # 864 
+Fri Jun 30 11:24:46 2017  modisgpp layer out of bounds # 865 
+Fri Jun 30 11:24:46 2017  modisgpp layer out of bounds # 866 
+Fri Jun 30 11:24:46 2017  modisgpp layer out of bounds # 867 
+Fri Jun 30 11:24:46 2017  modisgpp layer out of bounds # 868 
+Fri Jun 30 11:24:46 2017  modisgpp layer out of bounds # 869 
+Fri Jun 30 11:24:46 2017  modisgpp layer out of bounds # 870 
+Fri Jun 30 11:24:46 2017  modisgpp layer out of bounds # 871 
+Fri Jun 30 11:24:46 2017  modisgpp layer out of bounds # 872 
+Fri Jun 30 11:25:27 2017  modisgpp layer out of bounds # 884 
+Fri Jun 30 11:25:27 2017  modisgpp layer out of bounds # 885 
+Fri Jun 30 11:25:27 2017  modisgpp layer out of bounds # 886 
+Fri Jun 30 11:25:39 2017  modisgpp layer out of bounds # 892 
+Fri Jun 30 11:25:39 2017  modisgpp layer out of bounds # 893 
+Fri Jun 30 11:25:39 2017  modisgpp layer out of bounds # 894 
+Fri Jun 30 11:25:49 2017  Extracting 900 -105.1 40.6 2001 1 - layers 18 to 29 ... 
+Fri Jun 30 11:25:51 2017  modisgpp value: 32767 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 901 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 902 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 903 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 904 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 905 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 906 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 907 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 908 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 909 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 910 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 911 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 912 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 913 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 914 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 915 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 916 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 917 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 918 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 919 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 920 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 921 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 922 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 923 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 924 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 925 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 926 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 927 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 928 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 929 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 930 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 931 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 932 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 933 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 934 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 935 
+Fri Jun 30 11:25:51 2017  modisgpp layer out of bounds # 936 
+Fri Jun 30 11:26:40 2017  modisgpp layer out of bounds # 958 
+Fri Jun 30 11:28:29 2017  Extracting 1000 11.01 46.04 2002 2 - layers 24 to 47 ... 
+Fri Jun 30 11:28:33 2017  modisgpp value: 1024.083 
+Fri Jun 30 11:29:02 2017  modisgpp layer out of bounds # 1009 
+Fri Jun 30 11:29:07 2017  modisgpp layer out of bounds # 1012 
+Fri Jun 30 11:29:07 2017  modisgpp layer out of bounds # 1013 
+Fri Jun 30 11:29:07 2017  modisgpp layer out of bounds # 1014 
+Fri Jun 30 11:29:32 2017  modisgpp layer out of bounds # 1027 
+Fri Jun 30 11:29:32 2017  modisgpp layer out of bounds # 1028 
+Fri Jun 30 11:29:32 2017  modisgpp layer out of bounds # 1029 
+Fri Jun 30 11:30:06 2017  modisgpp layer out of bounds # 1040 
+Fri Jun 30 11:30:06 2017  modisgpp layer out of bounds # 1041 
+Fri Jun 30 11:30:28 2017  modisgpp layer out of bounds # 1050 
+Fri Jun 30 11:30:28 2017  modisgpp layer out of bounds # 1051 
+Fri Jun 30 11:30:28 2017  modisgpp layer out of bounds # 1052 
+Fri Jun 30 11:30:28 2017  modisgpp layer out of bounds # 1053 
+Fri Jun 30 11:30:38 2017  modisgpp layer out of bounds # 1057 
+Fri Jun 30 11:30:38 2017  modisgpp layer out of bounds # 1058 
+Fri Jun 30 11:30:38 2017  modisgpp layer out of bounds # 1059 
+Fri Jun 30 11:30:38 2017  modisgpp layer out of bounds # 1060 
+Fri Jun 30 11:30:38 2017  modisgpp layer out of bounds # 1061 
+Fri Jun 30 11:30:38 2017  modisgpp layer out of bounds # 1062 
+Fri Jun 30 11:30:38 2017  modisgpp layer out of bounds # 1063 
+Fri Jun 30 11:30:38 2017  modisgpp layer out of bounds # 1064 
+Fri Jun 30 11:30:38 2017  modisgpp layer out of bounds # 1065 
+Fri Jun 30 11:30:44 2017  modisgpp layer out of bounds # 1067 
+Fri Jun 30 11:31:20 2017  modisgpp layer out of bounds # 1076 
+Fri Jun 30 11:31:20 2017  modisgpp layer out of bounds # 1077 
+Fri Jun 30 11:31:22 2017  modisgpp layer out of bounds # 1079 
+Fri Jun 30 11:31:22 2017  modisgpp layer out of bounds # 1080 
+Fri Jun 30 11:31:22 2017  modisgpp layer out of bounds # 1081 
+Fri Jun 30 11:31:22 2017  modisgpp layer out of bounds # 1082 
+Fri Jun 30 11:31:26 2017  modisgpp layer out of bounds # 1085 
+Fri Jun 30 11:31:26 2017  modisgpp layer out of bounds # 1086 
+Fri Jun 30 11:31:26 2017  modisgpp layer out of bounds # 1087 
+Fri Jun 30 11:31:26 2017  modisgpp layer out of bounds # 1088 
+Fri Jun 30 11:31:26 2017  modisgpp layer out of bounds # 1089 
+Fri Jun 30 11:32:05 2017  Extracting 1100 138.47 35.96 2002.5 2 - layers 30 to 53 ... 
+Fri Jun 30 11:32:09 2017  modisgpp value: 926.3333 
+Fri Jun 30 11:32:25 2017  modisgpp layer out of bounds # 1109 
+Fri Jun 30 11:32:54 2017  modisgpp layer out of bounds # 1121 
+Fri Jun 30 11:34:02 2017  modisgpp layer out of bounds # 1149 
+Fri Jun 30 11:34:02 2017  modisgpp layer out of bounds # 1150 
+Fri Jun 30 11:34:09 2017  modisgpp layer out of bounds # 1154 
+Fri Jun 30 11:34:09 2017  modisgpp layer out of bounds # 1155 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1161 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1162 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1163 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1164 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1165 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1166 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1167 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1168 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1169 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1170 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1171 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1172 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1173 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1174 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1175 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1176 
+Fri Jun 30 11:34:19 2017  modisgpp layer out of bounds # 1177 
+Fri Jun 30 11:34:30 2017  modisgpp layer out of bounds # 1184 
+Fri Jun 30 11:34:30 2017  modisgpp layer out of bounds # 1185 
+Fri Jun 30 11:34:30 2017  modisgpp layer out of bounds # 1186 
+Fri Jun 30 11:34:30 2017  modisgpp layer out of bounds # 1187 
+Fri Jun 30 11:34:30 2017  modisgpp layer out of bounds # 1188 
+Fri Jun 30 11:34:30 2017  modisgpp layer out of bounds # 1189 
+Fri Jun 30 11:34:30 2017  modisgpp layer out of bounds # 1190 
+Fri Jun 30 11:34:50 2017  Extracting 1200 116.25 44 2001.5 1 - layers 24 to 35 ... 
+Fri Jun 30 11:34:52 2017  modisgpp value: 206.5 
+Fri Jun 30 11:35:10 2017  modisgpp layer out of bounds # 1211 
+Fri Jun 30 11:35:10 2017  modisgpp layer out of bounds # 1212 
+Fri Jun 30 11:35:10 2017  modisgpp layer out of bounds # 1213 
+Fri Jun 30 11:35:10 2017  modisgpp layer out of bounds # 1214 
+Fri Jun 30 11:35:10 2017  modisgpp layer out of bounds # 1215 
+Fri Jun 30 11:35:19 2017  modisgpp layer out of bounds # 1219 
+Fri Jun 30 11:35:19 2017  modisgpp layer out of bounds # 1220 
+Fri Jun 30 11:35:19 2017  modisgpp layer out of bounds # 1221 
+Fri Jun 30 11:35:19 2017  modisgpp layer out of bounds # 1222 
+Fri Jun 30 11:35:22 2017  modisgpp layer out of bounds # 1224 
+Fri Jun 30 11:35:22 2017  modisgpp layer out of bounds # 1225 
+Fri Jun 30 11:35:22 2017  modisgpp layer out of bounds # 1226 
+Fri Jun 30 11:35:35 2017  modisgpp layer out of bounds # 1232 
+Fri Jun 30 11:35:35 2017  modisgpp layer out of bounds # 1233 
+Fri Jun 30 11:35:35 2017  modisgpp layer out of bounds # 1234 
+Fri Jun 30 11:35:35 2017  modisgpp layer out of bounds # 1235 
+Fri Jun 30 11:35:35 2017  modisgpp layer out of bounds # 1236 
+Fri Jun 30 11:35:35 2017  modisgpp layer out of bounds # 1237 
+Fri Jun 30 11:35:35 2017  modisgpp layer out of bounds # 1238 
+Fri Jun 30 11:35:42 2017  modisgpp layer out of bounds # 1242 
+Fri Jun 30 11:35:42 2017  modisgpp layer out of bounds # 1243 
+Fri Jun 30 11:35:42 2017  modisgpp layer out of bounds # 1244 
+Fri Jun 30 11:35:42 2017  modisgpp layer out of bounds # 1245 
+Fri Jun 30 11:35:52 2017  modisgpp layer out of bounds # 1251 
+Fri Jun 30 11:35:52 2017  modisgpp layer out of bounds # 1252 
+Fri Jun 30 11:35:52 2017  modisgpp layer out of bounds # 1253 
+Fri Jun 30 11:35:52 2017  modisgpp layer out of bounds # 1254 
+Fri Jun 30 11:35:52 2017  modisgpp layer out of bounds # 1255 
+Fri Jun 30 11:35:52 2017  modisgpp layer out of bounds # 1256 
+Fri Jun 30 11:35:52 2017  modisgpp layer out of bounds # 1257 
+Fri Jun 30 11:37:11 2017  Extracting 1300 -82.32889 39.98917 2005.25 1 - layers 69 to 80 ... 
+Fri Jun 30 11:37:13 2017  modisgpp value: 1075.667 
+Fri Jun 30 11:37:43 2017  modisgpp layer out of bounds # 1311 
+Fri Jun 30 11:37:43 2017  modisgpp layer out of bounds # 1312 
+Fri Jun 30 11:41:56 2017  Extracting 1400 99 38 2004.5 2 - layers 54 to 77 ... 
+Fri Jun 30 11:41:59 2017  modisgpp value: 228.625 
+Fri Jun 30 11:46:29 2017  Extracting 1500 127.2667 38.23333 2006 2 - layers 72 to 95 ... 
+Fri Jun 30 11:46:33 2017  modisgpp value: 856.375 
+Fri Jun 30 11:48:08 2017  modisgpp layer out of bounds # 1530 
+Fri Jun 30 11:48:08 2017  modisgpp layer out of bounds # 1531 
+Fri Jun 30 11:48:08 2017  modisgpp layer out of bounds # 1532 
+Fri Jun 30 11:48:08 2017  modisgpp layer out of bounds # 1533 
+Fri Jun 30 11:50:54 2017  Extracting 1600 10.45222 51.07944 2003 1 - layers 42 to 53 ... 
+Fri Jun 30 11:50:56 2017  modisgpp value: 901.6667 
+Fri Jun 30 11:55:40 2017  Extracting 1700 112.8333 22.56667 2008.5 2 - layers 102 to 125 ... 
+Fri Jun 30 11:55:44 2017  modisgpp value: 1191 
+Fri Jun 30 11:57:46 2017  modisgpp layer out of bounds # 1738 
+Fri Jun 30 11:57:46 2017  modisgpp layer out of bounds # 1739 
+Fri Jun 30 11:58:04 2017  modisgpp layer out of bounds # 1748 
+Fri Jun 30 11:58:04 2017  modisgpp layer out of bounds # 1749 
+Fri Jun 30 11:58:04 2017  modisgpp layer out of bounds # 1750 
+Fri Jun 30 11:58:04 2017  modisgpp layer out of bounds # 1751 
+Fri Jun 30 11:58:04 2017  modisgpp layer out of bounds # 1752 
+Fri Jun 30 11:59:40 2017  modisgpp layer out of bounds # 1791 
+Fri Jun 30 11:59:55 2017  modisgpp layer out of bounds # 1797 
+Fri Jun 30 12:00:07 2017  Extracting 1800 -3.333 40.533 2008.5 2 - layers 102 to 125 ... 
+Fri Jun 30 12:00:12 2017  modisgpp value: 340.2083 
+Fri Jun 30 12:04:45 2017  Extracting 1900 24.28861 62.51667 2008 2 - layers 96 to 119 ... 
+Fri Jun 30 12:04:49 2017  modisgpp value: 698.375 
+Fri Jun 30 12:09:29 2017  Extracting 2000 128.1733 35.20583 2010 2 - layers 120 to 143 ... 
+Fri Jun 30 12:09:33 2017  modisgpp value: 1302.75 
+Fri Jun 30 12:10:36 2017  modisgpp layer out of bounds # 2013 
+Fri Jun 30 12:10:36 2017  modisgpp layer out of bounds # 2014 
+Fri Jun 30 12:10:36 2017  modisgpp layer out of bounds # 2015 
+Fri Jun 30 12:10:36 2017  modisgpp layer out of bounds # 2016 
+Fri Jun 30 12:10:36 2017  modisgpp layer out of bounds # 2017 
+Fri Jun 30 12:10:36 2017  modisgpp layer out of bounds # 2018 
+Fri Jun 30 12:10:36 2017  modisgpp layer out of bounds # 2019 
+Fri Jun 30 12:11:00 2017  modisgpp layer out of bounds # 2031 
+Fri Jun 30 12:11:00 2017  modisgpp layer out of bounds # 2032 
+Fri Jun 30 12:11:00 2017  modisgpp layer out of bounds # 2033 
+Fri Jun 30 12:11:00 2017  modisgpp layer out of bounds # 2034 
+Fri Jun 30 12:11:00 2017  modisgpp layer out of bounds # 2035 
+Fri Jun 30 12:11:00 2017  modisgpp layer out of bounds # 2036 
+Fri Jun 30 12:11:00 2017  modisgpp layer out of bounds # 2037 
+Fri Jun 30 12:11:25 2017  modisgpp layer out of bounds # 2049 
+Fri Jun 30 12:11:25 2017  modisgpp layer out of bounds # 2050 
+Fri Jun 30 12:11:25 2017  modisgpp layer out of bounds # 2051 
+Fri Jun 30 12:11:25 2017  modisgpp layer out of bounds # 2052 
+Fri Jun 30 12:11:25 2017  modisgpp layer out of bounds # 2053 
+Fri Jun 30 12:11:25 2017  modisgpp layer out of bounds # 2054 
+Fri Jun 30 12:11:25 2017  modisgpp layer out of bounds # 2055 
+Fri Jun 30 12:11:50 2017  modisgpp layer out of bounds # 2067 
+Fri Jun 30 12:11:50 2017  modisgpp layer out of bounds # 2068 
+Fri Jun 30 12:11:50 2017  modisgpp layer out of bounds # 2069 
+Fri Jun 30 12:11:50 2017  modisgpp layer out of bounds # 2070 
+Fri Jun 30 12:11:50 2017  modisgpp layer out of bounds # 2071 
+Fri Jun 30 12:11:50 2017  modisgpp layer out of bounds # 2072 
+Fri Jun 30 12:11:50 2017  modisgpp layer out of bounds # 2073 
+Fri Jun 30 12:12:15 2017  modisgpp layer out of bounds # 2085 
+Fri Jun 30 12:12:15 2017  modisgpp layer out of bounds # 2086 
+Fri Jun 30 12:12:15 2017  modisgpp layer out of bounds # 2087 
+Fri Jun 30 12:12:15 2017  modisgpp layer out of bounds # 2088 
+Fri Jun 30 12:12:15 2017  modisgpp layer out of bounds # 2089 
+Fri Jun 30 12:12:15 2017  modisgpp layer out of bounds # 2090 
+Fri Jun 30 12:12:15 2017  modisgpp layer out of bounds # 2091 
+Fri Jun 30 12:12:33 2017  Extracting 2100 -72.18 42.53 2007.5 1 - layers 96 to 107 ... 
+Fri Jun 30 12:12:36 2017  modisgpp value: 1297.083 
+Fri Jun 30 12:15:52 2017  modisgpp layer out of bounds # 2141 
+Fri Jun 30 12:15:52 2017  modisgpp layer out of bounds # 2142 
+Fri Jun 30 12:15:52 2017  modisgpp layer out of bounds # 2143 
+Fri Jun 30 12:19:08 2017  modisgpp layer out of bounds # 2154 
+Fri Jun 30 12:19:08 2017  modisgpp layer out of bounds # 2155 
+Fri Jun 30 12:19:08 2017  modisgpp layer out of bounds # 2156 
+Fri Jun 30 12:22:14 2017  Extracting 2200 101.83 29.42 2009 1 - layers 114 to 125 ... 
+Fri Jun 30 12:22:16 2017  modisgpp value: 235.5833 
+Fri Jun 30 12:25:45 2017  Extracting 2300 33.23183 58.27378 2011.5 1 - layers 144 to 155 ... 
+Fri Jun 30 12:25:47 2017  modisgpp value: 639.9167 
+Fri Jun 30 12:30:58 2017  Extracting 2400 -51.45 -1.72 2010.5 3 - layers 120 to 155 ... 
+Fri Jun 30 12:31:04 2017  modisgpp value: 1916.667 
+Fri Jun 30 12:34:11 2017  modisgpp layer out of bounds # 2451 
+Fri Jun 30 12:34:11 2017  modisgpp layer out of bounds # 2452 
+Fri Jun 30 12:34:11 2017  modisgpp layer out of bounds # 2453 
+Fri Jun 30 12:34:11 2017  modisgpp layer out of bounds # 2454 
+Fri Jun 30 12:34:11 2017  modisgpp layer out of bounds # 2455 
+Fri Jun 30 12:34:11 2017  modisgpp layer out of bounds # 2456 
+Fri Jun 30 12:35:49 2017  Extracting 2500 118.72 32.2 2011.5 1 - layers 144 to 155 ... 
+Fri Jun 30 12:35:51 2017  modisgpp value: 32767 
+Fri Jun 30 12:37:49 2017  Creating raster stack from 192 files in /Users/d3x290/Data/MODIS_GPP/ 
+Fri Jun 30 12:37:51 2017  ------------------- 
+Fri Jun 30 12:37:51 2017  Starting extraction for varname: modisgpp 
+Fri Jun 30 12:41:11 2017  Extracting 100 148.1517 -35.6566 2004.5 1 - layers 60 to 71 ... 
+Fri Jun 30 12:41:13 2017  modisgpp value: 1845.917 
+Fri Jun 30 12:42:01 2017  modisgpp layer out of bounds # 124 
+Fri Jun 30 12:42:01 2017  modisgpp layer out of bounds # 125 
+Fri Jun 30 12:42:01 2017  modisgpp layer out of bounds # 126 
+Fri Jun 30 12:42:59 2017  modisgpp layer out of bounds # 154 
+Fri Jun 30 12:42:59 2017  modisgpp layer out of bounds # 155 
+Fri Jun 30 12:42:59 2017  modisgpp layer out of bounds # 156 
+Fri Jun 30 12:43:40 2017  modisgpp layer out of bounds # 178 
+Fri Jun 30 12:43:40 2017  modisgpp layer out of bounds # 179 
+Fri Jun 30 12:43:40 2017  modisgpp layer out of bounds # 180 
+Fri Jun 30 12:43:40 2017  modisgpp layer out of bounds # 181 
+Fri Jun 30 12:43:40 2017  modisgpp layer out of bounds # 182 
+Fri Jun 30 12:44:14 2017  Extracting 200 -98.5247 55.9058 2003.5 1 - layers 48 to 59 ... 
+Fri Jun 30 12:44:16 2017  modisgpp value: 543.5833 
+Fri Jun 30 12:46:09 2017  modisgpp layer out of bounds # 259 
+Fri Jun 30 12:46:09 2017  modisgpp layer out of bounds # 260 
+Fri Jun 30 12:47:26 2017  Extracting 300 7.7319 47.2858 2004.5 1 - layers 60 to 71 ... 
+Fri Jun 30 12:47:28 2017  modisgpp value: 1007 
+Fri Jun 30 12:51:03 2017  Extracting 400 13.5225 50.8929 2004.5 1 - layers 60 to 71 ... 
+Fri Jun 30 12:51:05 2017  modisgpp value: 882.0833 
+Fri Jun 30 12:52:28 2017  modisgpp layer out of bounds # 443 
+Fri Jun 30 12:52:28 2017  modisgpp layer out of bounds # 444 
+Fri Jun 30 12:52:28 2017  modisgpp layer out of bounds # 445 
+Fri Jun 30 12:53:15 2017  modisgpp layer out of bounds # 470 
+Fri Jun 30 12:53:15 2017  modisgpp layer out of bounds # 471 
+Fri Jun 30 12:53:15 2017  modisgpp layer out of bounds # 472 
+Fri Jun 30 12:54:12 2017  Extracting 500 -20.5503 74.4732 2007.5 1 - layers 96 to 107 ... 
+Fri Jun 30 12:54:14 2017  modisgpp value: 37.16667 
+Fri Jun 30 12:54:36 2017  modisgpp layer out of bounds # 512 
+Fri Jun 30 12:54:36 2017  modisgpp layer out of bounds # 513 
+Fri Jun 30 12:54:36 2017  modisgpp layer out of bounds # 514 
+Fri Jun 30 12:56:29 2017  modisgpp layer out of bounds # 571 
+Fri Jun 30 12:56:29 2017  modisgpp layer out of bounds # 572 
+Fri Jun 30 12:56:29 2017  modisgpp layer out of bounds # 573 
+Fri Jun 30 12:57:20 2017  Extracting 600 -52.9249 5.2788 2005.5 1 - layers 72 to 83 ... 
+Fri Jun 30 12:57:22 2017  modisgpp value: 1977.5 
+Fri Jun 30 12:58:26 2017  modisgpp layer out of bounds # 633 
+Fri Jun 30 12:58:26 2017  modisgpp layer out of bounds # 634 
+Fri Jun 30 12:58:26 2017  modisgpp layer out of bounds # 635 
+Fri Jun 30 13:00:34 2017  Extracting 700 8.1515 40.6061 2011.5 1 - layers 144 to 155 ... 
+Fri Jun 30 13:00:36 2017  modisgpp value: 1479.833 
+Fri Jun 30 13:03:14 2017  modisgpp layer out of bounds # 781 
+Fri Jun 30 13:03:14 2017  modisgpp layer out of bounds # 782 
+Fri Jun 30 13:03:14 2017  modisgpp layer out of bounds # 783 
+Fri Jun 30 13:03:45 2017  Extracting 800 15.923 78.186 2014.5 1 - layers 180 to 191 ... 
+Fri Jun 30 13:03:47 2017  modisgpp value: 59.66667 
+Fri Jun 30 13:04:20 2017  modisgpp layer out of bounds # 818 
+Fri Jun 30 13:05:56 2017  modisgpp layer out of bounds # 869 
+Fri Jun 30 13:05:56 2017  modisgpp layer out of bounds # 870 
+Fri Jun 30 13:06:57 2017  Extracting 900 -72.1715 42.5378 1991.5 1 - layers -96 to -85 ... 
+Fri Jun 30 13:06:57 2017  modisgpp layer out of bounds # 900 
+Fri Jun 30 13:06:57 2017  modisgpp layer out of bounds # 901 
+Fri Jun 30 13:06:57 2017  modisgpp layer out of bounds # 902 
+Fri Jun 30 13:06:57 2017  modisgpp layer out of bounds # 903 
+Fri Jun 30 13:06:57 2017  modisgpp layer out of bounds # 904 
+Fri Jun 30 13:06:57 2017  modisgpp layer out of bounds # 905 
+Fri Jun 30 13:06:57 2017  modisgpp layer out of bounds # 906 
+Fri Jun 30 13:06:57 2017  modisgpp layer out of bounds # 907 
+Fri Jun 30 13:09:57 2017  Extracting 1000 -96.4701 41.1649 2007.5 1 - layers 96 to 107 ... 
+Fri Jun 30 13:09:59 2017  modisgpp value: 681.0833 
+Fri Jun 30 13:10:35 2017  modisgpp layer out of bounds # 1020 
+Fri Jun 30 13:11:08 2017  modisgpp layer out of bounds # 1038 
+Fri Jun 30 13:11:08 2017  modisgpp layer out of bounds # 1039 
+Fri Jun 30 13:11:08 2017  modisgpp layer out of bounds # 1040 
+Fri Jun 30 13:11:08 2017  modisgpp layer out of bounds # 1041 
+Fri Jun 30 13:13:00 2017  Extracting 1100 -120.966 38.4316 2008.5 1 - layers 108 to 119 ... 
+Fri Jun 30 13:13:02 2017  modisgpp value: 654 
+Fri Jun 30 13:16:16 2017  Extracting 1200 -109.9419 31.7365 2008.5 1 - layers 108 to 119 ... 
+Fri Jun 30 13:16:19 2017  modisgpp value: 161.9167 
+Fri Jun 30 13:17:20 2017  Saving outputs//fluxnet_remotesensing_comparison.csv 
+Fri Jun 30 13:17:20 2017  Decompressing BLD_sd4_M_02_apr_2014.tif.gz 
+Fri Jun 30 13:17:30 2017  Creating raster stack from 1 files in /Users/d3x290/Data/soilgrids1km/BLD/ 
+Fri Jun 30 13:17:30 2017  ------------------- 
+Fri Jun 30 13:17:30 2017  Starting extraction for varname: BD 
+Fri Jun 30 13:17:50 2017  Extracting 100 37.58 54.83 1992.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:17:50 2017  BD value: 1463 
+Fri Jun 30 13:18:07 2017  Extracting 200 24.3 61.78 1991 1 - layers 1 to 1 ... 
+Fri Jun 30 13:18:07 2017  BD value: 1378 
+Fri Jun 30 13:18:27 2017  Extracting 300 -67.07 -9.88 1999.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:18:27 2017  BD value: 1480 
+Fri Jun 30 13:18:44 2017  Extracting 400 -98.2 27.67 1996.5 1.3 - layers 1 to 1 ... 
+Fri Jun 30 13:18:44 2017  BD value: 1701 
+Fri Jun 30 13:19:01 2017  Extracting 500 4.52 51.31 2001 1 - layers 1 to 1 ... 
+Fri Jun 30 13:19:01 2017  BD value: 1347 
+Fri Jun 30 13:19:18 2017  Extracting 600 116.93 28.26 1999.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:19:18 2017  BD value: 1463 
+Fri Jun 30 13:19:36 2017  Extracting 700 24.3 61.78 2005 1 - layers 1 to 1 ... 
+Fri Jun 30 13:19:36 2017  BD value: 1378 
+Fri Jun 30 13:19:57 2017  Extracting 800 -121.28 39.25 2003 1 - layers 1 to 1 ... 
+Fri Jun 30 13:19:57 2017  BD value: 1504 
+Fri Jun 30 13:20:15 2017  Extracting 900 -105.1 40.6 2001 1 - layers 1 to 1 ... 
+Fri Jun 30 13:20:16 2017  BD value: 1507 
+Fri Jun 30 13:20:34 2017  Extracting 1000 11.01 46.04 2002 2 - layers 1 to 1 ... 
+Fri Jun 30 13:20:35 2017  BD value: 1319 
+Fri Jun 30 13:20:52 2017  Extracting 1100 138.47 35.96 2002.5 2 - layers 1 to 1 ... 
+Fri Jun 30 13:20:52 2017  BD value: 1147 
+Fri Jun 30 13:21:09 2017  Extracting 1200 116.25 44 2001.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:21:09 2017  BD value: 1435 
+Fri Jun 30 13:21:27 2017  Extracting 1300 -82.32889 39.98917 2005.25 1 - layers 1 to 1 ... 
+Fri Jun 30 13:21:27 2017  BD value: 1619 
+Fri Jun 30 13:21:46 2017  Extracting 1400 99 38 2004.5 2 - layers 1 to 1 ... 
+Fri Jun 30 13:21:46 2017  BD value: 1153 
+Fri Jun 30 13:22:03 2017  Extracting 1500 127.2667 38.23333 2006 2 - layers 1 to 1 ... 
+Fri Jun 30 13:22:03 2017  BD value: 1347 
+Fri Jun 30 13:22:20 2017  Extracting 1600 10.45222 51.07944 2003 1 - layers 1 to 1 ... 
+Fri Jun 30 13:22:21 2017  BD value: 1405 
+Fri Jun 30 13:22:37 2017  Extracting 1700 112.8333 22.56667 2008.5 2 - layers 1 to 1 ... 
+Fri Jun 30 13:22:37 2017  BD value: 1563 
+Fri Jun 30 13:22:55 2017  Extracting 1800 -3.333 40.533 2008.5 2 - layers 1 to 1 ... 
+Fri Jun 30 13:22:55 2017  BD value: 1573 
+Fri Jun 30 13:23:12 2017  Extracting 1900 24.28861 62.51667 2008 2 - layers 1 to 1 ... 
+Fri Jun 30 13:23:12 2017  BD value: 1445 
+Fri Jun 30 13:23:29 2017  Extracting 2000 128.1733 35.20583 2010 2 - layers 1 to 1 ... 
+Fri Jun 30 13:23:29 2017  BD value: 1468 
+Fri Jun 30 13:23:46 2017  Extracting 2100 -72.18 42.53 2007.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:23:47 2017  BD value: 1432 
+Fri Jun 30 13:24:06 2017  Extracting 2200 101.83 29.42 2009 1 - layers 1 to 1 ... 
+Fri Jun 30 13:24:06 2017  BD value: 1187 
+Fri Jun 30 13:24:22 2017  Extracting 2300 33.23183 58.27378 2011.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:24:22 2017  BD value: 1439 
+Fri Jun 30 13:24:41 2017  Extracting 2400 -51.45 -1.72 2010.5 3 - layers 1 to 1 ... 
+Fri Jun 30 13:24:41 2017  BD value: 1304 
+Fri Jun 30 13:24:58 2017  Extracting 2500 118.72 32.2 2011.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:24:59 2017  BD value: 1455 
+Fri Jun 30 13:25:08 2017  Removing /Users/d3x290/Data/soilgrids1km/BLD//BLD_sd4_M_02_apr_2014.tif.gz 
+Fri Jun 30 13:25:08 2017  Decompressing ORCDRC_sd4_M_02_apr_2014.tif.gz 
+Fri Jun 30 13:25:16 2017  Creating raster stack from 1 files in /Users/d3x290/Data/soilgrids1km/ORCDRC/ 
+Fri Jun 30 13:25:16 2017  ------------------- 
+Fri Jun 30 13:25:16 2017  Starting extraction for varname: ORC 
+Fri Jun 30 13:25:35 2017  Extracting 100 37.58 54.83 1992.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:25:35 2017  ORC value: 24 
+Fri Jun 30 13:25:52 2017  Extracting 200 24.3 61.78 1991 1 - layers 1 to 1 ... 
+Fri Jun 30 13:25:52 2017  ORC value: 56 
+Fri Jun 30 13:26:12 2017  Extracting 300 -67.07 -9.88 1999.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:26:13 2017  ORC value: 4 
+Fri Jun 30 13:26:30 2017  Extracting 400 -98.2 27.67 1996.5 1.3 - layers 1 to 1 ... 
+Fri Jun 30 13:26:30 2017  ORC value: 5 
+Fri Jun 30 13:26:47 2017  Extracting 500 4.52 51.31 2001 1 - layers 1 to 1 ... 
+Fri Jun 30 13:26:47 2017  ORC value: 33 
+Fri Jun 30 13:27:07 2017  Extracting 600 116.93 28.26 1999.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:27:08 2017  ORC value: 4 
+Fri Jun 30 13:27:28 2017  Extracting 700 24.3 61.78 2005 1 - layers 1 to 1 ... 
+Fri Jun 30 13:27:28 2017  ORC value: 56 
+Fri Jun 30 13:27:48 2017  Extracting 800 -121.28 39.25 2003 1 - layers 1 to 1 ... 
+Fri Jun 30 13:27:48 2017  ORC value: 8 
+Fri Jun 30 13:28:05 2017  Extracting 900 -105.1 40.6 2001 1 - layers 1 to 1 ... 
+Fri Jun 30 13:28:05 2017  ORC value: 10 
+Fri Jun 30 13:28:24 2017  Extracting 1000 11.01 46.04 2002 2 - layers 1 to 1 ... 
+Fri Jun 30 13:28:24 2017  ORC value: 36 
+Fri Jun 30 13:28:41 2017  Extracting 1100 138.47 35.96 2002.5 2 - layers 1 to 1 ... 
+Fri Jun 30 13:28:41 2017  ORC value: 20 
+Fri Jun 30 13:28:58 2017  Extracting 1200 116.25 44 2001.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:28:58 2017  ORC value: 7 
+Fri Jun 30 13:29:15 2017  Extracting 1300 -82.32889 39.98917 2005.25 1 - layers 1 to 1 ... 
+Fri Jun 30 13:29:15 2017  ORC value: 13 
+Fri Jun 30 13:29:31 2017  Extracting 1400 99 38 2004.5 2 - layers 1 to 1 ... 
+Fri Jun 30 13:29:32 2017  ORC value: 38 
+Fri Jun 30 13:29:48 2017  Extracting 1500 127.2667 38.23333 2006 2 - layers 1 to 1 ... 
+Fri Jun 30 13:29:48 2017  ORC value: 23 
+Fri Jun 30 13:30:04 2017  Extracting 1600 10.45222 51.07944 2003 1 - layers 1 to 1 ... 
+Fri Jun 30 13:30:04 2017  ORC value: 29 
+Fri Jun 30 13:30:20 2017  Extracting 1700 112.8333 22.56667 2008.5 2 - layers 1 to 1 ... 
+Fri Jun 30 13:30:21 2017  ORC value: 8 
+Fri Jun 30 13:30:37 2017  Extracting 1800 -3.333 40.533 2008.5 2 - layers 1 to 1 ... 
+Fri Jun 30 13:30:37 2017  ORC value: 6 
+Fri Jun 30 13:30:54 2017  Extracting 1900 24.28861 62.51667 2008 2 - layers 1 to 1 ... 
+Fri Jun 30 13:30:54 2017  ORC value: 58 
+Fri Jun 30 13:31:10 2017  Extracting 2000 128.1733 35.20583 2010 2 - layers 1 to 1 ... 
+Fri Jun 30 13:31:11 2017  ORC value: 19 
+Fri Jun 30 13:31:27 2017  Extracting 2100 -72.18 42.53 2007.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:31:28 2017  ORC value: 34 
+Fri Jun 30 13:31:48 2017  Extracting 2200 101.83 29.42 2009 1 - layers 1 to 1 ... 
+Fri Jun 30 13:31:48 2017  ORC value: 62 
+Fri Jun 30 13:32:05 2017  Extracting 2300 33.23183 58.27378 2011.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:32:06 2017  ORC value: 50 
+Fri Jun 30 13:32:23 2017  Extracting 2400 -51.45 -1.72 2010.5 3 - layers 1 to 1 ... 
+Fri Jun 30 13:32:23 2017  ORC value: 12 
+Fri Jun 30 13:32:41 2017  Extracting 2500 118.72 32.2 2011.5 1 - layers 1 to 1 ... 
+Fri Jun 30 13:32:41 2017  ORC value: 3 
+Fri Jun 30 13:32:50 2017  Removing /Users/d3x290/Data/soilgrids1km/ORCDRC//ORCDRC_sd4_M_02_apr_2014.tif.gz 
+Fri Jun 30 13:32:50 2017  Decompressing ISIMIP_ensemble_mean.tif.gz 
+Fri Jun 30 13:32:51 2017  Creating raster stack from 1 files in ancillary/isimip-gpp/ 
+Fri Jun 30 13:32:51 2017  ------------------- 
+Fri Jun 30 13:32:51 2017  Starting extraction for varname: gpp_isimip 
+Fri Jun 30 13:33:12 2017  gpp_isimip layer out of bounds # 70 
+Fri Jun 30 13:34:14 2017  Extracting 100 37.58 54.83 1992.5 1 - layers 22 to 22 ... 
+Fri Jun 30 13:34:15 2017  gpp_isimip value: 745.0248 
+Fri Jun 30 13:34:35 2017  Extracting 200 24.3 61.78 1991 1 - layers 21 to 21 ... 
+Fri Jun 30 13:34:35 2017  gpp_isimip value: 1014.761 
+Fri Jun 30 13:35:40 2017  Extracting 300 -67.07 -9.88 1999.5 1 - layers 29 to 29 ... 
+Fri Jun 30 13:35:40 2017  gpp_isimip value: 2508.036 
+Fri Jun 30 13:36:48 2017  Extracting 400 -98.2 27.67 1996.5 1.3 - layers 26 to 26.3 ... 
+Fri Jun 30 13:36:48 2017  gpp_isimip value: 808.3547 
+Fri Jun 30 13:38:55 2017  Extracting 500 4.52 51.31 2001 1 - layers 31 to 31 ... 
+Fri Jun 30 13:38:56 2017  gpp_isimip value: 1116.063 
+Fri Jun 30 13:41:13 2017  Extracting 600 116.93 28.26 1999.5 1 - layers 29 to 29 ... 
+Fri Jun 30 13:41:13 2017  gpp_isimip value: 1839.276 
+Fri Jun 30 13:41:35 2017  gpp_isimip layer out of bounds # 638 
+Fri Jun 30 13:41:35 2017  gpp_isimip layer out of bounds # 639 
+Fri Jun 30 13:41:35 2017  gpp_isimip layer out of bounds # 640 
+Fri Jun 30 13:41:35 2017  gpp_isimip layer out of bounds # 641 
+Fri Jun 30 13:42:53 2017  Extracting 700 24.3 61.78 2005 1 - layers 35 to 35 ... 
+Fri Jun 30 13:42:53 2017  gpp_isimip value: 1070.691 
+Fri Jun 30 13:48:12 2017  Extracting 800 -121.28 39.25 2003 1 - layers 33 to 33 ... 
+Fri Jun 30 13:48:12 2017  gpp_isimip value: 1043.75 
+Fri Jun 30 13:50:03 2017  Extracting 900 -105.1 40.6 2001 1 - layers 31 to 31 ... 
+Fri Jun 30 13:50:03 2017  gpp_isimip value: 666.37 
+Fri Jun 30 13:51:05 2017  Extracting 1000 11.01 46.04 2002 2 - layers 31 to 32 ... 
+Fri Jun 30 13:51:05 2017  gpp_isimip value: 1120.13 
+Fri Jun 30 13:51:18 2017  gpp_isimip layer out of bounds # 1041 
+Fri Jun 30 13:52:34 2017  gpp_isimip layer out of bounds # 1076 
+Fri Jun 30 13:53:24 2017  Extracting 1100 138.47 35.96 2002.5 2 - layers 32 to 33 ... 
+Fri Jun 30 13:53:24 2017  gpp_isimip value: 1283.519 
+Fri Jun 30 13:53:49 2017  Extracting 1200 116.25 44 2001.5 1 - layers 31 to 31 ... 
+Fri Jun 30 13:53:49 2017  gpp_isimip value: 290.8676 
+Fri Jun 30 13:54:50 2017  Extracting 1300 -82.32889 39.98917 2005.25 1 - layers 35 to 35 ... 
+Fri Jun 30 13:54:50 2017  gpp_isimip value: 1276.366 
+Fri Jun 30 13:55:40 2017  Extracting 1400 99 38 2004.5 2 - layers 34 to 35 ... 
+Fri Jun 30 13:55:41 2017  gpp_isimip value: 228.8011 
+Fri Jun 30 13:56:20 2017  Extracting 1500 127.2667 38.23333 2006 2 - layers 35 to 36 ... 
+Fri Jun 30 13:56:21 2017  gpp_isimip value: 1468.294 
+Fri Jun 30 13:56:47 2017  Extracting 1600 10.45222 51.07944 2003 1 - layers 33 to 33 ... 
+Fri Jun 30 13:56:47 2017  gpp_isimip value: 994.1158 
+Fri Jun 30 13:58:05 2017  Extracting 1700 112.8333 22.56667 2008.5 2 - layers 38 to 39 ... 
+Fri Jun 30 13:58:05 2017  gpp_isimip value: 1916.467 
+Fri Jun 30 13:58:54 2017  Extracting 1800 -3.333 40.533 2008.5 2 - layers 38 to 39 ... 
+Fri Jun 30 13:58:54 2017  gpp_isimip value: 792.9715 
+Fri Jun 30 13:59:56 2017  Extracting 1900 24.28861 62.51667 2008 2 - layers 37 to 38 ... 
+Fri Jun 30 13:59:57 2017  gpp_isimip value: 1180.53 
+Fri Jun 30 14:00:22 2017  gpp_isimip layer out of bounds # 1991 
+Fri Jun 30 14:00:38 2017  gpp_isimip layer out of bounds # 1995 
+Fri Jun 30 14:00:40 2017  Extracting 2000 128.1733 35.20583 2010 2 - layers 39 to 40 ... 
+Fri Jun 30 14:00:40 2017  gpp_isimip value: 1707.227 
+Fri Jun 30 14:00:41 2017  gpp_isimip layer out of bounds # 2004 
+Fri Jun 30 14:00:41 2017  gpp_isimip layer out of bounds # 2005 
+Fri Jun 30 14:01:02 2017  Extracting 2100 -72.18 42.53 2007.5 1 - layers 37 to 37 ... 
+Fri Jun 30 14:01:02 2017  gpp_isimip value: 1279.241 
+Fri Jun 30 14:01:08 2017  gpp_isimip layer out of bounds # 2117 
+Fri Jun 30 14:01:30 2017  gpp_isimip layer out of bounds # 2146 
+Fri Jun 30 14:01:30 2017  gpp_isimip layer out of bounds # 2147 
+Fri Jun 30 14:01:30 2017  gpp_isimip layer out of bounds # 2148 
+Fri Jun 30 14:01:30 2017  gpp_isimip layer out of bounds # 2149 
+Fri Jun 30 14:01:30 2017  gpp_isimip layer out of bounds # 2150 
+Fri Jun 30 14:01:30 2017  gpp_isimip layer out of bounds # 2151 
+Fri Jun 30 14:01:30 2017  gpp_isimip layer out of bounds # 2152 
+Fri Jun 30 14:01:30 2017  gpp_isimip layer out of bounds # 2153 
+Fri Jun 30 14:01:30 2017  gpp_isimip layer out of bounds # 2154 
+Fri Jun 30 14:01:30 2017  gpp_isimip layer out of bounds # 2155 
+Fri Jun 30 14:02:30 2017  gpp_isimip layer out of bounds # 2181 
+Fri Jun 30 14:02:30 2017  gpp_isimip layer out of bounds # 2182 
+Fri Jun 30 14:02:30 2017  gpp_isimip layer out of bounds # 2183 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2186 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2187 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2188 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2189 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2190 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2191 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2192 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2193 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2194 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2195 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2196 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2197 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2198 
+Fri Jun 30 14:02:31 2017  gpp_isimip layer out of bounds # 2199 
+Fri Jun 30 14:02:31 2017  Extracting 2200 101.83 29.42 2009 1 - layers 39 to 39 ... 
+Fri Jun 30 14:02:31 2017  gpp_isimip value: 810.8932 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2203 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2204 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2205 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2206 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2207 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2208 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2209 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2210 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2211 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2212 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2213 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2214 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2215 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2216 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2217 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2218 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2219 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2220 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2221 
+Fri Jun 30 14:02:32 2017  gpp_isimip layer out of bounds # 2222 
+Fri Jun 30 14:02:33 2017  gpp_isimip layer out of bounds # 2228 
+Fri Jun 30 14:02:33 2017  gpp_isimip layer out of bounds # 2229 
+Fri Jun 30 14:02:35 2017  gpp_isimip layer out of bounds # 2241 
+Fri Jun 30 14:02:35 2017  gpp_isimip layer out of bounds # 2242 
+Fri Jun 30 14:02:35 2017  gpp_isimip layer out of bounds # 2243 
+Fri Jun 30 14:02:35 2017  gpp_isimip layer out of bounds # 2244 
+Fri Jun 30 14:02:35 2017  gpp_isimip layer out of bounds # 2245 
+Fri Jun 30 14:02:35 2017  gpp_isimip layer out of bounds # 2246 
+Fri Jun 30 14:02:35 2017  gpp_isimip layer out of bounds # 2247 
+Fri Jun 30 14:02:35 2017  gpp_isimip layer out of bounds # 2248 
+Fri Jun 30 14:02:53 2017  gpp_isimip layer out of bounds # 2254 
+Fri Jun 30 14:02:53 2017  gpp_isimip layer out of bounds # 2255 
+Fri Jun 30 14:02:53 2017  gpp_isimip layer out of bounds # 2256 
+Fri Jun 30 14:02:53 2017  gpp_isimip layer out of bounds # 2257 
+Fri Jun 30 14:02:55 2017  gpp_isimip layer out of bounds # 2267 
+Fri Jun 30 14:02:56 2017  gpp_isimip layer out of bounds # 2271 
+Fri Jun 30 14:02:56 2017  gpp_isimip layer out of bounds # 2272 
+Fri Jun 30 14:02:56 2017  gpp_isimip layer out of bounds # 2273 
+Fri Jun 30 14:02:56 2017  gpp_isimip layer out of bounds # 2275 
+Fri Jun 30 14:02:56 2017  gpp_isimip layer out of bounds # 2276 
+Fri Jun 30 14:02:56 2017  gpp_isimip layer out of bounds # 2277 
+Fri Jun 30 14:02:58 2017  gpp_isimip layer out of bounds # 2286 
+Fri Jun 30 14:02:58 2017  gpp_isimip layer out of bounds # 2287 
+Fri Jun 30 14:02:58 2017  gpp_isimip layer out of bounds # 2288 
+Fri Jun 30 14:02:58 2017  gpp_isimip layer out of bounds # 2289 
+Fri Jun 30 14:02:58 2017  gpp_isimip layer out of bounds # 2290 
+Fri Jun 30 14:02:58 2017  gpp_isimip layer out of bounds # 2291 
+Fri Jun 30 14:02:58 2017  gpp_isimip layer out of bounds # 2292 
+Fri Jun 30 14:02:58 2017  gpp_isimip layer out of bounds # 2293 
+Fri Jun 30 14:02:58 2017  gpp_isimip layer out of bounds # 2294 
+Fri Jun 30 14:02:58 2017  gpp_isimip layer out of bounds # 2295 
+Fri Jun 30 14:02:58 2017  gpp_isimip layer out of bounds # 2296 
+Fri Jun 30 14:02:59 2017  Extracting 2300 33.23183 58.27378 2011.5 1 - layers 41 to 41 ... 
+Fri Jun 30 14:02:59 2017  gpp_isimip layer out of bounds # 2300 
+Fri Jun 30 14:02:59 2017  gpp_isimip layer out of bounds # 2301 
+Fri Jun 30 14:02:59 2017  gpp_isimip layer out of bounds # 2302 
+Fri Jun 30 14:02:59 2017  gpp_isimip layer out of bounds # 2303 
+Fri Jun 30 14:02:59 2017  gpp_isimip layer out of bounds # 2304 
+Fri Jun 30 14:02:59 2017  gpp_isimip layer out of bounds # 2305 
+Fri Jun 30 14:03:02 2017  gpp_isimip layer out of bounds # 2322 
+Fri Jun 30 14:03:02 2017  gpp_isimip layer out of bounds # 2323 
+Fri Jun 30 14:03:02 2017  gpp_isimip layer out of bounds # 2324 
+Fri Jun 30 14:03:05 2017  gpp_isimip layer out of bounds # 2336 
+Fri Jun 30 14:03:09 2017  gpp_isimip layer out of bounds # 2343 
+Fri Jun 30 14:03:15 2017  gpp_isimip layer out of bounds # 2368 
+Fri Jun 30 14:03:15 2017  gpp_isimip layer out of bounds # 2369 
+Fri Jun 30 14:03:15 2017  gpp_isimip layer out of bounds # 2370 
+Fri Jun 30 14:03:15 2017  gpp_isimip layer out of bounds # 2371 
+Fri Jun 30 14:03:15 2017  gpp_isimip layer out of bounds # 2372 
+Fri Jun 30 14:03:25 2017  gpp_isimip layer out of bounds # 2378 
+Fri Jun 30 14:03:25 2017  gpp_isimip layer out of bounds # 2379 
+Fri Jun 30 14:03:25 2017  gpp_isimip layer out of bounds # 2380 
+Fri Jun 30 14:03:25 2017  gpp_isimip layer out of bounds # 2381 
+Fri Jun 30 14:03:27 2017  gpp_isimip layer out of bounds # 2390 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2395 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2396 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2397 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2398 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2399 
+Fri Jun 30 14:03:52 2017  Extracting 2400 -51.45 -1.72 2010.5 3 - layers 39 to 41 ... 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2400 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2401 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2402 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2403 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2404 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2405 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2406 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2407 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2408 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2409 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2410 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2411 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2412 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2413 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2414 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2415 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2416 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2417 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2418 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2419 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2420 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2421 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2422 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2423 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2424 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2425 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2426 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2427 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2428 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2429 
+Fri Jun 30 14:03:52 2017  gpp_isimip layer out of bounds # 2431 
+Fri Jun 30 14:04:41 2017  gpp_isimip layer out of bounds # 2448 
+Fri Jun 30 14:04:41 2017  gpp_isimip layer out of bounds # 2449 
+Fri Jun 30 14:04:41 2017  gpp_isimip layer out of bounds # 2450 
+Fri Jun 30 14:04:42 2017  gpp_isimip layer out of bounds # 2454 
+Fri Jun 30 14:04:42 2017  gpp_isimip layer out of bounds # 2455 
+Fri Jun 30 14:04:42 2017  gpp_isimip layer out of bounds # 2456 
+Fri Jun 30 14:04:42 2017  gpp_isimip layer out of bounds # 2457 
+Fri Jun 30 14:04:42 2017  gpp_isimip layer out of bounds # 2458 
+Fri Jun 30 14:04:42 2017  gpp_isimip layer out of bounds # 2459 
+Fri Jun 30 14:04:42 2017  gpp_isimip layer out of bounds # 2460 
+Fri Jun 30 14:04:43 2017  gpp_isimip layer out of bounds # 2468 
+Fri Jun 30 14:04:43 2017  gpp_isimip layer out of bounds # 2469 
+Fri Jun 30 14:04:43 2017  gpp_isimip layer out of bounds # 2470 
+Fri Jun 30 14:05:22 2017  gpp_isimip layer out of bounds # 2478 
+Fri Jun 30 14:05:24 2017  gpp_isimip layer out of bounds # 2489 
+Fri Jun 30 14:05:24 2017  gpp_isimip layer out of bounds # 2490 
+Fri Jun 30 14:05:24 2017  gpp_isimip layer out of bounds # 2491 
+Fri Jun 30 14:05:24 2017  gpp_isimip layer out of bounds # 2492 
+Fri Jun 30 14:05:24 2017  gpp_isimip layer out of bounds # 2493 
+Fri Jun 30 14:05:24 2017  gpp_isimip layer out of bounds # 2494 
+Fri Jun 30 14:05:54 2017  Extracting 2500 118.72 32.2 2011.5 1 - layers 41 to 41 ... 
+Fri Jun 30 14:05:54 2017  gpp_isimip layer out of bounds # 2500 
+Fri Jun 30 14:05:54 2017  gpp_isimip layer out of bounds # 2501 
+Fri Jun 30 14:05:54 2017  gpp_isimip layer out of bounds # 2502 
+Fri Jun 30 14:05:54 2017  gpp_isimip layer out of bounds # 2503 
+Fri Jun 30 14:05:54 2017  gpp_isimip layer out of bounds # 2504 
+Fri Jun 30 14:05:54 2017  gpp_isimip layer out of bounds # 2505 
+Fri Jun 30 14:05:55 2017  gpp_isimip layer out of bounds # 2508 
+Fri Jun 30 14:05:55 2017  gpp_isimip layer out of bounds # 2509 
+Fri Jun 30 14:05:55 2017  gpp_isimip layer out of bounds # 2510 
+Fri Jun 30 14:05:55 2017  gpp_isimip layer out of bounds # 2511 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2515 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2516 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2517 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2518 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2519 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2520 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2522 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2523 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2524 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2525 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2526 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2527 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2528 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2529 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2530 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2531 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2532 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2533 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2534 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2535 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2536 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2537 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2538 
+Fri Jun 30 14:05:56 2017  gpp_isimip layer out of bounds # 2539 
+Fri Jun 30 14:05:57 2017  gpp_isimip layer out of bounds # 2544 
+Fri Jun 30 14:05:57 2017  gpp_isimip layer out of bounds # 2548 
+Fri Jun 30 14:05:57 2017  Removing ancillary/isimip-gpp//ISIMIP_ensemble_mean.tif.gz 
+Fri Jun 30 14:05:57 2017  ------------------- 
+Fri Jun 30 14:05:57 2017  Starting extraction for varname: sm 
+Fri Jun 30 14:06:01 2017  sm layer out of bounds # 68 
+Fri Jun 30 14:06:01 2017  sm layer out of bounds # 70 
+Fri Jun 30 14:06:03 2017  Extracting 100 37.58 54.83 1992.5 1 - layers 15 to 15 ... 
+Fri Jun 30 14:06:03 2017  sm value: 0.217 
+Fri Jun 30 14:06:03 2017  sm normal: 0.2546933 
+Fri Jun 30 14:06:08 2017  Extracting 200 24.3 61.78 1991 1 - layers 14 to 14 ... 
+Fri Jun 30 14:06:08 2017  sm value: 0.2451424 
+Fri Jun 30 14:06:08 2017  sm normal: 0.2380675 
+Fri Jun 30 14:06:15 2017  Extracting 300 -67.07 -9.88 1999.5 1 - layers 22 to 22 ... 
+Fri Jun 30 14:06:15 2017  sm value: NaN 
+Fri Jun 30 14:06:15 2017  sm normal: NaN 
+Fri Jun 30 14:06:22 2017  sm layer out of bounds # 389 
+Fri Jun 30 14:06:22 2017  sm layer out of bounds # 390 
+Fri Jun 30 14:06:22 2017  Extracting 400 -98.2 27.67 1996.5 1.3 - layers 19 to 19.3 ... 
+Fri Jun 30 14:06:22 2017  sm value: 0.1334 
+Fri Jun 30 14:06:22 2017  sm normal: 0.1602567 
+Fri Jun 30 14:06:27 2017  Extracting 500 4.52 51.31 2001 1 - layers 24 to 24 ... 
+Fri Jun 30 14:06:27 2017  sm value: 0.2228 
+Fri Jun 30 14:06:27 2017  sm normal: 0.2078533 
+Fri Jun 30 14:06:33 2017  Extracting 600 116.93 28.26 1999.5 1 - layers 22 to 22 ... 
+Fri Jun 30 14:06:33 2017  sm value: 0.3684 
+Fri Jun 30 14:06:33 2017  sm normal: 0.3621567 
+Fri Jun 30 14:06:35 2017  sm layer out of bounds # 638 
+Fri Jun 30 14:06:35 2017  sm layer out of bounds # 639 
+Fri Jun 30 14:06:35 2017  sm layer out of bounds # 640 
+Fri Jun 30 14:06:35 2017  sm layer out of bounds # 641 
+Fri Jun 30 14:06:39 2017  Extracting 700 24.3 61.78 2005 1 - layers 28 to 28 ... 
+Fri Jun 30 14:06:39 2017  sm value: 0.2380168 
+Fri Jun 30 14:06:39 2017  sm normal: 0.2380675 
+Fri Jun 30 14:06:48 2017  Extracting 800 -121.28 39.25 2003 1 - layers 26 to 26 ... 
+Fri Jun 30 14:06:48 2017  sm value: 0.1465 
+Fri Jun 30 14:06:48 2017  sm normal: 0.1766733 
+Fri Jun 30 14:06:56 2017  Extracting 900 -105.1 40.6 2001 1 - layers 24 to 24 ... 
+Fri Jun 30 14:06:56 2017  sm value: 0.1179 
+Fri Jun 30 14:06:56 2017  sm normal: 0.1359767 
+Fri Jun 30 14:07:01 2017  Extracting 1000 11.01 46.04 2002 2 - layers 24 to 25 ... 
+Fri Jun 30 14:07:01 2017  sm value: 0.27715 
+Fri Jun 30 14:07:01 2017  sm normal: 0.2692741 
+Fri Jun 30 14:07:03 2017  sm layer out of bounds # 1040 
+Fri Jun 30 14:07:03 2017  sm layer out of bounds # 1041 
+Fri Jun 30 14:07:05 2017  sm layer out of bounds # 1076 
+Fri Jun 30 14:07:07 2017  Extracting 1100 138.47 35.96 2002.5 2 - layers 25 to 26 ... 
+Fri Jun 30 14:07:07 2017  sm value: 0.3019 
+Fri Jun 30 14:07:07 2017  sm normal: 0.3008444 
+Fri Jun 30 14:07:12 2017  Extracting 1200 116.25 44 2001.5 1 - layers 24 to 24 ... 
+Fri Jun 30 14:07:12 2017  sm value: 0.1358 
+Fri Jun 30 14:07:12 2017  sm normal: 0.1199933 
+Fri Jun 30 14:07:14 2017  sm layer out of bounds # 1233 
+Fri Jun 30 14:07:18 2017  Extracting 1300 -82.32889 39.98917 2005.25 1 - layers 28 to 28 ... 
+Fri Jun 30 14:07:18 2017  sm value: 0.2731 
+Fri Jun 30 14:07:18 2017  sm normal: 0.2729037 
+Fri Jun 30 14:07:25 2017  Extracting 1400 99 38 2004.5 2 - layers 27 to 28 ... 
+Fri Jun 30 14:07:25 2017  sm value: 0.1831 
+Fri Jun 30 14:07:25 2017  sm normal: 0.2016037 
+Fri Jun 30 14:07:31 2017  Extracting 1500 127.2667 38.23333 2006 2 - layers 28 to 29 ... 
+Fri Jun 30 14:07:31 2017  sm value: 0.28075 
+Fri Jun 30 14:07:31 2017  sm normal: 0.2797926 
+Fri Jun 30 14:07:36 2017  Extracting 1600 10.45222 51.07944 2003 1 - layers 26 to 26 ... 
+Fri Jun 30 14:07:36 2017  sm value: 0.2131 
+Fri Jun 30 14:07:36 2017  sm normal: 0.2356 
+Fri Jun 30 14:07:42 2017  Extracting 1700 112.8333 22.56667 2008.5 2 - layers 31 to 32 ... 
+Fri Jun 30 14:07:42 2017  sm value: 0.3308 
+Fri Jun 30 14:07:42 2017  sm normal: 0.3035467 
+Fri Jun 30 14:07:49 2017  Extracting 1800 -3.333 40.533 2008.5 2 - layers 31 to 32 ... 
+Fri Jun 30 14:07:49 2017  sm value: 0.1558 
+Fri Jun 30 14:07:49 2017  sm normal: 0.1660207 
+Fri Jun 30 14:07:55 2017  Extracting 1900 24.28861 62.51667 2008 2 - layers 30 to 31 ... 
+Fri Jun 30 14:07:55 2017  sm value: 0.2615 
+Fri Jun 30 14:07:55 2017  sm normal: 0.2814481 
+Fri Jun 30 14:08:01 2017  Extracting 2000 128.1733 35.20583 2010 2 - layers 32 to 33 ... 
+Fri Jun 30 14:08:01 2017  sm value: 0.2779703 
+Fri Jun 30 14:08:02 2017  sm normal: 0.2835833 
+Fri Jun 30 14:08:07 2017  Extracting 2100 -72.18 42.53 2007.5 1 - layers 30 to 30 ... 
+Fri Jun 30 14:08:07 2017  sm value: 0.2276 
+Fri Jun 30 14:08:07 2017  sm normal: 0.245137 
+Fri Jun 30 14:08:10 2017  sm layer out of bounds # 2154 
+Fri Jun 30 14:08:10 2017  sm layer out of bounds # 2155 
+Fri Jun 30 14:08:12 2017  Extracting 2200 101.83 29.42 2009 1 - layers 32 to 32 ... 
+Fri Jun 30 14:08:12 2017  sm value: 0.2845 
+Fri Jun 30 14:08:12 2017  sm normal: 0.2514792 
+Fri Jun 30 14:08:18 2017  Extracting 2300 33.23183 58.27378 2011.5 1 - layers 34 to 34 ... 
+Fri Jun 30 14:08:18 2017  sm value: 0.2585 
+Fri Jun 30 14:08:19 2017  sm normal: 0.2780222 
+Fri Jun 30 14:08:23 2017  Extracting 2400 -51.45 -1.72 2010.5 3 - layers 32 to 34 ... 
+Fri Jun 30 14:08:23 2017  sm value: 0.3144 
+Fri Jun 30 14:08:23 2017  sm normal: 0.3165467 
+Fri Jun 30 14:08:27 2017  sm layer out of bounds # 2454 
+Fri Jun 30 14:08:27 2017  sm layer out of bounds # 2455 
+Fri Jun 30 14:08:27 2017  sm layer out of bounds # 2456 
+Fri Jun 30 14:08:30 2017  Extracting 2500 118.72 32.2 2011.5 1 - layers 34 to 34 ... 
+Fri Jun 30 14:08:30 2017  sm value: 0.3251 
+Fri Jun 30 14:08:30 2017  sm normal: 0.3065133 
+Fri Jun 30 14:08:32 2017  ------------------- 
+Fri Jun 30 14:08:32 2017  Starting extraction for varname: sm 
+Fri Jun 30 14:08:36 2017  sm layer out of bounds # 68 
+Fri Jun 30 14:08:36 2017  sm layer out of bounds # 70 
+Fri Jun 30 14:08:38 2017  Extracting 100 37.58 54.83 1992.5 1 - layers 15 to 15 ... 
+Fri Jun 30 14:08:38 2017  sm value: 0.0584 
+Fri Jun 30 14:08:38 2017  sm normal: 0.05393667 
+Fri Jun 30 14:08:43 2017  Extracting 200 24.3 61.78 1991 1 - layers 14 to 14 ... 
+Fri Jun 30 14:08:43 2017  sm value: 0.0444388 
+Fri Jun 30 14:08:43 2017  sm normal: 0.0440585 
+Fri Jun 30 14:08:52 2017  Extracting 300 -67.07 -9.88 1999.5 1 - layers 22 to 22 ... 
+Fri Jun 30 14:08:52 2017  sm value: NaN 
+Fri Jun 30 14:08:52 2017  sm normal: NaN 
+Fri Jun 30 14:08:59 2017  sm layer out of bounds # 389 
+Fri Jun 30 14:08:59 2017  sm layer out of bounds # 390 
+Fri Jun 30 14:08:59 2017  Extracting 400 -98.2 27.67 1996.5 1.3 - layers 19 to 19.3 ... 
+Fri Jun 30 14:08:59 2017  sm value: 0.0538 
+Fri Jun 30 14:08:59 2017  sm normal: 0.05482 
+Fri Jun 30 14:09:04 2017  Extracting 500 4.52 51.31 2001 1 - layers 24 to 24 ... 
+Fri Jun 30 14:09:04 2017  sm value: 0.0412 
+Fri Jun 30 14:09:05 2017  sm normal: 0.04065667 
+Fri Jun 30 14:09:11 2017  Extracting 600 116.93 28.26 1999.5 1 - layers 22 to 22 ... 
+Fri Jun 30 14:09:11 2017  sm value: 0.0465 
+Fri Jun 30 14:09:11 2017  sm normal: 0.05648 
+Fri Jun 30 14:09:13 2017  sm layer out of bounds # 638 
+Fri Jun 30 14:09:13 2017  sm layer out of bounds # 639 
+Fri Jun 30 14:09:13 2017  sm layer out of bounds # 640 
+Fri Jun 30 14:09:13 2017  sm layer out of bounds # 641 
+Fri Jun 30 14:09:17 2017  Extracting 700 24.3 61.78 2005 1 - layers 28 to 28 ... 
+Fri Jun 30 14:09:17 2017  sm value: 0.0404072 
+Fri Jun 30 14:09:17 2017  sm normal: 0.0440585 
+Fri Jun 30 14:09:25 2017  Extracting 800 -121.28 39.25 2003 1 - layers 26 to 26 ... 
+Fri Jun 30 14:09:25 2017  sm value: 0.0679 
+Fri Jun 30 14:09:25 2017  sm normal: 0.07434333 
+Fri Jun 30 14:09:32 2017  Extracting 900 -105.1 40.6 2001 1 - layers 24 to 24 ... 
+Fri Jun 30 14:09:32 2017  sm value: 0.0318 
+Fri Jun 30 14:09:32 2017  sm normal: 0.03749333 
+Fri Jun 30 14:09:37 2017  Extracting 1000 11.01 46.04 2002 2 - layers 24 to 25 ... 
+Fri Jun 30 14:09:37 2017  sm value: 0.0411 
+Fri Jun 30 14:09:37 2017  sm normal: 0.03778148 
+Fri Jun 30 14:09:39 2017  sm layer out of bounds # 1040 
+Fri Jun 30 14:09:39 2017  sm layer out of bounds # 1041 
+Fri Jun 30 14:09:41 2017  sm layer out of bounds # 1076 
+Fri Jun 30 14:09:43 2017  Extracting 1100 138.47 35.96 2002.5 2 - layers 25 to 26 ... 
+Fri Jun 30 14:09:43 2017  sm value: 0.0288 
+Fri Jun 30 14:09:43 2017  sm normal: 0.03202963 
+Fri Jun 30 14:09:47 2017  Extracting 1200 116.25 44 2001.5 1 - layers 24 to 24 ... 
+Fri Jun 30 14:09:47 2017  sm value: 0.0335 
+Fri Jun 30 14:09:47 2017  sm normal: 0.03121333 
+Fri Jun 30 14:09:49 2017  sm layer out of bounds # 1233 
+Fri Jun 30 14:09:53 2017  Extracting 1300 -82.32889 39.98917 2005.25 1 - layers 28 to 28 ... 
+Fri Jun 30 14:09:53 2017  sm value: 0.0522 
+Fri Jun 30 14:09:53 2017  sm normal: 0.04876667 
+Fri Jun 30 14:10:00 2017  Extracting 1400 99 38 2004.5 2 - layers 27 to 28 ... 
+Fri Jun 30 14:10:00 2017  sm value: 0.03395 
+Fri Jun 30 14:10:00 2017  sm normal: 0.04042592 
+Fri Jun 30 14:10:06 2017  Extracting 1500 127.2667 38.23333 2006 2 - layers 28 to 29 ... 
+Fri Jun 30 14:10:06 2017  sm value: 0.03845 
+Fri Jun 30 14:10:06 2017  sm normal: 0.03951481 
+Fri Jun 30 14:10:11 2017  Extracting 1600 10.45222 51.07944 2003 1 - layers 26 to 26 ... 
+Fri Jun 30 14:10:11 2017  sm value: 0.0509 
+Fri Jun 30 14:10:11 2017  sm normal: 0.05105926 
+Fri Jun 30 14:10:17 2017  Extracting 1700 112.8333 22.56667 2008.5 2 - layers 31 to 32 ... 
+Fri Jun 30 14:10:17 2017  sm value: 0.05 
+Fri Jun 30 14:10:17 2017  sm normal: 0.05985 
+Fri Jun 30 14:10:23 2017  Extracting 1800 -3.333 40.533 2008.5 2 - layers 31 to 32 ... 
+Fri Jun 30 14:10:23 2017  sm value: 0.0721 
+Fri Jun 30 14:10:23 2017  sm normal: 0.06601034 
+Fri Jun 30 14:10:29 2017  Extracting 1900 24.28861 62.51667 2008 2 - layers 30 to 31 ... 
+Fri Jun 30 14:10:29 2017  sm value: 0.03695 
+Fri Jun 30 14:10:29 2017  sm normal: 0.04571481 
+Fri Jun 30 14:10:35 2017  Extracting 2000 128.1733 35.20583 2010 2 - layers 32 to 33 ... 
+Fri Jun 30 14:10:35 2017  sm value: 0.03455681 
+Fri Jun 30 14:10:35 2017  sm normal: 0.03548328 
+Fri Jun 30 14:10:40 2017  Extracting 2100 -72.18 42.53 2007.5 1 - layers 30 to 30 ... 
+Fri Jun 30 14:10:40 2017  sm value: 0.0567 
+Fri Jun 30 14:10:40 2017  sm normal: 0.06017037 
+Fri Jun 30 14:10:43 2017  sm layer out of bounds # 2154 
+Fri Jun 30 14:10:43 2017  sm layer out of bounds # 2155 
+Fri Jun 30 14:10:46 2017  Extracting 2200 101.83 29.42 2009 1 - layers 32 to 32 ... 
+Fri Jun 30 14:10:46 2017  sm value: 0.0404 
+Fri Jun 30 14:10:46 2017  sm normal: 0.04110833 
+Fri Jun 30 14:10:52 2017  Extracting 2300 33.23183 58.27378 2011.5 1 - layers 34 to 34 ... 
+Fri Jun 30 14:10:52 2017  sm value: 0.0463 
+Fri Jun 30 14:10:52 2017  sm normal: 0.06355555 
+Fri Jun 30 14:10:57 2017  Extracting 2400 -51.45 -1.72 2010.5 3 - layers 32 to 34 ... 
+Fri Jun 30 14:10:57 2017  sm value: 0.07026666 
+Fri Jun 30 14:10:57 2017  sm normal: 0.06488667 
+Fri Jun 30 14:11:01 2017  sm layer out of bounds # 2454 
+Fri Jun 30 14:11:01 2017  sm layer out of bounds # 2455 
+Fri Jun 30 14:11:01 2017  sm layer out of bounds # 2456 
+Fri Jun 30 14:11:04 2017  Extracting 2500 118.72 32.2 2011.5 1 - layers 34 to 34 ... 
+Fri Jun 30 14:11:04 2017  sm value: 0.0298 
+Fri Jun 30 14:11:04 2017  sm normal: 0.04801333 
+Fri Jun 30 14:11:06 2017  ------------------- 
+Fri Jun 30 14:11:06 2017  Rows of all data: 2548,2548,2548,2548,2548,2548,2548,2548,2548,2548 
+Fri Jun 30 14:11:06 2017  Saving outputs//srdb_filtered.csv 
+Fri Jun 30 14:11:07 2017  ------------------- 
+Fri Jun 30 14:11:07 2017  Prep global grids for coverage plot, global flux predictions 
+Fri Jun 30 14:11:07 2017  Opening ./inputs/cell_areas/cell_areas.txt 
+Fri Jun 30 14:11:07 2017  Reading data from CRU TMP file... 
+Fri Jun 30 14:12:15 2017  Reading data from CRU PRE file... 
+Fri Jun 30 14:13:23 2017  Reading data from CRU PET file... 
+Fri Jun 30 14:14:30 2017  Creating monthly data structure... 
+Fri Jun 30 14:14:31 2017  Saving outputs//crudata_monthly.csv 
+Fri Jun 30 14:15:40 2017  Computing annual data... 
+Fri Jun 30 14:18:30 2017  Saving outputs//crudata_annual.csv 
+Fri Jun 30 14:18:37 2017  Computing period data... 
+Fri Jun 30 14:18:45 2017  Saving outputs//crudata_period.csv 
+Fri Jun 30 14:18:45 2017  All done with 2-prepdata.R 
+Fri Jun 30 14:18:45 2017  Closing outputs//2-prepdata/2-prepdata.R.log.txt flags = 0 
+-------
+R version 3.3.3 (2017-03-06)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X El Capitan 10.11.6
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] fossil_0.3.7      shapefiles_0.7    foreign_0.8-67    maps_3.1.1        raster_2.5-8     
+ [6] sp_1.2-3          mblm_0.12         MASS_7.3-45       Kendall_2.2       broom_0.4.1      
+[11] assertthat_0.1    R.utils_2.3.0     R.oo_1.20.0       R.methodsS3_1.7.1 luzlogr_0.2.0    
+[16] ggplot2_2.2.0     readr_1.1.0       tidyr_0.6.0       dplyr_0.5.0      
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.9        RColorBrewer_1.1-2 plyr_1.8.4         tools_3.3.3        ncdf4_1.15        
+ [6] boot_1.3-18        digest_0.6.11      tibble_1.2         nlme_3.1-131       gtable_0.2.0      
+[11] lattice_0.20-34    psych_1.6.9        DBI_0.5-1          rgdal_1.2-4        parallel_3.3.3    
+[16] stringr_1.1.0      hms_0.2            grid_3.3.3         R6_2.2.0           reshape2_1.4.2    
+[21] magrittr_1.5       scales_0.4.1       mnormt_1.5-4       colorspace_1.2-6   labeling_0.3      
+[26] stringi_1.1.2      lazyeval_0.2.0     munsell_0.4.3     
