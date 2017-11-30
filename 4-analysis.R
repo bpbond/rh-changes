@@ -789,7 +789,7 @@ p_isimip1 <- p_isimip + theme(axis.text = element_text(size = xts),
                               legend.background = element_rect(fill = "transparent", colour = NA),
                               legend.key.height = unit(0.25, "cm"))
 p_rh_sites1 <- p_rh_sites + theme(axis.text = element_text(size = xts),
-                                  strip.text = element_text(size = 6))
+                                  strip.text = element_text(size = 5))
 p_fluxnet_sitecounts1 <- p_fluxnet_sitecounts + theme(axis.text = element_text(size = xts),
                                                       strip.text = element_text(size = 6))
 
