@@ -39,5 +39,5 @@ ancillary/ | Ancillary data (FLUXNET and ISIMIP)
 inputs/ | SRDB and SIF data
 LICENSE | License
 README.md | This file...
-reproducibility/ | Archived log files and data to run `4-analysis.R`
+reproducibility/ | Archived log files (to verify outputs and check software versions) as well as data to run `4-analysis.R`
 rh-changes.Rproj | [RStudio](https://www.rstudio.com) project file
