@@ -8,7 +8,7 @@ Potential lines of evidence might include:
 - Rs and Rh relationships to [FLUXNET (MTE) GPP](http://dx.doi.org/10.1029/2010JG001566), [MODIS GPP](http://dx.doi.org/10.1016/j.rse.2004.12.011), and [SIF](http://dx.doi.org/10.1111/j.1365-2486.2009.01908.x) - increasing would imply losses not fueled by increased GPP
 
 What we did:
-- Updated the global [Soil Respiration Database](http://www.biogeosciences.net/7/1915/2010/) with data through 2015
+- Updated the global [Soil Respiration Database](https://github.com/bpbond/srdb) (see also [publication](http://www.biogeosciences.net/7/1915/2010/)) with data through 2015
 - Matched temporally- and spatially-resolved respiration data with the ancillary datasets
 - Used linear models to examine whether Rh, Rh:Rs, Rh:GPP, Rs:GPP, etc., change over a 25-year period
 - Examined [FLUXNET](http://fluxnet.fluxdata.org//data/fluxnet2015-dataset/) data for changes in respiration
