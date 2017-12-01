@@ -12,7 +12,7 @@ What we did:
 - Matched temporally- and spatially-resolved respiration data with the ancillary datasets
 - Used linear models to examine whether Rh, Rh:Rs, Rh:GPP, Rs:GPP, etc., change over a 25-year period
 - Examined [FLUXNET](http://fluxnet.fluxdata.org//data/fluxnet2015-dataset/) data for changes in respiration
-- Thanks to great referee feedback, added analyses looking at [ISIMIP](http://dx.doi.org/10.1088/1748-9326/12/1/010301) and longitudinal (site-specific) Rh changes, as well as many tests for robustness of the results
+- Thanks to great referee feedback, added analyses looking at [ISIMIP](http://dx.doi.org/10.1088/1748-9326/12/1/010301) and longitudinal (site-specific) Rh changes, as well as many _tests_ (h/t Referee 1...) for robustness of the results
 
 To re-run our analysis:
 - All scripts used are included in this repository
