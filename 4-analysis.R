@@ -27,7 +27,7 @@ library(broom)  # 0.4.1
 library(Kendall) # 2.2
 library(MASS) # 7.3.45
 library(mblm) # 0.12
-
+library(scales) # 0.4.1
 
 # Save a 2x2 grid plot of linear model diagnostics
 save_model_diagnostics <- function(m, modelname = deparse(substitute(m))) {
@@ -149,7 +149,7 @@ s_rh_rs %>%
 
 # Make Figure 1
 p1_rh_rs <- ggplot(s_rh_rs, aes(Rs_annual, Rh_annual, color = group)) +
-  scale_x_log10() + scale_y_log10() +
+  scale_x_log10(label = comma) + scale_y_log10(label = comma) +
   annotation_logticks() +
   xlab(expression(R[S]~(g~C~m^-2~yr^-1))) +
   ylab(expression(R[H]~(g~C~m^-2~yr^-1))) + 
