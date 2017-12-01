@@ -1,0 +1,70 @@
+Thu Nov 30 21:15:09 2017  Opening outputs//5-ref1_hashimoto/5-ref1_hashimoto.R.log.txt 
+Thu Nov 30 21:15:09 2017  Welcome to 5-ref1_hashimoto.R 
+Thu Nov 30 21:15:09 2017  ------------------- 
+Thu Nov 30 21:15:09 2017  Reading ~/Data/Hashimoto/RH_yr_Hashimoto2015.nc 
+Thu Nov 30 21:15:09 2017  Dimensions = 720 360 23 
+Thu Nov 30 21:15:09 2017  Fitting linear model to each grid cell (this is slow)... 
+Thu Nov 30 21:20:05 2017  Extracting slopes... 
+Thu Nov 30 21:20:05 2017  Extracting slope p-values... 
+Thu Nov 30 21:20:15 2017  Total cells = 57048 
+Thu Nov 30 21:20:15 2017  Cells with positive slope = 42335 or 74 % 
+Thu Nov 30 21:20:15 2017  Cells with significant positive slope = 14787 or 26 % 
+Thu Nov 30 21:20:15 2017  ------------------- 
+Thu Nov 30 21:20:15 2017  Fitting for last 10 years only... 
+Thu Nov 30 21:20:15 2017  Fitting linear model to each grid cell (this is slow)... 
+Thu Nov 30 21:25:08 2017  Extracting slopes... 
+Thu Nov 30 21:25:08 2017  Extracting slope p-values... 
+Thu Nov 30 21:25:17 2017  Total cells = 57048 
+Thu Nov 30 21:25:17 2017  Cells with positive slope = 30494 or 53 % 
+Thu Nov 30 21:25:17 2017  Cells with significant positive slope = 2705 or 5 % 
+Thu Nov 30 21:25:17 2017  ------------------- 
+Thu Nov 30 21:25:17 2017  Reading ~/Data/Hashimoto/RS_yr_Hashimoto2015.nc 
+Thu Nov 30 21:25:18 2017  Dimensions = 720 360 23 
+Thu Nov 30 21:25:18 2017  Fitting linear model to each grid cell (this is slow)... 
+Thu Nov 30 21:30:02 2017  Extracting slopes... 
+Thu Nov 30 21:30:03 2017  Extracting slope p-values... 
+Thu Nov 30 21:30:14 2017  Total cells = 57048 
+Thu Nov 30 21:30:14 2017  Cells with positive slope = 42303 or 74 % 
+Thu Nov 30 21:30:14 2017  Cells with significant positive slope = 14761 or 26 % 
+Thu Nov 30 21:30:14 2017  ------------------- 
+Thu Nov 30 21:30:14 2017  Fitting for last 10 years only... 
+Thu Nov 30 21:30:14 2017  Fitting linear model to each grid cell (this is slow)... 
+Thu Nov 30 21:35:17 2017  Extracting slopes... 
+Thu Nov 30 21:35:18 2017  Extracting slope p-values... 
+Thu Nov 30 21:35:30 2017  Total cells = 57048 
+Thu Nov 30 21:35:30 2017  Cells with positive slope = 30529 or 54 % 
+Thu Nov 30 21:35:30 2017  Cells with significant positive slope = 2719 or 5 % 
+Thu Nov 30 21:35:30 2017  ------------------- 
+Thu Nov 30 21:35:30 2017  Reading ~/Data/MaxPlanck/201715151429EnsembleGPP_GL.nc 
+Thu Nov 30 21:35:36 2017  Fitting linear model to each grid cell (this is slow)... 
+Thu Nov 30 21:41:31 2017  Extracting slopes... 
+Thu Nov 30 21:41:31 2017  Extracting slope p-values... 
+Thu Nov 30 21:41:41 2017  Total cells = 58545 
+Thu Nov 30 21:41:41 2017  Cells with positive slope = 38993 or 67 % 
+Thu Nov 30 21:41:41 2017  Cells with significant positive slope = 3046 or 5 % 
+Thu Nov 30 21:49:24 2017  All done with 5-ref1_hashimoto.R 
+Thu Nov 30 21:49:25 2017  Closing outputs//5-ref1_hashimoto/5-ref1_hashimoto.R.log.txt flags = 0 
+-------
+R version 3.3.3 (2017-03-06)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: macOS Sierra 10.12.6
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] broom_0.4.1       bindrcpp_0.2      ncdf4_1.15        assertthat_0.2.0  R.utils_2.3.0    
+ [6] R.oo_1.20.0       R.methodsS3_1.7.1 luzlogr_0.2.0     ggplot2_2.2.0     readr_1.1.1      
+[11] tidyr_0.7.1       dplyr_0.7.4      
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.12     plyr_1.8.4       bindr_0.1        tools_3.3.3      digest_0.6.12   
+ [6] tibble_1.3.4     gtable_0.2.0     nlme_3.1-131     lattice_0.20-34  pkgconfig_2.0.1 
+[11] rlang_0.1.2      psych_1.6.9      yaml_2.1.14      parallel_3.3.3   stringr_1.2.0   
+[16] hms_0.2          grid_3.3.3       tidyselect_0.2.2 glue_1.1.1       R6_2.2.2        
+[21] foreign_0.8-67   purrr_0.2.2      reshape2_1.4.2   magrittr_1.5     scales_0.4.1    
+[26] mnormt_1.5-4     colorspace_1.2-6 labeling_0.3     stringi_1.1.5    lazyeval_0.2.0  
+[31] munsell_0.4.3   

@@ -87,7 +87,7 @@ nc <- nc_open(ncfile)
 gpp <- ncvar_get(nc, "gpp", start = c(1, 1, 96), count = c(-1, -1, -1))
 do_fitting(gpp)
 
-coprintlog("All done with", SCRIPTNAME)
+printlog("All done with", SCRIPTNAME)
 closelog()
 
 if(PROBLEM) warning("There was a problem - see log")

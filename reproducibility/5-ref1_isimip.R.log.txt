@@ -1,0 +1,52 @@
+Thu Nov 30 21:14:47 2017  Opening outputs//5-ref1_isimip/5-ref1_isimip.R.log.txt 
+Thu Nov 30 21:14:47 2017  Welcome to 5-ref1_isimip.R 
+Thu Nov 30 21:14:47 2017  Opening ./ancillary/isimip-rh/all_annual_global_rh.csv 
+Thu Nov 30 21:14:47 2017  Reading Hashimoto data (again) and plotting versus ISIMIP... 
+Thu Nov 30 21:14:48 2017  Saving outputs//5-ref1_isimip/isimip_vs_hashimoto.pdf 
+Thu Nov 30 21:14:48 2017  Opening ./ancillary/isimip-rh/all_annual_site_rh.csv 
+Thu Nov 30 21:14:49 2017  Computing slopes of modeled RH for each model and site... 
+|===============================         | 80% ~1 s remaining     |================================        | 81% ~0 s remaining     |=================================       | 83% ~0 s remaining     |==================================      | 85% ~0 s remaining     |==================================      | 87% ~0 s remaining     |===================================     | 89% ~0 s remaining     |====================================    | 91% ~0 s remaining     |=====================================   | 93% ~0 s remaining     |======================================  | 96% ~0 s remaining     |======================================  | 97% ~0 s remaining     |======================================= |100% ~0 s remaining     Thu Nov 30 21:14:54 2017  model_site_slopes rows = 1300 cols = 4 
+Thu Nov 30 21:14:54 2017  
+# A tibble: 4 x 4
+# Groups:   slope_sign [?]
+  slope_sign significant     n percent
+       <dbl>       <lgl> <int>   <dbl>
+1         -1       FALSE   138      11
+2         -1        TRUE    88       7
+3          1       FALSE   337      26
+4          1        TRUE   737      57
+
+Thu Nov 30 21:14:54 2017  Saving outputs//5-ref1_isimip/isimip_site_slopes.pdf 
+Thu Nov 30 21:14:54 2017  Saving outputs//model_site_slopes.csv 
+Thu Nov 30 21:14:54 2017  All done with 5-ref1_isimip.R 
+Thu Nov 30 21:14:54 2017  Closing outputs//5-ref1_isimip/5-ref1_isimip.R.log.txt flags = 0 
+-------
+R version 3.3.3 (2017-03-06)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: macOS Sierra 10.12.6
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods  
+[7] base     
+
+other attached packages:
+ [1] broom_0.4.1       bindrcpp_0.2      ncdf4_1.15       
+ [4] assertthat_0.2.0  R.utils_2.3.0     R.oo_1.20.0      
+ [7] R.methodsS3_1.7.1 luzlogr_0.2.0     ggplot2_2.2.0    
+[10] readr_1.1.1       tidyr_0.7.1       dplyr_0.7.4      
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.12     plyr_1.8.4       bindr_0.1       
+ [4] tools_3.3.3      digest_0.6.12    tibble_1.3.4    
+ [7] gtable_0.2.0     nlme_3.1-131     lattice_0.20-34 
+[10] pkgconfig_2.0.1  rlang_0.1.2      psych_1.6.9     
+[13] yaml_2.1.14      parallel_3.3.3   stringr_1.2.0   
+[16] hms_0.2          grid_3.3.3       tidyselect_0.2.2
+[19] glue_1.1.1       R6_2.2.2         foreign_0.8-67  
+[22] purrr_0.2.2      reshape2_1.4.2   magrittr_1.5    
+[25] scales_0.4.1     mnormt_1.5-4     colorspace_1.2-6
+[28] labeling_0.3     stringi_1.1.5    lazyeval_0.2.0  
+[31] munsell_0.4.3   
