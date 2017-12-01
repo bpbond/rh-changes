@@ -20,3 +20,24 @@ To re-run our analysis:
 - Copy `reproducibility/srdb-filtered.csv` folder to `outputs/srdb-filtered.csv`
 - Run the main analysis script. It uses a bunch of R packages, the names and version numbers of which are listed in the script and in `0-functions.R`
 - Note that the original script logs, including R session information details, are archived in `reproducibility/`
+
+Things in this root directory:
+
+File/folder | Description
+----------- | -------------
+0-functions.R | Utility functions and shared settings
+1-cci.R | Prep script: process ESA-CCI soil moisture data
+1-fluxnet.R | Prep script: process FLUXNET2015 data
+2-prepdata.R | Prep script: match SRDB data with all the various ancillary datasets
+3-qc.R | QC script: make sure we haven't screwed something up 
+**4-analysis.R** | **Main analysis script**
+5-bootstrap.R | Sensitivity/test script: look at FLUXNET data
+5-ref1_gppsif.R | Sensitivity/test script: examine whether 'missed' satellite data are inducing a false trend
+5-ref1_hashimoto.R | Sensitivity/test script: look at probability of 'seeing' a significant change in Rh at the site level
+5-ref1_ismip.R | Sensitivity/test script: test the variability of ISIMIP Rh data
+ancillary/ | Ancillary data (FLUXNET and ISIMIP)
+inputs/ | SRDB and SIF data
+LICENSE | License
+README.md | This file...
+reproducibility/ | Archived log files and data to run `4-analysis.R`
+rh-changes.Rproj | [RStudio](https://www.rstudio.com) project file
