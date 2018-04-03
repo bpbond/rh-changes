@@ -95,7 +95,7 @@ p <- ggplot(crudata_period, aes(tmp_round, pre_round)) +
   scale_color_continuous(guide = FALSE) +
   xlab(expression(MAT~(degree*C))) + ylab("MAP (mm)")
 print(p)
-save_plot("climate_space", ptype = ".png")
+save_plot("EDF2-climate_space", ptype = ".png")
 
 
 # How does choice of max fluxnet distance affect our N?
@@ -243,7 +243,7 @@ p <- ggplot(fluxnet_plot, aes(Year, value, linetype = diffvar != "gpp_mte_diff")
   guides(linetype = FALSE) +
   ylab("Satellite - tower GPP difference (gC)")
 print(p)
-save_plot("fluxnet_comparison", height = 6, width = 6)
+save_plot("EDF4-fluxnet_comparison", height = 6, width = 6)
 
 
 # ----------------------- Clean up ------------------------- 

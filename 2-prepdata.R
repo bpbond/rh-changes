@@ -289,12 +289,29 @@ srdb %>%
   dplyr::select(Record_number, Study_midyear, Site_name, 
                 YearsOfData, Longitude, Latitude, 
                 Biome, Ecosystem_type, Ecosystem_state, Leaf_habit, Stage, #Soil_drainage,
-                MAT, MAP, Study_temp, Study_precip, Partition_method,
-                Rs_annual, Rh_annual, Ra_annual, GPP, ER) ->
+                MAT, MAP, Study_temp, Study_precip, Partition_method, Annual_coverage, Meas_interval,
+                Rs_annual, Rs_annual_err, Rh_annual, Ra_annual, GPP, ER) ->
   srdb
 print_dims(srdb)
 
 stopifnot(!any(duplicated(srdb$Record_number)))
+
+# For Referee 3, print some stats about the data
+printlog("Annual coverage in data:")
+print(summary(srdb$Annual_coverage))
+printlog("Measurement interval in data:")
+print(summary(srdb$Meas_interval))
+printlog("Coefficient of variability in Rs data:")
+print(summary(srdb$Rs_annual_err / srdb$Rs_annual))
+printlog("Number of years per 'site':")
+srdb %>% 
+  mutate(lon = round(Longitude, 2), lat = round(Latitude, 2)) %>% 
+  group_by(lon, lat, Site_name, Ecosystem_type, Leaf_habit) %>% 
+  summarise(n = n(), yod = mean(YearsOfData)) %>% 
+  ungroup %>% 
+  dplyr::select(n, yod) %>% 
+  summary %>% 
+  print
 
 old_data <- tibble()
 if(APPEND_ONLY & file.exists(SRDB_FILTERED_FILE)) {

@@ -81,7 +81,7 @@ p <- ggplot(results, aes(missing_percent_per_year, p_adj, color = dataset)) +
   ylab("p-value for trend of R/GPPadjusted") +
   geom_hline(yintercept = 0.05, linetype = 2) + ylim(c(0, 0.1))
 print(p)
-save_plot("satellite_missing_gpp")
+save_plot("EDF5-satellite_missing_gpp")
 
 # Also make some diagnostic figures
 all_data <- bind_rows(all_data)

@@ -1,5 +1,5 @@
 # Heterotrophic respiration - main analysis script
-# Ben Bond-Lamberty February 2017
+# Ben Bond-Lamberty February 2017 (last update April 2018)
 #
 # A lot goes on here, but there are four main sections below:
 # 1. The Rh:Rs analysis: is the ratio changing over time?
@@ -13,6 +13,9 @@
 # 7. How sensitive are the results to choice of start/end date?
 # 8. What about site-specific (longitudinal) trends?
 
+# Note all the figures can be searched as "Fig1", "Fig2", "EDF1", "EDF2", etc.
+# (Some of the EDF figures are generated in other scripts.)
+
 source("0-functions.R")
 
 SCRIPTNAME  	<- "4-analysis.R"
@@ -23,11 +26,11 @@ MIN_NEE_QC <- 0.5
 SRDB_MINYEAR <- 1989
 MAX_FLUX_TO_GPP <- 5   # Exclude ratios above this value; chosen based on distribution
 
-library(broom)  # 0.4.1
+library(broom)  # 0.4.4
 library(Kendall) # 2.2
-library(MASS) # 7.3.45
+library(MASS) # 7.3-47
 library(mblm) # 0.12
-library(scales) # 0.4.1
+library(scales) # 0.5.0
 
 # Save a 2x2 grid plot of linear model diagnostics
 save_model_diagnostics <- function(m, modelname = deparse(substitute(m))) {
@@ -153,7 +156,7 @@ p1_rh_rs <- ggplot(s_rh_rs, aes(Rs_annual, Rh_annual, color = group)) +
   annotation_logticks() +
   xlab(expression(R[S]~(g~C~m^-2~yr^-1))) +
   ylab(expression(R[H]~(g~C~m^-2~yr^-1))) + 
-  coord_cartesian(xlim=c(80, 3300), ylim=c(70, 2000))
+  coord_cartesian(xlim = c(80, 3300), ylim = c(70, 2000))
 p1_rh_rs_clr <- p1_rh_rs + scale_color_discrete("Year")
 p1_rh_rs_clr2 <- p1_rh_rs + scale_color_brewer("Year")
 
@@ -178,19 +181,19 @@ printlog("NOTE we are plotting this graph with one point cut off:")
 printlog(s_rh_rs[which.min(s_rh_rs$Rs_annual), c("Rs_annual", "Rh_annual")])
 
 print(p1_rh_rs_clr)
-save_plot("1-srdb-rh-rs-clr", ptype = ".png", width = 9, height = 8)
+save_plot("Fig1-srdb-rh-rs-clr", ptype = ".png", width = 9, height = 8)
 print(p1_rh_rs_clr2)
-save_plot("1-srdb-rh-rs-clr2", ptype = ".png", width = 9, height = 8)
+save_plot("Fig1-srdb-rh-rs-clr2", ptype = ".png", width = 9, height = 8)
 
 p_rh_rs_time <- ggplot(s_rh_rs, aes(Study_midyear, Rh_annual/Rs_annual, color = Biome)) +
-  geom_point() + geom_smooth(method="lm", aes(group = 1)) +
+  geom_point() + geom_smooth(method = "lm", aes(group = 1)) +
   xlab("Year") + ylab(expression(R[H]:R[S]))
 print(p_rh_rs_time)
-save_plot("1-rh_rs_time", width = 6, height = 4)
+save_plot("Fig1-rh_rs_time", width = 6, height = 4)
 
 # Simple regression for Figure 1 - appears in Extended Data Table 1
 printlog("Formula for lines in Figure 1:")
-mx <- lm(log(Rh_annual) ~ log(Rs_annual) * yeargroup, data=s_rh_rs)
+mx <- lm(log(Rh_annual) ~ log(Rs_annual) * yeargroup, data = s_rh_rs)
 mx <- MASS::stepAIC(mx, direction="both")
 print(summary(mx))
 print(anova(mx))
@@ -455,8 +458,8 @@ p_fluxnet_only <- ggplot(s_fluxnet_only, aes(Year, NEE_VUT_REF_NIGHT / GPP_DT_VU
   ylim(c(0, 1))
 
 print(p_fluxnet_only)
-save_plot("fluxnet_only")
-save_plot("fluxnet_only", ptype = ".png", height = 6, width = 8)
+save_plot("EDF6-fluxnet_only")
+save_plot("EDF6-fluxnet_only", ptype = ".png", height = 6, width = 8)
 
 printlog("Fitting temporal model...")
 m_fluxnet_only <- lm(NEE_VUT_REF_NIGHT / GPP_DT_VUT_REF ~ Year * TA_F + Year * P_F + Year * IGBP, data = s_fluxnet_only)
@@ -515,15 +518,23 @@ p_gppsif <- p_gppsif_base +
                             (GPPSIF != "SIF[GOME2]" | Flux == "Rs_annual")),
               method = "lm", show.legend = FALSE)
 print(p_gppsif )
-save_plot("2-gppsif", ptype = ".png", height = 8, width = 7)
+save_plot("Fig2-gppsif", ptype = ".png", height = 8, width = 7)
 
 printlog("Trend tests")
+s_gppsif_resids <- list()
 for(dataset in unique(s_gppsif_included$GPPSIF)) {
   for(f in unique(s_gppsif_included$Flux)) {
     d <- filter(s_gppsif_included, Flux == f, GPPSIF == dataset, !is.na(mat_hadcrut4), !is.na(map_hadcrut4))
     dname <- make.names(paste("s", dataset, f, sep = "_"))
     assign(dname, d)
     save_data(d, fname = dname, scriptfolder = FALSE)
+    
+    # Linear model without time--for a residual plot (per Referee 3)
+    m <- lm(fluxvalue / gppsifvalue ~ mat_hadcrut4 + map_hadcrut4 ^ 2 + Land_cover + Stage + SOC, 
+            data = d)
+    m <- stepAIC(m, direction = "both", trace = 0)
+    d$residual <- m$residuals
+    s_gppsif_resids[[paste(dataset, f)]] <- d   # save this for plotting later
     
     # Linear model
     m <- lm(fluxvalue / gppsifvalue ~ mat_hadcrut4 + map_hadcrut4 ^ 2 + 
@@ -543,6 +554,16 @@ for(dataset in unique(s_gppsif_included$GPPSIF)) {
                p_disturbance = anova(m)["Stage", "Pr(>F)"])
   }
 }
+
+printlog("Making residual plot...")
+s_gppsif_resids <- bind_rows(s_gppsif_resids)
+save_data(s_gppsif_resids)
+p_gppsif_resid <- ggplot(s_gppsif_resids, aes(Study_midyear, residual)) +
+  geom_point(alpha = I(0.75), size = 0.5) +
+  facet_grid(GPPSIF ~ Prettyflux, scales = "free", labeller = label_parsed) +
+  xlab("Year") + ylab("Model residual") + geom_smooth(method = "lm")
+print(p_gppsif_resid)
+save_plot("EDF3-gppsif-residuals", ptype = ".png", height = 8, width = 7)
 
 
 # ----------- 6. ISIMIP analysis (per Referee 1) -------------- 
@@ -655,7 +676,7 @@ p_startdate_2d <- ggplot(startdate_results, aes(min_year, max_year)) +
   xlab("First year in dataset") + ylab("Last year in dataset") +
   annotate(geom = "point", x = 1989, y = 2014, pch = 5, size = 3)
 print(p_startdate_2d)
-save_plot("startdate_2d", width = 7, height = 4)
+save_plot("EDF1-startdate_2d", width = 7, height = 4)
 
 # ----- 8. Site-specific trends, both managed and unmanaged (per Referee 1) -------------- 
 
@@ -757,7 +778,7 @@ p_rh_site_climatespace <- ggplot(srdb, aes(tmp_trend, pre_trend)) +
   geom_point(data = longterm_sites_list, aes(color = Land_cover), size = 3) +
   xlab("1991-2010 temp trend, degC/yr") + ylab("1991-2010 precip trend, mm/yr")
 print(p_rh_site_climatespace)
-save_plot("rh_site_climatespace", height = 5, width = 8)
+save_plot("EDF9-rh_site_climatespace", height = 5, width = 8)
 
 printlog("Climate space of main dataset:")
 print(summary(dplyr::select(srdb, tmp_trend, pre_trend)))
@@ -774,11 +795,14 @@ printlog("Models across all the longitudinal sites:")
 m_longitudinal_rh <- lm(Rh_annual ~ Study_midyear + tmp_trend * pre_trend, data = srdb_13sites)
 print(summary(m_longitudinal_rh))
 
+# ----- 9. Some SRDB stats (per Referee 3) -------------- 
+
+
 
 # ----------------- Multipanel figure 2 --------------------- 
 
 printlog("Doing new multipanel Figure 2...")
-library(cowplot)  # 0.8.0
+library(cowplot)  # 0.9.2
 theme_set(theme_bw())
 xts <- 7  # x axis text size
 sts <- 8  # strip (facet) text size
@@ -802,7 +826,7 @@ fig2_multipanel <- ggdraw() +
   draw_plot(p_rh_sites1, 0.6, 0, 0.4, 0.5) +
   draw_plot_label(c("a", "b", "c"), c(0, 0.6, 0.6), c(1, 1, 0.5), size = 15)
 
-cowplot::save_plot(file.path(outputdir(), "fig2-multipanel.pdf"), fig2_multipanel, base_aspect_ratio = 1.5)
+cowplot::save_plot(file.path(outputdir(), "Fig2-multipanel.pdf"), fig2_multipanel, base_aspect_ratio = 1.5)
 
 
 # ----------------------- Clean up ------------------------- 

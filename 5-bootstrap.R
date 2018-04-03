@@ -87,7 +87,7 @@ p1 <- ggplot(bs1_results, aes(fdf, p.value, group = fdf)) +
   ggtitle(paste(basename(RS_DATASET), "N =", BOOTSTRAP_N))
 
 print(p1)
-save_plot("bootstrap1", ptype = ".png")
+save_plot("EDF7-bootstrap1", ptype = ".png")
 
 # --------------------- Remote sensing bootstrap 2 (data size) --------------------------- 
 
@@ -134,7 +134,7 @@ bs2_results %>%
   print
 
 print(p2)
-save_plot("bootstrap2", ptype = ".png")
+save_plot("EDF8-bootstrap2", ptype = ".png")
 
 # ----------------------- Clean up ------------------------- 
 
