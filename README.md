@@ -6,6 +6,7 @@ Potential lines of evidence might include:
 - Rh/Rs temporal trend - this was the original idea :)
 - Rh response to climate anomalies
 - Rs and Rh relationships to [FLUXNET (MTE) GPP](http://dx.doi.org/10.1029/2010JG001566), [MODIS GPP](http://dx.doi.org/10.1016/j.rse.2004.12.011), and [SIF](http://dx.doi.org/10.1111/j.1365-2486.2009.01908.x) - increasing would imply losses not fueled by increased GPP
+- Site-specific changes over time, for example at [FLUXNET](http://fluxnet.fluxdata.org) sites
 
 What we did:
 - Updated the global [Soil Respiration Database](https://github.com/bpbond/srdb) (see also [publication](http://www.biogeosciences.net/7/1915/2010/)) with data through 2015
