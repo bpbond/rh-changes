@@ -1,7 +1,7 @@
 # Heterotrophic respiration - main analysis script
 # Ben Bond-Lamberty February 2017 (last update April 2018)
 #
-# A lot goes on here, but there are four main sections below:
+# A lot goes on here, but there are five main sections below:
 # 1. The Rh:Rs analysis: is the ratio changing over time?
 # 2. Is Rh responding to climate anomalies? (Minor; parallels 2010 paper)
 # 3. Is Rs:FLUXNET GPP rising over time?
