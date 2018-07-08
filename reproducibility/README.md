@@ -5,6 +5,6 @@ Ecological and climate change science has to be [reproducible](http://dx.doi.org
 
 
 
-This folder contains the `srdb_filtered.csv` file that is the output of the `2-prepdata.R` script (which is expensive to run and uses lots of large datasets not included in this repository). This file can be copied into `outputs/srdb_filtered.csv` and used to run the main analysis script, `4-analysis.R`.
+This folder contains the two files that are the outputs of earlier scripts (in particular `2-prepdata.R`, which is expensive to run and uses lots of large datasets not included in this repository). These file can be copied into `outputs/` and used to run the main analysis script, `4-analysis.R`.
 
 This folder also contains the log files produced by every script. These contain the analytical results, but also (and perhaps more importantly) the R package and session information used.
