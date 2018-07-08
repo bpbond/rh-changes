@@ -184,6 +184,7 @@ print(p1_rh_rs_clr)
 save_plot("Fig1-srdb-rh-rs-clr", ptype = ".png", width = 9, height = 8)
 print(p1_rh_rs_clr2)
 save_plot("Fig1-srdb-rh-rs-clr2", ptype = ".png", width = 9, height = 8)
+save_plot("Fig1-srdb-rh-rs-clr2", width = 9, height = 8)
 
 p_rh_rs_time <- ggplot(s_rh_rs, aes(Study_midyear, Rh_annual/Rs_annual, color = Biome)) +
   geom_point() + geom_smooth(method = "lm", aes(group = 1)) +
