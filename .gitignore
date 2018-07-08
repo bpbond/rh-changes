@@ -38,10 +38,7 @@ outputs/
 *.pdf
 .Rproj.user
 
-# SRDB database - will be included eventually
-inputs/srdb-data.csv
-
-# Manuscript - will be included eventually
+# Manuscript drafts etc.
 manuscript-nature/
 
 # Misc
