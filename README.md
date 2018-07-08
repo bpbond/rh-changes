@@ -1,6 +1,6 @@
 # rh-changes
 
-Data and code for analyses in (Bond-Lamberty et al., "[XXX]")[https://doi.org/10.1038/s41586-018-0358-x].
+Data and code for analyses in [Bond-Lamberty et al., "[XXX]"](https://doi.org/10.1038/s41586-018-0358-x).
 
 Our [2010 study](http://www.nature.com/nature/journal/v464/n7288/full/nature08930.html) concluded by saying yes, we think soil respiration (Rs) is increasing, but we don't know if this is simply an acceleration of the C cycle, or constitutes a climate feedback. (Or both.) A reasonable _a priori_ expectation is that an overall warming climate will result in losses of soil organic carbon (SOC) and increased heterotrophic respiration (Rh), above and beyond any climate-driven increases in GPP and/or the total soil-to-atmosphere Rs flux.  **Can we test this from observations?**
 
