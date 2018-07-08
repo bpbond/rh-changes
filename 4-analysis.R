@@ -238,54 +238,60 @@ printlog("Global flux computation...")
 # variance from treating the whole world as evergreen, deciduous, aggrading,
 # and mature
 
-# Global grid of climate data
-read_csv("outputs/crudata_annual.csv.gz", guess_max = 1e6) %>%
-  rename(pre_hadcrut4 = pre, tmp_hadcrut4 = tmp) %>%
-  mutate(Leaf_habit = "Deciduous", Stage = "Mature") ->
-  globalclim
+# Note that these results are barely used in the paper
 
-globalclim$predict1 <- predict(m2_rh_climate, globalclim)
-globalclim$Leaf_habit = "Evergreen"
-globalclim$predict2 <- predict(m2_rh_climate, globalclim)
-globalclim$Stage = "Aggrading"
-globalclim$predict3 <- predict(m2_rh_climate, globalclim)
-globalclim$Leaf_habit = "Deciduous"
-globalclim$predict4 <- predict(m2_rh_climate, globalclim)
-
-# Compute area-weighted fluxes
-globalclim %>%
-  dplyr::select(-lon, -lat, -Leaf_habit, -Stage) %>%
-  gather(case, sqrt_rh_gCm2, predict1, predict2, predict3, predict4) %>%
-  mutate(rh_PgC = sqrt_rh_gCm2 ^ 2 * area_km2 * 1000 * 1000 / 1e15) %>%
-  group_by(case, year) %>%
-  summarise(rh_PgC = sum(rh_PgC, na.rm = TRUE),
-            tmp_hadcrut4 = weighted.mean(tmp_hadcrut4, area_km2, na.rm = TRUE)) ->
-  gp
-
-# Fit linear models to the predictions to get smoothed values for Q10, etc.
-gp %>%
-  group_by(case) %>% 
-  do(data.frame(year = .$year, 
-                rh_fit = predict(lm(rh_PgC ~ year, data = .)),
-                tmp_fit = predict(lm(tmp_hadcrut4 ~ year, data = .)))) %>%
-  right_join(gp, by = c("case", "year")) -> 
-  gp
-
-# Summarise: compute first and last values and Q10
-gp %>%
-  group_by(case) %>%
-  summarise(first_rh = first(rh_fit), last_rh = last(rh_fit),
-            first_tmp = first(tmp_fit), last_tmp = last(tmp_fit),
-            q10 = (last_rh / first_rh) ^ (10 / (last_tmp - first_tmp))) %>%
-  print ->
-  gp_summary
-
-p_prediction <- qplot(year, rh_PgC, data = gp, geom = "line", group = case) + 
-  geom_smooth(method = "lm", group = 1)
-print(p_prediction)
-save_plot("global_rh_prediction")
-
-save_data(gp_summary, fname = "global_prediction")
+if(file.exists("outputs/crudata_annual.csv.gz")) {
+  # Global grid of climate data
+  read_csv("outputs/crudata_annual.csv.gz", guess_max = 1e6) %>%
+    rename(pre_hadcrut4 = pre, tmp_hadcrut4 = tmp) %>%
+    mutate(Leaf_habit = "Deciduous", Stage = "Mature") ->
+    globalclim
+  
+  globalclim$predict1 <- predict(m2_rh_climate, globalclim)
+  globalclim$Leaf_habit = "Evergreen"
+  globalclim$predict2 <- predict(m2_rh_climate, globalclim)
+  globalclim$Stage = "Aggrading"
+  globalclim$predict3 <- predict(m2_rh_climate, globalclim)
+  globalclim$Leaf_habit = "Deciduous"
+  globalclim$predict4 <- predict(m2_rh_climate, globalclim)
+  
+  # Compute area-weighted fluxes
+  globalclim %>%
+    dplyr::select(-lon, -lat, -Leaf_habit, -Stage) %>%
+    gather(case, sqrt_rh_gCm2, predict1, predict2, predict3, predict4) %>%
+    mutate(rh_PgC = sqrt_rh_gCm2 ^ 2 * area_km2 * 1000 * 1000 / 1e15) %>%
+    group_by(case, year) %>%
+    summarise(rh_PgC = sum(rh_PgC, na.rm = TRUE),
+              tmp_hadcrut4 = weighted.mean(tmp_hadcrut4, area_km2, na.rm = TRUE)) ->
+    gp
+  
+  # Fit linear models to the predictions to get smoothed values for Q10, etc.
+  gp %>%
+    group_by(case) %>% 
+    do(data.frame(year = .$year, 
+                  rh_fit = predict(lm(rh_PgC ~ year, data = .)),
+                  tmp_fit = predict(lm(tmp_hadcrut4 ~ year, data = .)))) %>%
+    right_join(gp, by = c("case", "year")) -> 
+    gp
+  
+  # Summarise: compute first and last values and Q10
+  gp %>%
+    group_by(case) %>%
+    summarise(first_rh = first(rh_fit), last_rh = last(rh_fit),
+              first_tmp = first(tmp_fit), last_tmp = last(tmp_fit),
+              q10 = (last_rh / first_rh) ^ (10 / (last_tmp - first_tmp))) %>%
+    print ->
+    gp_summary
+  
+  p_prediction <- qplot(year, rh_PgC, data = gp, geom = "line", group = case) + 
+    geom_smooth(method = "lm", group = 1)
+  print(p_prediction)
+  save_plot("global_rh_prediction")
+  
+  save_data(gp_summary, fname = "global_prediction")
+} else {
+  printlog("Input file doesn't exist--skipping")
+}
 
 
 # --------------- 3. FLUXNET analysis --------------------- 
