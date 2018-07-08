@@ -18,7 +18,7 @@ What we did:
 To re-run our analysis:
 - All scripts used are included in this repository
 - Unless you want to rebuild everything from the underlying SRDB, Hadley, MODIS, MTE, etc., datasets (which are not included in this repo, although URLs are given for all), it's simplest to use a pre-processed dataset and start with the main analysis script `4-analysis.R`
-- Copy `reproducibility/srdb-filtered.csv` folder to `outputs/srdb-filtered.csv`
+- Copy `reproducibility/srdb-filtered.csv` and `reproducibility/fluxnet.csv` into `outputs/` (which you may need to create first)
 - Run the main analysis script. It uses a bunch of R packages, the names and version numbers of which are listed in the script and in `0-functions.R`. A quick one-liner to install the necessary packages: `install.packages(c("dplyr", "broom", "Kendall", "MASS", "mblm", "scales”, ”tidyr", "readr", "ggplot2", "luzlogr", "R.utils", "assertthat", "cowplot"))`
 - Note that the original script logs, including R session information details, are archived in `reproducibility/`
 
